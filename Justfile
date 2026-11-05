@@ -7,9 +7,9 @@ set positional-arguments
 python := "uv run --no-project --quiet python"
 smalldocs := "uvx --from smalldocs==0.5.5 smalldocs"
 
-# The checker for reports, check.py of nossaifd, at a fixed commit. The commit is on the branch
-# reid-and-presentations of nossaifd. Move it to the merge commit on main after that branch merges.
-nossaifd_commit := "7a35ba3de160e6b1a000ec7c0391ec91a2ffc36e"
+# The checker for reports, check.py of nossaifd, at a fixed commit of its main branch. Move it when
+# check.py changes there.
+nossaifd_commit := "ec80717f074c68dfa5fecb0c8c19ba49398a2f76"
 
 [private]
 default:
