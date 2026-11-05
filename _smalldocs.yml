@@ -1,0 +1,39 @@
+project:
+  type: website
+  output-dir: _site
+  render:
+    - index.qmd
+    - TALKS.md
+    - EXAMPLES.md
+    - docs/check-talk.md
+    - docs/sources.md
+    - docs/why.md
+
+website:
+  title: nossaifd-talks
+  description: A guide, a checker, an agent skill and worked examples for talks that AI models write
+  site-url: https://rahuldave.com/nossaifd-talks/
+  repo-url: https://github.com/rahuldave/nossaifd-talks
+  navbar:
+    left:
+      - text: Reports
+        href: https://rahuldave.com/nossaifd/
+    tools:
+      - icon: github
+        href: https://github.com/rahuldave/nossaifd-talks
+  sidebar:
+    contents:
+      - text: Overview
+        href: index.qmd
+      - section: Talks
+        contents:
+          - TALKS.md
+          - docs/check-talk.md
+          - EXAMPLES.md
+      - section: About
+        contents:
+          - docs/sources.md
+          - docs/why.md
+
+theme: folio
+toc: true

@@ -1,0 +1,6 @@
+---
+# The title is "nossaifd-talks", the first heading of README.md. A title here would show that heading twice.
+description: A guide, a checker, an agent skill and worked examples for talks that an AI model writes and a person gives.
+---
+
+{{< include README.md >}}
