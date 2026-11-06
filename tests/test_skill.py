@@ -28,8 +28,8 @@ class PackageTest(unittest.TestCase):
     def test_the_skill_ships_the_guide_the_examples_and_the_talk_checker_only(self):
         shipped = sorted(p.relative_to(SKILL).as_posix() for p in SKILL.rglob('*')
                          if p.is_file() and '__pycache__' not in p.parts)
-        self.assertEqual(shipped, ['SKILL.md', 'agents/openai.yaml', 'references/EXAMPLES.md',
-                                   'references/TALKS.md', 'scripts/check_talk.py'])
+        self.assertEqual(shipped, ['SKILL.md', 'agents/openai.yaml', 'assets/plan.md', 'references/EXAMPLES.md',
+                                   'references/TALKS.md', 'references/WORKSHEET.md', 'scripts/check_talk.py'])
 
     def test_the_report_parts_of_nossaifd_are_gone(self):
         for name in ('GUIDE.md', 'check.py', 'tests/test_check.py', 'docs/checker.md', 'docs/build.py',

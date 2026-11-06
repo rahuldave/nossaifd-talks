@@ -17,8 +17,9 @@ default:
 
 # Copy the guide, the examples and the checker into the skill, which ships copies of them
 sync:
-    mkdir -p .agents/skills/presentations/references .agents/skills/presentations/scripts
-    cp TALKS.md EXAMPLES.md .agents/skills/presentations/references/
+    mkdir -p .agents/skills/presentations/references .agents/skills/presentations/scripts .agents/skills/presentations/assets
+    cp TALKS.md EXAMPLES.md WORKSHEET.md .agents/skills/presentations/references/
+    cp templates/plan.md .agents/skills/presentations/assets/plan.md
     cp check_talk.py .agents/skills/presentations/scripts/
 
 # Check the Python and the JSON for syntax
@@ -34,12 +35,12 @@ test *args:
 prose:
     #!/usr/bin/env bash
     set -euo pipefail
-    {{python}} check_talk.py tests/fixtures/deck.md
+    {{python}} check_talk.py tests/fixtures/deck.md examples/cache/plan.md examples/cache/slides.qmd
     tool_root="$(mktemp -d)"
     trap 'rm -rf -- "$tool_root"' EXIT
     curl -fsSL "https://raw.githubusercontent.com/rahuldave/nossaifd/{{nossaifd_commit}}/check.py" -o "$tool_root/check.py"
     {{python}} -I "$tool_root/check.py" README.md TALKS.md EXAMPLES.md docs/check-talk.md docs/sources.md docs/why.md \
-        .agents/skills/presentations/SKILL.md
+        docs/schwabish-summary.md .agents/skills/presentations/SKILL.md
 
 # Build the site into _site with smalldocs
 site:
