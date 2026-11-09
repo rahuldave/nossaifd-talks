@@ -147,19 +147,6 @@ class DeckTest(unittest.TestCase):
         self.assertEqual([s.title()[1] for s in slides], ['One', 'Two words'])
         self.assertTrue(check_talk.appendix(slides[1]) and not check_talk.appendix(slides[0]))
 
-    def test_a_rule_line_must_come_right_before_a_heading(self):
-        hard: list[str] = []
-        check_talk.split_qmd(qmd(slide('One'), '---\n', slide('Two')), hard)
-        self.assertEqual(hard, [])
-        check_talk.split_qmd(qmd(slide('One', body='A point\n\n---\n\nMore')), hard)
-        self.assertEqual(len(hard), 1)
-        self.assertIn('not right before a ## title', hard[0])
-
-    def test_text_before_the_first_heading_is_hard(self):
-        hard: list[str] = []
-        check_talk.split_qmd('---\npagetitle: "x"\n---\n\nLost words\n\n' + slide('One'), hard)
-        self.assertTrue(any('before the first ## title' in line for line in hard), hard)
-
     def test_a_cue_line_is_not_script(self):
         hard: list[str] = []
         slides = check_talk.split_qmd(qmd(slide('One', notes='Cue: um, uh, the thing is\nWe cut the wait.')), hard)
@@ -250,16 +237,168 @@ class DeckTest(unittest.TestCase):
         self.assertEqual((hard, status), ([], 0))
 
 
+class BoundaryTest(unittest.TestCase):
+    "Slide boundaries as htmpres reads them, from its PR #14: --- and ## start slides, and --- then ## is one."
+
+    def split(self, text):
+        hard: list[str] = []
+        slides = check_talk.split_qmd(text, hard)
+        return [(s.title()[1] if s.title() else None, s.attrs) for s in slides], hard
+
+    def test_the_three_slide_example_of_htmpres(self):
+        # decks/slide-breaks/index.qmd in htmpres, at commit 1987ffe
+        text = ('---\npagetitle: Three ways to start a slide\ndeck:\n  theme: nocturne\n---\n\n---\n\n'
+                'This first slide has no title.\n\n::: notes\nFirst cue, before a rule.\n\n---\n\n'
+                'Still the first slide\'s notes.\n:::\n\n## A heading starts slide two {#second}\n\nThis slide.\n\n'
+                '[Open the appendix](#appendix-data).\n\n::: notes\nSecond slide cue.\n:::\n\n---\n\n'
+                '## {#appendix-data data-kind="appendix" data-title="Backup data"}\n\nThe data.\n\n'
+                '[Back to slide two](#second).\n\n::: notes\nThird slide cue.\n:::\n')
+        slides, hard = self.split(text)
+        self.assertEqual(hard, [])
+        self.assertEqual(slides, [(None, ''), ('A heading starts slide two', '{#second}'),
+                                  (None, '{#appendix-data data-kind="appendix" data-title="Backup data"}')])
+        hard = []
+        parts = check_talk.split_qmd(text, hard)
+        self.assertIn("Still the first slide's notes.", ' '.join(t for _, t in parts[0].notes))
+        self.assertTrue(check_talk.appendix(parts[2]))
+
+    def test_mixed_boundaries(self):
+        slides, hard = self.split('---\npagetitle: x\n---\n\n## One\n\nA\n\n---\n\nB\n\n---\n\n\n## Three\n\nC\n'
+                                  '\n## Four\n\nD\n')
+        self.assertEqual(hard, [])
+        self.assertEqual([title for title, _ in slides], ['One', None, 'Three', 'Four'])
+
+    def test_leading_spaces_and_trailing_space_are_boundaries_but_not_four_spaces(self):
+        slides, _ = self.split('## One\n\nA\n\n   ---  \n\nB\n\n   ## Three\n\nC\n\n    ---\n\n    ## code\n')
+        self.assertEqual([title for title, _ in slides], ['One', None, 'Three'])
+
+    def test_only_three_hyphens_count(self):
+        slides, _ = self.split('## One\n\nA\n\n----\n\n***\n\n___\n\nB\n')
+        self.assertEqual(len(slides), 1)
+
+    def test_yaml_delimiters_are_not_slides(self):
+        slides, hard = self.split('---\npagetitle: x\n---\n\nOpening text.\n\n## Two\n\nB\n')
+        self.assertEqual((hard, [title for title, _ in slides]), ([], [None, 'Two']))
+        # With no YAML, a blank line first keeps a later --- from closing YAML that is not there.
+        slides, _ = self.split('\n---\n\nOne\n\n---\n\nTwo\n')
+        self.assertEqual(len(slides), 2)
+        slides, _ = self.split('---\n\nOne\n\n---\n\nTwo\n')
+        self.assertEqual(len(slides), 1)   # htmpres reads the first two --- as front matter
+
+    def test_notes_and_divs_keep_their_boundaries_local(self):
+        text = qmd(slide('One', body='::: {.callout}\n## Inside a div\n\n---\n\nStill here\n:::',
+                         notes='Cue: x\n::: {.callout}\nAside.\n:::\n## In the notes\n\n---\n\nWe cut it.'),
+                   slide('Two'))
+        slides, hard = self.split(text)
+        self.assertEqual((hard, [title for title, _ in slides]), ([], ['One', 'Two']))
+        parts = check_talk.split_qmd(text, [])
+        self.assertIn('We cut it.', ' '.join(t for _, t in parts[0].notes))
+
+    def test_code_and_comments_protect_boundaries(self):
+        text = qmd(slide('One', body='```\n## Not a slide\n---\n```\n\n~~~~\n---\n~~~~\n\n<!--\n---\n## hidden\n-->\n\n'
+                                     '<pre>\n---\n</pre>'), slide('Two'))
+        slides, hard = self.split(text)
+        self.assertEqual((hard, [title for title, _ in slides]), ([], ['One', 'Two']))
+
+    def test_empty_slides_are_hard(self):
+        for body, count in (('## One\n\nA\n\n---\n\n---\n\nB\n', 1), ('## One\n\nA\n\n---\n', 1),
+                            ('## One\n\nA\n\n## {#x}\n\n## Three\n\nC\n', 1)):
+            with self.subTest(body=body):
+                _, hard = self.split(body)
+                self.assertEqual(sum('an empty slide' in line for line in hard), count, hard)
+        _, hard = self.split('## A title only\n\n## Two\n\nB\n')   # a title with no body is a valid slide
+        self.assertEqual(hard, [])
+        _, hard = self.split('---\n\n## One\n\nA\n')   # a leading --- adds no empty slide before it
+        self.assertEqual(hard, [])
+
+    def test_an_untitled_slide_has_no_title_even_with_a_heading_in_a_div(self):
+        text = qmd(slide('One'), '---\n\n::: {.callout}\n## Inside\n:::\n\nA picture slide.\n')
+        parts = check_talk.split_qmd(text, [])
+        self.assertIsNone(parts[1].title())
+
+
+class SecondReviewTest(unittest.TestCase):
+    "One test for each finding of the adversarial review of the slide boundaries and rules 62 to 71."
+
+    def rule(self, number):
+        text = (REPO / 'TALKS.md').read_text(encoding='utf-8')
+        return text.split(f'\n{number}. ', 1)[1].split(f'\n{number + 1}. ', 1)[0]
+
+    def test_the_section_before_rule_72_is_kept(self):
+        text = (REPO / 'TALKS.md').read_text(encoding='utf-8')
+        self.assertIn('## Help the listener hold the ideas\n\n72. ', text)
+
+    def test_rule_66_still_asks_for_a_caption_or_a_label(self):
+        self.assertIn('caption or a label', self.rule(66))
+
+    def test_a_picture_slide_needs_notes(self):
+        bare = qmd(slide('Talk'), '---\n\n## {data-background-image="the-picture.jpg"}\n', slide('Next part'))
+        hard: list[str] = []
+        check_talk.split_qmd(bare, hard)
+        self.assertTrue(any('an empty slide' in line for line in hard), hard)
+        noted = qmd(slide('Talk'), '---\n\n## {data-background-image="the-picture.jpg"}\n\n::: notes\nCue: pause\n'
+                    'A breath.\n:::\n', slide('Next part'))
+        hard = []
+        check_talk.split_qmd(noted, hard)
+        self.assertEqual(hard, [])
+        self.assertIn('notes', self.rule(63))
+
+    def test_display_equations_count_anywhere_outside_code(self):
+        for body in ('We have $$a=b$$ and $$c=d$$ and $$e=f$$ here.', '- $$a=b$$\n- $$c=d$$\n- $$e=f$$',
+                     '~~~math\na=b\n~~~\n\n~~~math\nc=d\n~~~\n\n```{.math}\ne=f\n```'):
+            with self.subTest(body=body):
+                self.assertEqual(check_talk._equations(body.split('\n'), inline=False), 3)
+        latex = '```latex\n\\[ a=b \\]\n\\[ c=d \\]\n\\[ e=f \\]\n```\n\nAnd `$$x=y$$` in code.'
+        self.assertEqual(check_talk._equations(latex.split('\n')), 0)
+
+    def test_a_comment_that_opens_in_a_line_is_not_slide_text(self):
+        hard: list[str] = []
+        body = 'Text <!--\n' + '\n'.join('- a' for _ in range(10)) + '\n-->\n\nMore <!-- hidden words here --> text'
+        slides = check_talk.split_qmd(qmd(slide('Title one'), slide('Two words', body=body)), hard)
+        text = ' '.join(slides[1].body)
+        self.assertNotIn('- a', text)
+        self.assertNotIn('hidden', text)
+        self.assertIn('Text', text)
+        hard, _, _ = run({'plan.md': PLAN, 'slides.qmd': qmd(slide('Title one'), slide('Two words', body=body),
+                                                             slide('The end', body='Questions?'))}, 'slides.qmd')
+        self.assertFalse(any('items' in line for line in hard), hard)
+
+    def test_the_example_of_rule_62_lets_the_story_choose_the_side(self):
+        text = (REPO / 'EXAMPLES.md').read_text(encoding='utf-8')
+        self.assertNotIn('Put the text on the left and the picture on the right', text)
+
+    def test_the_byte_order_mark_is_read_as_htmpres_reads_it(self):
+        def split(text):
+            return [(s.title()[1] if s.title() else None, s.attrs) for s in check_talk.split_qmd(text, [])]
+        self.assertEqual(split('\ufeff## First\nBody.\n\n## Second\nMore.'), [(None, ''), ('Second', '')])
+        self.assertEqual(len(split('\ufeff---\n## First\nBody.')), 2)
+        self.assertEqual(split('## T {.x}\ufeff\n\nBody.'), [('T', '{.x}')])
+        self.assertEqual(len(split('## One\n\nA\n\n---\n\ufeff\n## Two\n\nB')), 2)
+
+    def test_windows_and_old_mac_line_ends(self):
+        for end in ('\r\n', '\r'):
+            text = end.join(['---', 'pagetitle: x', '---', '', '## One', '', 'A', '', '---', '', 'B', ''])
+            with self.subTest(end=repr(end)):
+                self.assertEqual(len(check_talk.split_qmd(text, [])), 2)
+
+    def test_the_pages_say_display_equations_and_both_boundaries(self):
+        self.assertIn('2 display equations', (REPO / 'docs' / 'why.md').read_text(encoding='utf-8'))
+        self.assertIn('only `---` starts a slide', (REPO / 'README.md').read_text(encoding='utf-8'))
+        self.assertIn('do not start the first line with `---`', (REPO / 'TALKS.md').read_text(encoding='utf-8'))
+
+    def test_only_notes_or_dot_notes_are_notes(self):
+        for opener in ('::: Notes', '::: .notes', '::: {notes}'):
+            with self.subTest(opener=opener):
+                slides = check_talk.split_qmd(qmd(f'## One\n\n{opener}\nSpoken words.\n:::\n'), [])
+                self.assertEqual(slides[0].notes, [])
+        for opener in ('::: notes', '::: {.notes}', ':::: { .notes }'):
+            with self.subTest(opener=opener):
+                slides = check_talk.split_qmd(qmd(f'## One\n\n{opener}\nSpoken words.\n:::\n'), [])
+                self.assertTrue(slides[0].notes, opener)
+
+
 class ReviewTest(unittest.TestCase):
     "One test for each finding of the adversarial review."
-
-    def test_a_heading_inside_notes_or_a_comment_is_hard(self):
-        for text in (slide('One', notes='Cue: x\nWe cut it.\n## not a slide\nMore.'),
-                     slide('One', body='<!--\n## hidden\n-->')):
-            with self.subTest(text=text):
-                hard: list[str] = []
-                check_talk.split_qmd(qmd(text), hard)
-                self.assertTrue(any('## line inside' in line for line in hard), hard)
 
     def test_a_rule_line_inside_notes_or_a_comment_is_not_checked(self):
         hard: list[str] = []

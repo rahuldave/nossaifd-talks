@@ -376,49 +376,60 @@ words "less is more".
     highlight. The section "The files of a talk" gives the syntax of the marks.
 61. **Show two or three works on a slide about other work.** Do not list every author and year from the
     paper. Show the works that matter to the point, and show them in groups (Schwabish, page 78).
-62. **Put the text on the left and the figure on the right.** English is read from left to right, so the text
-    then explains the figure
+62. **Put two things side by side when the audience must see them together.** For example, put text beside a
+    figure, a figure beside an image, two figures that the audience compares, or code or an equation beside
+    the text that explains it. Give each column one idea, and let the story decide which side comes first.
+    Text on the left can explain a figure on the right, because English is read from left to right
     ([Rosalind Reid, presentation tips, page 3](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
-63. **Use one background.** Use dark text on a light background for a deck with much text. Use a dark
-    background for a deck of graphics, and for a dark room. Do not change the background between slides
+    An equation and its text can also go one above the other, when a long equation reads better at full
+    width. The section "The files of a talk" gives the syntax of columns.
+63. **Choose one theme for the deck, and leave the background to it.** Choose a light theme for a deck with much
+    text, and a dark theme for a deck of graphics or a dark room. Keep one background through the deck
     ([Rosalind Reid, presentation tips, page 3](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
-64. **Use color to carry information.** A rainbow of colors for decoration only adds clutter
+    Do not give one slide another color. A slide can have a picture as its background, as a slide that is only
+    a picture does by rule 71. In htmpres, put `data-background-image="the-picture.jpg"` on the title line of
+    that slide, and give it notes, because a slide with nothing on it is an error.
+64. **Mark what matters, and let the theme give it color.** Color carries information, and a rainbow of colors
+    for decoration only adds clutter
     ([Rosalind Reid, presentation tips, page 2](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf),
     and [Rosalind Reid, tutorial deck, page 59](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-65. **Show few equations, and explain each one in the script.** Say what each symbol means and what the
+    In `slides.qmd`, mark the meaning with `.key`, `.aside` and the names of equation terms. Never write a color
+    or `style=`.
+65. **Show few equations, and build each one term by term.** Show at most 2 display equations on a slide, which
+    is this guide's own number. Math inside a line of text does not count. Show a simple form of the equation.
+    Name each term, and light the terms in turn while the text beside the equation explains each one
+    (Schwabish, pages 78 to 80). In the script, say what each symbol means, even a common one, and what the
     equation says
     ([Rosalind Reid, tutorial deck, page 30](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-    Show at most 2 equations on a slide, which is this guide's own number. Build an equation term by term,
-    show a simple form of it, and say what each symbol means, even a common one (Schwabish, pages 78 to 80).
-    In htmpres, name each term of the equation, and light the terms in turn while the text beside it
-    explains each one, as the section "The files of a talk" shows.
+    The section "The files of a talk" gives the syntax.
 
 ## Figures
 
-These rules come from Rosalind Reid's tutorial deck and her presentation tips.
+These rules come from Rosalind Reid's tutorial deck and her presentation tips. The detailed advice on charts
+waits for a separate guide to visualization.
 
-66. **Label every figure in plain words, and put a caption or a label next to it.** Do not paste a plot
-    as the analysis software drew it. Check each axis. Give it a label in the audience's words, written
-    across the slide and not up the side. A slide has no room for the caption that a paper gives a figure, so
-    the labels must carry its meaning. Rosalind Reid gives this advice in
-    [Rosalind Reid, presentation tips, page 3](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf).
-67. **Guide the eye to the important information.** Do not show a dense network that looks like a tangle, or
-    bars in three dimensions. Show the comparison that the story needs. Give it plain labels and units, on
-    shared axes ([Rosalind Reid, tutorial deck, pages 51 to 54](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-68. **Draw a simple cartoon of a method.** A drawing of the idea teaches faster than the real data
+66. **Make each figure readable from the back of the room while it is on screen.** Put a caption or a label
+    next to it. Do not paste a plot as the analysis software drew it. Label each axis in the audience's words, written across the slide and not up the
+    side. A slide has no room for the caption that a paper gives a figure, so the labels must carry its meaning
+    ([Rosalind Reid, presentation tips, page 3](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
+67. **Show the one comparison that the story needs.** Guide the eye to it, with plain labels and units, and with
+    shared axes. Do not show a dense network that looks like a tangle, or bars in three dimensions
+    ([Rosalind Reid, tutorial deck, pages 51 to 54](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
+    A figure in one column and its explanation in the other, by rule 62, often shows the comparison best.
+68. **Draw a simple picture of a method.** A drawing of the idea teaches faster than the real data
     ([Rosalind Reid, tutorial deck, page 31](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-69. **Redraw a figure from a paper for a general audience.** Use common names. Add a short key, and a
-    note at each finding
+    The drawing can build in steps, as a list does by rule 59.
+69. **Redraw a figure from a paper for the audience.** Use common names. Add a short key, and a note at each
+    finding
     ([Rosalind Reid, tutorial deck, pages 33 and 34](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-70. **Prepare the audience before a video plays.** A video moves on before the audience can ask about it. So
-    before it starts, show one or two frames as still pictures. Explain the colors, the time that passes
-    and the size of what is shown. Point at the part to watch. Rosalind Reid gives this
-    advice in
-    [Rosalind Reid, presentation tips, page 3](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf).
-71. **Use a picture for relief or humor between parts of the talk.** Reid says that pictures can give relief,
-    pleasure and humor
+70. **Prepare the audience before a video plays.** Show one or two frames as still pictures first. Say what the
+    colors mean, how much time passes and how large the things are, and point at the part to watch
+    ([Rosalind Reid, presentation tips, page 3](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
+71. **Use a picture to set a mood or to mark a break between parts of the talk.** A slide that is only a picture
+    can give relief, pleasure and humor
     ([Rosalind Reid, written reports, page 20](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-written-reports.pdf)).
-    Never add decoration inside a data figure.
+    Say in the notes what the picture is for. A picture slide with no notes is empty, and htmpres rejects it.
+    Keep decoration out of a data figure.
 
 ## Help the listener hold the ideas
 
@@ -502,9 +513,16 @@ The slides file carries the structure of the talk, and not its look. It says wha
 matters most and the order of the builds. The theme of htmpres gives the colors and the fonts. So use the
 classes below, and do not write colors or `style=` in the slides.
 
-- **Slides.** A line that starts with `##` starts a slide, and its text is the title. The first slide holds the
-  title of the talk. A line that is only `---` does nothing in htmpres, so use it only right before a `##`
-  line. Text before the first `##` is left out.
+- **Slides.** A line that is only `---` starts a slide, and so does a line that starts with `##`. The text after
+  `##` is the title. A `---` with only blank lines before a `##` makes one slide, so `---` can separate every
+  slide. The first slide holds the title of the talk. A `---` or a `##` inside code, a comment, the notes or
+  another `:::` block does not start a slide. The `---` lines of the front matter at the top do not either. So
+  in a file with no front matter, do not start the first line with `---`. htmpres reads everything up to the
+  next `---` as front matter, and that slide is lost. Start such a file with a blank line, or with front matter.
+- **A slide with no title.** A slide that starts with `---` and has no `##` has no title, as a slide that is
+  only a picture may. To give it settings, use a `##` with no title, as in
+  `## {#backup data-kind="appendix" data-title="Backup data"}`. The `data-title` names the slide in the list of
+  slides. A slide with no title and nothing on it is an error, as two `---` lines in a row make.
 - **Attributes.** Attributes go in braces at the end of the title line. `{#an-id}` gives the slide an id for
   links. `{data-section="..."}` names the section of the outline that the slide belongs to.
 - **The appendix.** `{data-kind="appendix"}` on the title line starts the appendix, and every later slide is in
@@ -523,7 +541,8 @@ classes below, and do not write colors or `style=` in the slides.
   color.
 - **Code.** A code block steps through its lines with `data-steps`, as in
   `` ```{.python data-steps="1-2|3|4-5"} ``. The other lines turn grey.
-- **Columns.** Put two panes side by side with `:::: {.two-col}`, and a `::: {}` block for each pane.
+- **Columns.** Put two panes side by side with `:::: {.two-col}`, and a `::: {}` block for each pane. For an
+  equation and its text one above the other, write them in order with no columns.
 - **Steps in time.** Text beside code or an equation can appear in step with it. Give each piece of text
   `{.fragment data-fragment-index="1"}`, with its own number, and give the code or the equation
   `data-step-indices` with the same numbers, one for each step. An equation steps with

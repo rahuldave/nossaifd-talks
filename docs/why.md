@@ -50,7 +50,7 @@ answer.
 | Contractions | Shankar's skill allows them. The guide for reports forbids them for readers who are not native speakers | Slides: no. A spoken script: yes |
 | The length of a spoken sentence | No source gives a number for speech | Usually 20 to 25 words at most, as in writing. An occasional longer sentence is fine when its punctuation makes it clear |
 | Speaking time | Rosalind Reid says a viewer sees a slide for less than a minute ([Rosalind Reid, tutorial deck, page 32](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)). No source gives a pace or a time to speak | The talk guide does not check pace. It plans at least a minute of the talk for each slide, by the table below |
-| Numbers that no source gives | The talk checker needs exact numbers | More than 40 words on a slide is a hard problem, and so are more than 2 equations |
+| Numbers that no source gives | The talk checker needs exact numbers | More than 40 words on a slide is a hard problem, and so are more than 2 display equations |
 | Time for the approach | Rosalind Reid calls the approach the most important part ([Rosalind Reid, tutorial deck, page 25](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)). No source gives it a share of the time | Give the approach the most care. No share of time |
 
 ## Choices between Rosalind Reid and Schwabish
