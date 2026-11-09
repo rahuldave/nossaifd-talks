@@ -401,7 +401,8 @@ words "less is more".
     (Schwabish, pages 78 to 80). In the script, say what each symbol means, even a common one, and what the
     equation says
     ([Rosalind Reid, tutorial deck, page 30](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-    The section "The files of a talk" gives the syntax.
+    After the last term, one more step can show the whole equation again, with each term in the color of the
+    text that explains it. The section "The files of a talk" gives the syntax.
 
 ## Figures
 
@@ -550,6 +551,19 @@ classes below, and do not write colors or `style=` in the slides.
   lights several terms in one step, as in `term-a|term-b|term-a,term-b`. Wrap the text pane in
   `::: {.incremental data-fragment-effect="dim"}`, so that earlier text turns grey, as rule 59 asks. Without it,
   the text that has appeared stays at full strength.
+- **A summary in matched colors.** Put `data-step-summary="match"` on the title line of a slide with steps.
+  After the last step, one more step shows the whole slide. Each part of the code or the equation then takes
+  the color of the text that explains it. Give the text a name, as `data-match="hit-rate"`.
+  - **For an equation,** use the same name in `\htmlClass{hit-rate}{h}`. The equation must be in an
+    `.equation-steps` block, or its terms get no color.
+  - **For code,** map its lines to the names on the code fence itself, as
+    `` ```{.python data-steps="1|2" data-line-matches="1:total|2-3:mean"} ``. On a `:::` block around the code,
+    htmpres stops with an error.
+
+  A name starts with a lower-case letter, followed by lower-case letters, digits or hyphens. Do not use
+  `enclosing`, which KaTeX keeps for itself. Every name in `data-line-matches` needs a `data-match` text. Two
+  names may not share a term or a line of code. The theme picks the colors. Do not set them in the slides, by
+  rule 64, so leave out `data-match-color` and `data-match-colors`.
 
 ```markdown
 ## Database reads cause the wait {data-section="The database repeats one job"}
@@ -564,19 +578,19 @@ Here's where the eight seconds go.
 :::
 ```
 
-An equation that steps beside the text that explains it:
+An equation that steps beside the text that explains it, and ends with a summary in matched colors:
 
 ```markdown
-## Hit rate sets the load {data-section="A copy for one minute"}
+## Hit rate sets the load {data-section="A copy for one minute" data-step-summary="match"}
 
 :::: {.two-col}
 ::: {.equation-steps data-equation-steps="hit-rate|searches" data-step-indices="1|2"}
 $$ \text{reads} = (1 - \htmlClass{hit-rate}{h}) \times \htmlClass{searches}{\text{searches}} $$
 :::
 ::: {.incremental data-fragment-effect="dim"}
-[h is the share of searches that find a copy]{.fragment data-fragment-index="1"}
+[h is the share of searches that find a copy]{.fragment data-fragment-index="1" data-match="hit-rate"}
 
-[Each search that misses reads the database]{.fragment data-fragment-index="2"}
+[Each search that misses reads the database]{.fragment data-fragment-index="2" data-match="searches"}
 :::
 ::::
 ```

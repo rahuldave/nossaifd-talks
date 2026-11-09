@@ -83,24 +83,25 @@ We chose memory over a new database, because memory needs no new server.
 
 ---
 
-## Hit rate sets the load {data-section="A copy for one minute"}
+## Hit rate sets the load {data-section="A copy for one minute" data-step-summary="match"}
 
 ::::: {.two-col}
 :::: {.equation-steps data-equation-steps="hit-rate|searches" data-step-indices="1|2"}
 $$ \text{reads} = (1 - \htmlClass{hit-rate}{h}) \times \htmlClass{searches}{\text{searches}} $$
 ::::
 :::: {.incremental data-fragment-effect="dim"}
-[h is the share of searches that find a copy]{.key .fragment data-fragment-index="1"}
+[h is the share of searches that find a copy]{.key .fragment data-fragment-index="1" data-match="hit-rate"}
 
-[Each search that misses reads the database]{.fragment data-fragment-index="2"}
+[Each search that misses reads the database]{.fragment data-fragment-index="2" data-match="searches"}
 ::::
 :::::
 
 ::: notes
-Cue: define the hit rate; then the searches; nine in ten
+Cue: define the hit rate; then the searches; the colors together; nine in ten
 How much does the cache save?
 The number of database reads is the share of searches that miss the cache, times the number of searches.
 We call the share that finds a copy the hit rate.
+Now both together: the hit rate in one color, and the searches in the other.
 At a hit rate of nine in ten, the database does one tenth of the work.
 :::
 
