@@ -369,10 +369,11 @@ words "less is more".
 59. **Show one point at a time.** Build a full slide point by point. The current point is at full strength,
     the earlier points are grey, and the later points are hidden. Do not show all the points in grey and
     darken them one by one, because the audience reads ahead (Schwabish, pages 73 to 77). The section "The
-    files of a talk" gives the syntax. The look of the grey belongs to the visual design of the deck.
+    files of a talk" gives the syntax. The same build works inside columns, and text beside code or an
+    equation can appear in step with it. The look of the grey belongs to the theme of the deck.
 60. **Mark the point of the slide.** Mark the words that carry the point of a slide as the key words, and a
     minor point as an aside. The theme of the deck shows the difference, for example by size or by a
-    highlight. The marks are this guide's own, and the section "The files of a talk" gives their syntax.
+    highlight. The section "The files of a talk" gives the syntax of the marks.
 61. **Show two or three works on a slide about other work.** Do not list every author and year from the
     paper. Show the works that matter to the point, and show them in groups (Schwabish, page 78).
 62. **Put the text on the left and the figure on the right.** English is read from left to right, so the text
@@ -389,6 +390,8 @@ words "less is more".
     ([Rosalind Reid, tutorial deck, page 30](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
     Show at most 2 equations on a slide, which is this guide's own number. Build an equation term by term,
     show a simple form of it, and say what each symbol means, even a common one (Schwabish, pages 78 to 80).
+    In htmpres, name each term of the equation, and light the terms in turn while the text beside it
+    explains each one, as the section "The files of a talk" shows.
 
 ## Figures
 
@@ -428,8 +431,9 @@ These rules come from Rosalind Reid's tutorial deck and her presentation tips.
     can carry more words, pictures and slides that explain
     ([Rosalind Reid, presentation tips, page 2](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
 75. **Put the detail for the likely questions in an appendix.** The appendix slides come after the last
-    slide, and a link from a slide can jump to them (Schwabish, pages 165 and 166). Mark each one as an
-    appendix slide, as the section "The files of a talk" shows.
+    slide, and a link from a slide can jump to them (Schwabish, pages 165 and 166). Mark the first appendix
+    slide, and give each appendix slide an id, so that a slide of the talk can link to it and the appendix
+    slide can link back. The section "The files of a talk" shows how.
 76. **Give a talk online a little more text.** The speaker cannot see the audience, and it is easily
     distracted. Say when you pause so that the audience can read (Schwabish, page 164).
 
@@ -501,18 +505,32 @@ classes below, and do not write colors or `style=` in the slides.
 - **Slides.** A line that starts with `##` starts a slide, and its text is the title. The first slide holds the
   title of the talk. A line that is only `---` does nothing in htmpres, so use it only right before a `##`
   line. Text before the first `##` is left out.
-- **Attributes.** Attributes go in braces at the end of the title line. `{data-section="..."}` names the section
-  of the outline that the slide belongs to. `{data-kind="appendix"}` puts the slide in the appendix.
+- **Attributes.** Attributes go in braces at the end of the title line. `{#an-id}` gives the slide an id for
+  links. `{data-section="..."}` names the section of the outline that the slide belongs to.
+- **The appendix.** `{data-kind="appendix"}` on the title line starts the appendix, and every later slide is in
+  it. The slide counter, Next and End stop before it. A link such as `[the data](#appendix-data)` jumps to the
+  slide with the id `appendix-data`, and a link back, or the browser's Back, returns.
+- **Titles.** A title can hold emphasis, such as `## Why *structure* matters`.
 - **Notes.** Put the script in a block from `::: notes` to `:::`. Its first line starts with `Cue:` and
   holds the cues.
 - **One point at a time.** Wrap a list in `::: {.incremental data-fragment-effect="dim"}` and `:::`. Each
   point then appears in turn, and the earlier points turn grey.
 - **The point of a slide.** Mark the key words as `[the words]{.key}`, and a minor point as
-  `[the words]{.aside}`. htmpres is adding these classes, so check that the theme shows them.
+  `[the words]{.aside}`. A whole block can carry the class, as `::: {.key}`. The theme shows each mark by its
+  own scale of size, weight and shade.
+- **Math.** Write `$x^2$` in a line of text, and `$$ ... $$` for an equation on its own. Name a term with
+  `\htmlClass{term-a}{x}`, so that a step can light it. Use a name that says what the term is, and not a
+  color.
 - **Code.** A code block steps through its lines with `data-steps`, as in
   `` ```{.python data-steps="1-2|3|4-5"} ``. The other lines turn grey.
-- **Columns.** Put two panes side by side with `:::: {.ds-split}` and a `::: {.ds-pane}` block for each.
-  Use them for a picture and its text, or for code and its text.
+- **Columns.** Put two panes side by side with `:::: {.two-col}`, and a `::: {}` block for each pane.
+- **Steps in time.** Text beside code or an equation can appear in step with it. Give each piece of text
+  `{.fragment data-fragment-index="1"}`, with its own number, and give the code or the equation
+  `data-step-indices` with the same numbers, one for each step. An equation steps with
+  `::: {.equation-steps data-equation-steps="term-a|term-b"}`, which lights the named terms in turn. A comma
+  lights several terms in one step, as in `term-a|term-b|term-a,term-b`. Wrap the text pane in
+  `::: {.incremental data-fragment-effect="dim"}`, so that earlier text turns grey, as rule 59 asks. Without it,
+  the text that has appeared stays at full strength.
 
 ```markdown
 ## Database reads cause the wait {data-section="The database repeats one job"}
@@ -527,8 +545,25 @@ Here's where the eight seconds go.
 :::
 ```
 
-htmpres does not yet typeset math, step text in time with code, or link to the appendix. The guide gives the
-rules for them now, and the slides use them when htmpres has them.
+An equation that steps beside the text that explains it:
+
+```markdown
+## Hit rate sets the load {data-section="A copy for one minute"}
+
+:::: {.two-col}
+::: {.equation-steps data-equation-steps="hit-rate|searches" data-step-indices="1|2"}
+$$ \text{reads} = (1 - \htmlClass{hit-rate}{h}) \times \htmlClass{searches}{\text{searches}} $$
+:::
+::: {.incremental data-fragment-effect="dim"}
+[h is the share of searches that find a copy]{.fragment data-fragment-index="1"}
+
+[Each search that misses reads the database]{.fragment data-fragment-index="2"}
+:::
+::::
+```
+
+htmpres documents this syntax in full in
+[its guide to semantic slides](https://github.com/rahuldave/htmpres/blob/main/docs/semantic-authoring.md).
 [The example talk](https://github.com/rahuldave/nossaifd-talks/tree/main/examples/cache) has a full plan and its
 slides.
 

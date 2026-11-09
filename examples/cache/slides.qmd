@@ -75,12 +75,19 @@ We chose memory over a new database, because memory needs no new server.
 
 ## Hit rate sets the load {data-section="A copy for one minute"}
 
-$$ \text{reads} = (1 - h) \times \text{searches} $$
+::::: {.two-col}
+:::: {.equation-steps data-equation-steps="hit-rate|searches" data-step-indices="1|2"}
+$$ \text{reads} = (1 - \htmlClass{hit-rate}{h}) \times \htmlClass{searches}{\text{searches}} $$
+::::
+:::: {.incremental data-fragment-effect="dim"}
+[h is the share of searches that find a copy]{.key .fragment data-fragment-index="1"}
 
-[h is the share of searches that find a copy]{.key}
+[Each search that misses reads the database]{.fragment data-fragment-index="2"}
+::::
+:::::
 
 ::: notes
-Cue: define the hit rate; nine in ten
+Cue: define the hit rate; then the searches; nine in ten
 How much does the cache save?
 The number of database reads is the share of searches that miss the cache, times the number of searches.
 We call the share that finds a copy the hit rate.
@@ -100,11 +107,13 @@ Most searches came too late and missed the copy.
 A one-minute copy hit nine searches in ten, and teachers saw no wrong counts.
 :::
 
-## Search time fell to under a second {data-section="The wait fell to under a second"}
+## Search time fell to under a second {#result data-section="The wait fell to under a second"}
 
 ![Search time each morning, before and after the cache, with a drop on the day it started](result.png)
 
 Search time at nine, for four weeks
+
+[The load on the database](#appendix-load)
 
 ::: notes
 Cue: eight seconds to one; tickets halved
@@ -129,10 +138,12 @@ Thank you for listening.
 What questions do you have?
 :::
 
-## Load on the database at peak {data-kind="appendix"}
+## Load on the database at peak {#appendix-load data-kind="appendix"}
 
 - Before: 100 percent of capacity
 - After: 33 percent of capacity
+
+[Back to the result](#result)
 
 ::: notes
 Cue: only if asked about the load
