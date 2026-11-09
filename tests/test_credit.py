@@ -123,7 +123,7 @@ class CreditTest(unittest.TestCase):
                 self.assertEqual(uncredited((REPO / name).read_text(encoding='utf-8')), [])
 
     def test_a_copy_with_the_credit_of_one_rule_removed_fails(self):
-        for name, rule in (('TALKS.md', '9. **'), ('TALKS.md', '19. **'), ('TALKS.md', '64. **')):
+        for name, rule in (('TALKS.md', '19. **'), ('TALKS.md', '33. **'), ('TALKS.md', '86. **')):
             with self.subTest(page=name, rule=rule), tempfile.TemporaryDirectory() as temp:
                 text = (REPO / name).read_text(encoding='utf-8')
                 start = text.index(rule)
@@ -170,10 +170,10 @@ class CreditTest(unittest.TestCase):
 
     def test_a_copy_with_the_credit_of_one_item_removed_fails(self):
         text = (REPO / PRESENTATIONS).read_text(encoding='utf-8')
-        for start in ('- **Each movie**', '3. Write the story'):
+        for start, stop in (('- **Each movie**', '\n- '), ('5. Draft the rest of the plan', '\n6. ')):
             with self.subTest(item=start), tempfile.TemporaryDirectory() as temp:
                 begin = text.index(start)
-                end = text.index('\n- ' if start.startswith('-') else '\n4. ', begin)
+                end = text.index(stop, begin)
                 self.assertIn('Rosalind Reid', text[begin:end])
                 copy = Path(temp) / 'SKILL.md'
                 copy.write_text(text[:begin] + text[begin:end].replace(' of Rosalind Reid', '')

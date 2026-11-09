@@ -378,7 +378,11 @@ class SkillTest(unittest.TestCase):
             self.assertEqual((SKILL / 'references' / name).read_bytes(), (REPO / name).read_bytes(), 'run just sync')
         self.assertEqual((SKILL / 'scripts/check_talk.py').read_bytes(), (REPO / 'check_talk.py').read_bytes(),
                          'run just sync')
-        self.assertEqual(sorted(p.name for p in (SKILL / 'references').iterdir()), ['EXAMPLES.md', 'TALKS.md'])
+        self.assertEqual(sorted(p.name for p in (SKILL / 'references').iterdir()), ['EXAMPLES.md', 'TALKS.md', 'WORKSHEET.md'])
+        for name in ('WORKSHEET.md',):
+            self.assertEqual((SKILL / 'references' / name).read_bytes(), (REPO / name).read_bytes(), 'run just sync')
+        self.assertEqual((SKILL / 'assets/plan.md').read_bytes(), (REPO / 'templates/plan.md').read_bytes(),
+                         'run just sync')
 
     def test_the_skill_names_itself_says_when_to_use_it_and_names_its_licence(self):
         text = (SKILL / 'SKILL.md').read_text()

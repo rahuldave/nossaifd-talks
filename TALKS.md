@@ -7,7 +7,9 @@ documents that a person reads.
 Most rules come from Rosalind Reid, the editor of American Scientist from 1992 to 2008. She taught the tutorial
 "Communicating Your Work" in the course AC297r at the Institute for Applied Computational Science at Harvard in
 March 2015. Her presentation tips for the tutorial draw mostly on a book by Scott Montgomery, The Chicago Guide
-to Communicating Science. One rule for slide titles comes from a post by Shreya Shankar.
+to Communicating Science. The plan of a talk, its opening and closing statements and its outline come from
+Jonathan Schwabish's book *Better Presentations* (Columbia University Press, 2017). One rule for slide titles
+comes from a post by Shreya Shankar.
 
 The section "Sources" names each source. This guide uses Rosalind Reid's material with her permission, and it
 credits her at each rule that comes from her. Text that comes from her work must keep its credit to Rosalind
@@ -20,8 +22,14 @@ The "tutorial deck" is her 59 slides on talks. The "presentation tips" are her f
 presentations". The "written reports" are her 23 slides on reports. A rule that no source gives is marked as
 this guide's own rule.
 
-Give this file to the model with the task. Then run `check_talk.py` on the deck, and read the deck yourself. [The worked
-examples](EXAMPLES.md) show many of the rules on real slides and sentences from the sources.
+A rule from Schwabish names the pages of his book, for example "Schwabish, pages 14 to
+23". [A summary of the book](https://github.com/rahuldave/nossaifd-talks/blob/main/docs/schwabish-summary.md)
+gives each chapter.
+
+Give this file to the model with the task. A talk has two files, a plan and the slides, and the section "The
+files of a talk" gives their form. The model fills in the plan first, and then it writes the slides. Run
+`check_talk.py` on the slides, and read the plan and the slides yourself. [The worked examples](EXAMPLES.md) show
+many of the rules on real slides and sentences from the sources.
 
 ## A rule can give way to the story
 
@@ -60,7 +68,31 @@ These rules come from Rosalind Reid's presentation tips, which follow Montgomery
 4. **Ask if the slides go online.** A posted version can carry more words than the slides on the screen
    ([Rosalind Reid, presentation tips, page 2](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
 
-If the person cannot answer a question, write your assumption at the top of the plan.
+Write the answers in the section "The occasion" of the plan. If the person cannot answer a question, write your
+assumption there, and say that it is an assumption.
+
+## Fill in the plan before any slide
+
+Jonathan Schwabish answers the ten questions of his presentation worksheet before he makes any slide
+(Schwabish, pages 14 to 23). [The worksheet](WORKSHEET.md) copies them, with his section on each question.
+This guide turns the worksheet into the plan of a talk, `plan.md`, from
+[the template](https://github.com/rahuldave/nossaifd-talks/blob/main/templates/plan.md).
+
+5. **Fill in every section of the plan before you make a slide.** The plan is the occasion, the kind of talk
+   and its shape, the audience, the headline, the action, the opening and closing statements, the outline and
+   the likely questions. Do not write a slide while a section is empty. The checker fails the slides when the
+   plan is missing or a section has no answer. The hard stop is this guide's own rule.
+6. **Answer two questions that choose the shape of the talk.** Is the talk a pure story, which holds the result
+   back to the end? Does it ask the audience to do one thing? The section "The shape of the talk" gives the
+   shape for each answer. The two questions are this guide's own. Schwabish asks only for the kind of talk,
+   such as a seminar, a sales pitch or a keynote (Schwabish, page 15).
+7. **Write the headline in one sentence.** It holds the core of the talk, short enough to remember and to
+   share. A researcher's abstract already does this job, so start from it (Schwabish, pages 16 and 17).
+8. **Write what the audience should do with the result.** Examples are to adopt a method, use the data, fund
+   the next step or change a policy. Schwabish says that the speaker need not say it aloud (Schwabish, pages
+   17 and 18). When the talk asks for an action, say it aloud, which is this guide's own rule.
+9. **List the likely questions, and write an answer to each.** Think of the weak points of the work and of
+   what this audience cares about (Schwabish, page 23).
 
 ## Fit the talk to its audience
 
@@ -68,13 +100,13 @@ A talk is for its audience, and not for the speaker. Rosalind Reid's presentatio
 speaker seems to give to himself or herself
 ([Rosalind Reid, presentation tips, page 3](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
 
-5. **Choose the motivation, the technical level and the content for each audience**
+10. **Choose the motivation, the technical level and the content for each audience**
    ([Rosalind Reid, tutorial deck, page 19](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-6. **Revise every slide for each new audience.** Reid calls this rule the cardinal rule. An audience can
+11. **Revise every slide for each new audience.** Reid calls this rule the cardinal rule. An audience can
    tell when a talk was made for somebody else. Check the small things. A symbol on an axis can be new to
    this audience
    ([Rosalind Reid, presentation tips, page 4](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
-7. **Adjust the talk more as the audience gets further from the speaker's field.** Rosalind Reid and a
+12. **Adjust the talk more as the audience gets further from the speaker's field.** Rosalind Reid and a
    colleague named McCormick give this advice
    ([Rosalind Reid, presentation tips, page 4](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
    The further away the audience is:
@@ -86,12 +118,48 @@ speaker seems to give to himself or herself
    - **The more the speaker's interest counts.** Show it, and drop the jargon. A broad academic audience
      needs about what a class of undergraduates needs. Rehearse in front of somebody from another
      department.
-8. **Ask for honest feedback** from each new kind of audience. Use it in the next talk
+13. **Ask for honest feedback** from each new kind of audience. Use it in the next talk
    ([Rosalind Reid, presentation tips, page 4](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
 
-For an agent, write the audience, the occasion and the time at the top of the plan. If you reuse a deck, go
+14. **In a mixed audience, aim the message at the group that matters most, and keep each slide clear to the
+    listener with the least background.** Schwabish says to find the core of the idea, then pick the most
+    important group and aim the core message at it (Schwabish, page 16). Rosalind Reid says to make each slide
+    work for the listener with the least background, by rule 50
+    ([Rosalind Reid, tutorial deck, page 30](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
+    Do both. For example, a talk to managers and engineers aims its message at the managers, who decide, and a
+    slide about the database still defines "index".
+
+For an agent, write the audience, the occasion and the time in the plan. If you reuse a deck, go
 through each slide for the new audience. For a general audience, list each technical term in the script, and
 define it or remove it.
+
+## The shape of the talk
+
+A paper builds like a pyramid, from the background to the result, and a talk in that order makes the
+listener wait. Schwabish's hourglass puts the conclusion at the start and again at the end, because
+attention is highest there (Schwabish, pages 11 to 14). Rosalind Reid's story holds the result for the end
+([Rosalind Reid, tutorial deck, page 16](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
+This guide uses three shapes, and the two questions of rule 6 choose one. The names "asymmetric hourglass"
+and "funnel" are this guide's own.
+
+15. **Use the asymmetric hourglass, unless the plan chooses another shape.** The opening gives the result at
+    a level that holds back its detail. The middle tells the story in Rosalind Reid's five parts. The end
+    gives the detail as the payoff, and restates the result. For example, the opening says "The bug was in
+    the networking stack", and the end says "It was in the kernel's BGP code". The listener knows from the
+    start where the talk goes, and still has a reason to stay.
+16. **Use the symmetric hourglass for a call to action.** The same message opens and closes the talk, and
+    the middle gives the evidence for it (Schwabish, pages 11 to 14). For example, "Adopt the cache", then
+    what the cache does, then "Adopt the cache". Every talk that asks the audience to do one thing has this
+    shape.
+17. **Use the funnel only for a pure story.** The opening gives the problem and a hint of the attempts, and
+    the talk builds to the result at the end, in the order of Rosalind Reid's five parts
+    ([Rosalind Reid, tutorial deck, page 16](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
+    A bug hunt that holds back the cause is a pure story.
+18. **Write the opening statement and the closing statement in full, in the plan.** The opening statement is
+    the first thing said after the thanks. It is bold and full of content, and it does not apologize or invite
+    comments. The closing statement restates the headline, and for a call to action it asks for the action. A
+    short story of one person can carry it (Schwabish, pages 18 to 20). The examples S1 and S2 give his weak
+    and strong versions.
 
 ## The story
 
@@ -100,44 +168,65 @@ Rosalind Reid teaches that a project talk is the story of how the speaker solved
 She gives the story five parts, in this order, and she draws them beside an hourglass
 ([Rosalind Reid, tutorial deck, page 16](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
 
-9. **Motivation.** Give this listener a reason to pay attention. Start from the larger problem that the work
+19. **Motivation.** Give this listener a reason to pay attention. Start from the larger problem that the work
    belongs to. Then say what the listener can take from the work, and what other people gain from it
    ([Rosalind Reid, tutorial deck, pages 17 and 18](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-10. **Description.** Lay out the problem in detail, and the parts that you split it into. Say what a listener
+20. **Description.** Lay out the problem in detail, and the parts that you split it into. Say what a listener
     must know to follow it, and why solving it is useful. Then say what other people tried. Say also which idea
     the work puts to the test ([Rosalind Reid, tutorial deck, pages 21 and 22](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-11. **Approach.** Explain the method, and give the reason for each choice in it. Rosalind Reid ranks this part
+21. **Approach.** Explain the method, and give the reason for each choice in it. Rosalind Reid ranks this part
     above the others. Make an outline first, so that the key points stand out. Then cut each detail that the
     key points do not need, and state the rest plainly
     ([Rosalind Reid, tutorial deck, pages 24 and 25](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
     Give the approach the most care. The sources give no share of the time for it.
-12. **Learning.** Tell the listener what the work taught you, and include the attempts that failed
+22. **Learning.** Tell the listener what the work taught you, and include the attempts that failed
     ([Rosalind Reid, tutorial deck, page 36](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-13. **Result.** State the conclusion, discuss it, and say what it changes for the listener or for the field
+23. **Result.** State the conclusion, discuss it, and say what it changes for the listener or for the field
     ([Rosalind Reid, tutorial deck, page 38](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
 
 Montgomery gives a shorter form of the same structure for a professional talk. Say why you did the work, how
 you did it, what you found and what it means
 ([Rosalind Reid, presentation tips, pages 1 and 2](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
 
-14. **Choose the points that the story needs.** A talk cannot settle every question, and the paper can hold
+24. **Choose the points that the story needs.** A talk cannot settle every question, and the paper can hold
     the rest ([Rosalind Reid, tutorial deck, page 25](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-15. **Trim the detail in the middle.** The middle is the core of a talk. But many talks pack so much detail
+25. **Trim the detail in the middle.** The middle is the core of a talk. But many talks pack so much detail
     into the middle that they never reach the end
     ([Rosalind Reid, presentation tips, page 2](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
-16. **Use the opening to settle the audience.** People need time to sit down. In a professional talk, thank
+26. **Use the opening to settle the audience.** People need time to sit down. In a professional talk, thank
     the hosts and the organizers at the start
     ([Rosalind Reid, presentation tips, page 2](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
-    Keep the thanks brief, which is this guide's own advice.
-17. **Keep the outline short, and repeat its terms.** Use the same terms later, when each topic comes
+    Keep the thanks brief, then give the opening statement of rule 18. Thank the audience again at the end.
+    The brevity and the second thanks are this guide's own advice.
+27. **Keep the outline short, and repeat its terms.** Use the same terms later, when each topic comes
     ([Rosalind Reid, presentation tips, page 2](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
-18. **End with the result, then the thanks.** Thank the team and the people who paid for the work, and then
-    thank the audience
+28. **Credit the team on the second slide, and end on the conclusion.** Rosalind Reid ends her deck with a
+    slide of thanks to the team and the people who paid for the work, and then thanks the audience
     ([Rosalind Reid, tutorial deck, page 39](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-    Do not end on a detail of the method.
+    Schwabish says that a last slide of "Thank You!" or "Questions?" wastes the moment, and that the speaker
+    says the thanks aloud (Schwabish, pages 141 and 142). This guide puts the collaborators and the funders on
+    the slide after the title slide. The last slide shows the conclusion, with "Questions?" under it, and it
+    stays up during the questions. The thanks are spoken. Do not end on a detail of the method.
+29. **Give the closing statement before the questions, and restate it after the last question.** The last
+    slide carries it while the questions run. Restated at the end, it sends the audience away with the
+    headline (Schwabish, page 23). The statement before the questions is this guide's own rule.
+30. **Keep to about five sections, and name each by its point.** Schwabish leaves room for five sections, and
+    names each one as a chapter title. "What the research has missed" says more than "Previous literature"
+    (Schwabish, pages 20 and 21). The sections are the start of the outline in the plan. The agent drafts the
+    outline from the paper or the notes, the person corrects it, and then the agent fills it out. The person
+    marks each table and figure that the slides must show. For a pure story, the sections build toward the
+    result. The way of working is this guide's own.
+31. **Illustrate a point with a short story.** A story of a person or an event sticks, and a statistic may
+    not. It must support the point, such as the event that started the work, or a strange problem in the data
+    (Schwabish, pages 21, 22 and 150). Such a story belongs to one section of the outline. It is not the
+    story of the whole talk.
+32. **Mark each new section, and change the pace about every 10 minutes.** Say a short transition at the
+    start of each section (Schwabish, pages 139 and 140). Attention falls after about 10 minutes, so bring a
+    story, an example or a question about that often. Schwabish takes the advice from John Medina (Schwabish,
+    page 140).
 
-For an agent, write the five parts as one or two sentences each, before you make any slide. Put the
-motivation in terms of this audience. Include at least one thing that did not work.
+For an agent, write the five parts of the story in the outline, as one or two sentences each, before you make
+any slide. Put the motivation in terms of this audience. Include at least one thing that did not work.
 
 ## The words of the script
 
@@ -146,19 +235,20 @@ The script is the words that the speaker says. Write it by
 exception is for speech only. The words on a slide also follow GUIDE.md, because the audience reads them. A
 slide has two exceptions of its own:
 
-- A slide can hold a phrase in place of a full sentence, by rule 38.
-- A title can be a question, and the titles of a deck can mix questions, phrases and sentences, by rule 40.
+- A slide can hold a phrase in place of a full sentence, by rule 55.
+- A title is best a sentence that states the point, and it can be a question or a phrase when the story
+  needs it, by rule 57.
 
-19. **Put the news first in a spoken sentence, then the context.** Rosalind Reid shows the same news report
+33. **Put the news first in a spoken sentence, then the context.** Rosalind Reid shows the same news report
     twice. A speaker gives the news first, and a writer gives the context first
     ([Rosalind Reid, written reports, pages 5 to 7](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-written-reports.pdf)).
     The rule replaces the rule of GUIDE.md "Put the known information first and the new information last".
-20. **Use contractions in the script.** Speech uses them, and a script without them sounds stiff. Shankar's
+34. **Use contractions in the script.** Speech uses them, and a script without them sounds stiff. Shankar's
     plain-writing skill lets a writer use them for the same reason
     ([Shankar, plain-writing skill, rule 5](https://github.com/docwriter-org/plain-writing-skill/blob/f0d3630983ac7a82aa580f1c1509d72df739ee12/skills/plain-writing/SKILL.md?plain=1#L51-L54)).
     Keep the full "do not" when the negation is the point, which is this guide's own rule. The rule replaces
     the rule of GUIDE.md "Do not use contractions in documentation".
-21. **Prefer one question, and answer it in the next sentence.** A listener cannot see a heading, so a question
+35. **Prefer one question, and answer it in the next sentence.** A listener cannot see a heading, so a question
     can tell the listener what comes next. Rosalind Reid uses questions this way in her titles
     ([Rosalind Reid, tutorial deck, page 13](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
     Several questions in a row can build tension before the answer, so use them when the story needs them.
@@ -169,24 +259,31 @@ slide has two exceptions of its own:
     ([Shankar, plain-writing skill, rule 23](https://github.com/docwriter-org/plain-writing-skill/blob/f0d3630983ac7a82aa580f1c1509d72df739ee12/skills/plain-writing/SKILL.md?plain=1#L240-L246)),
     and this guide follows Rosalind Reid. In the script, the rule takes the place of the rules of GUIDE.md on
     questions.
-22. **Use analogy, metaphor and humor, in the script and on the slides.** Rosalind Reid gives them as methods
+36. **Use analogy, metaphor and humor, in the script and on the slides.** Rosalind Reid gives them as methods
     of a storyteller, for written, visual and spoken work
     ([Rosalind Reid, tutorial deck, page 40](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
     Her presentation tips say that humor is always good, and that a metaphor connects the audience to the topic
     ([Rosalind Reid, presentation tips, page 2](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
     Use them when they explain the work. Shankar's plain-writing skill forbids analogy and metaphor, and this
     guide follows Rosalind Reid. The section "Methods of a storyteller" gives the detail.
-23. **Repeat a key idea, and the terms of the outline.** A listener cannot turn back a page
+37. **Repeat a key idea, and the terms of the outline.** A listener cannot turn back a page
     ([Rosalind Reid, presentation tips, page 2](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
     The rule replaces the advice of GUIDE.md to remove a phrase that repeats.
-24. **Give the one result a memorable phrase.** Rosalind Reid says that words can make flow and rhythm
+38. **Give the one result a memorable phrase.** Rosalind Reid says that words can make flow and rhythm
     ([Rosalind Reid, written reports, page 19](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-written-reports.pdf)).
     Use rhythm in the script, for the result that the audience must remember. The title of the slide can
     carry the same phrase.
-25. **Say most sentences in one breath.** Keep a spoken sentence to 20 to 25 words, usually. An occasional
+39. **Say most sentences in one breath.** Keep a spoken sentence to 20 to 25 words, usually. An occasional
     longer sentence is fine when its punctuation makes it clear. The numbers are this guide's own.
-26. **Do not use "so" as a filler.** The word means "therefore". A speaker who does not overuse it sounds more
+40. **Do not use "so" as a filler.** The word means "therefore". A speaker who does not overuse it sounds more
     sure ([Rosalind Reid, presentation tips, page 3](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
+41. **Ask "What questions do you have?"** The question "Do you have any questions?" asks for a yes or a no,
+    and it can suggest that there are none. Schwabish takes the advice from Alan Hoffler (Schwabish, page 23).
+42. **Take out the other fillers too.** Schwabish lists "um", "uh", "like" and "so", and tics such as "the
+    thing is" before every point (Schwabish, page 149). The checker notes "um", "uh" and "the thing is" in the
+    script.
+43. **Plan a pause after a key point.** A pause gives the audience time to take the point in (Schwabish, page
+    150). Mark it in the cue of the slide.
 
 Everything else in GUIDE.md applies to the script and to the slides.
 
@@ -196,23 +293,23 @@ Rosalind Reid's tutorial deck shows the methods of a storyteller, for writing, p
 ([Rosalind Reid, tutorial deck, pages 40 to 57](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
 This guide groups them in its own way. The script, the pictures and the words on a slide can all use them.
 
-27. **Compare a hard idea with one that the audience already knows.** Make the comparison in the script or
+44. **Compare a hard idea with one that the audience already knows.** Make the comparison in the script or
     on the slide, or let a picture make it. A metaphor makes the same kind of link in fewer words. Rosalind Reid gives analogy
     and metaphor as methods of a storyteller
     ([Rosalind Reid, tutorial deck, pages 41, 42 and 55](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-28. **Say where the comparison breaks down.** A listener can take a comparison further than it goes. The rule
+45. **Say where the comparison breaks down.** A listener can take a comparison further than it goes. The rule
     is this guide's own.
-29. **Choose a metaphor with care.** A metaphor changes how the audience sees the subject. Rosalind Reid's
+46. **Choose a metaphor with care.** A metaphor changes how the audience sees the subject. Rosalind Reid's
     example is a newspaper headline, and she adds no text to it
     ([Rosalind Reid, tutorial deck, page 56](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
     The advice is this guide's reading of her example.
-30. **Let one clear picture carry an argument.** A single figure can show the cases or the steps of an
+47. **Let one clear picture carry an argument.** A single figure can show the cases or the steps of an
     argument and how they connect. Keep few things in it, so that each one reads clearly
     ([Rosalind Reid, tutorial deck, pages 45 to 48](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-31. **Prefer a plain sketch when it teaches better.** A drawing that looks made by hand can feel friendlier
+48. **Prefer a plain sketch when it teaches better.** A drawing that looks made by hand can feel friendlier
     than a polished chart. It can still show the process
     ([Rosalind Reid, tutorial deck, pages 43 and 44](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-32. **Plan the humor.** A joke shows that the speaker is at ease, and it keeps the audience interested and
+49. **Plan the humor.** A joke shows that the speaker is at ease, and it keeps the audience interested and
     happy ([Rosalind Reid, tutorial deck, page 57](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
     Plan a light moment at the start
     ([Rosalind Reid, presentation tips, page 2](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf))
@@ -227,93 +324,114 @@ They are too many slides, too much on a slide, visual clutter and too many words
 too fast, because a slide does not stay in view as a chalkboard does. She ends the list of clutter with the
 words "less is more".
 
-33. **Make each slide work for the listener with the least background.** Prefer a diagram that teaches to a
+50. **Make each slide work for the listener with the least background.** Prefer a diagram that teaches to a
     picture that only decorates. Cut whatever does not help that listener, such as extra pictures, extra words
-    and chartjunk, which is decoration in a chart that carries no data. Rules 37 and 45 give the limits for
+    and chartjunk, which is decoration in a chart that carries no data. Rules 54 and 65 give the limits for
     words and equations. Rosalind Reid gives this advice for an audience of mixed backgrounds
     ([Rosalind Reid, tutorial deck, page 30](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-34. **Put one part of the story on a slide.** Do not put a large part of the story on one slide
+51. **Put one part of the story on a slide.** Do not put a large part of the story on one slide
     ([Rosalind Reid, tutorial deck, page 32](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-35. **Use the minute test.** Plan for a minute or less of screen time for each slide. A slide that takes
-    longer to grasp carries too much, so split it. Rosalind Reid gives a viewer about 20 seconds to see what
-    the slide is about. The viewer then takes it all in within 30 to 40 seconds more
+52. **Use the minute test.** A viewer should grasp a slide within a minute. A slide that takes longer to
+    grasp carries too much, so split it. Rosalind Reid gives a viewer about 20 seconds to see what the slide is
+    about. The viewer then takes it all in within 30 to 40 seconds more
     ([Rosalind Reid, presentation tips, page 4](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
-36. **Show at most 9 items on a slide, and prefer fewer.** Rosalind Reid notes that human short-term memory
+    Plan at least a minute of the talk for each slide, also for a slide that builds one point at a time.
+    A slide without a build usually takes more. So fewer slides is better, and the checker notes a deck with
+    more slides than the minutes planned, 75 percent of the time by rule 87. It leaves out the appendix. The
+    minimum is this guide's own rule.
+53. **Show at most 9 items on a slide, and prefer fewer.** Rosalind Reid notes that human short-term memory
     holds 3 to 9 items at once
     ([Rosalind Reid, tutorial deck, page 27](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
     So 9 is the limit. A slide with fewer items is easier to follow. The checker notes more than 5
     items, which is this guide's own number.
-37. **Keep a slide to about 30 words, apart from the labels of a figure.** The number is this guide's own.
+54. **Keep a slide to about 30 words, apart from the labels of a figure.** The number is this guide's own.
     Reid asks the speaker to trim the word count, and gives no number. A listener who reads a full slide
     stops listening
     ([Rosalind Reid, presentation tips, page 2](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
-38. **Do not put a paragraph on a slide.** Put the sentences in the script, and keep a phrase or one sentence
+55. **Do not put a paragraph on a slide.** Put the sentences in the script, and keep a phrase or one sentence
     on the slide. The rule is this guide's own, and it follows from the word clutter that Rosalind Reid
     describes ([Rosalind Reid, presentation tips, page 2](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
-39. **Start each title with the words that set the slide apart.** A person who scans a list often reads only
+56. **Start each title with the words that set the slide apart.** A person who scans a list often reads only
     the first two words of each item
     ([Shankar, post, principle 2](https://fsdatalab.github.io/blog/agent-text-at-scale/#2-put-the-most-important-words-first)).
     The titles of a deck are such a list. Write "Database reads cause the wait" and not "Results of the
     timing test".
-40. **Mix the forms of the titles when it helps the story.** A title can be a question, a phrase or a
-    sentence. Rosalind Reid mixes questions and phrases in her titles
+57. **Prefer a title that states the point as a sentence, and use a question or a phrase when the story
+    needs it.** Schwabish asks for an active headline. He prefers "Federal Health Care Spending Rose
+    Quickly" to "Outlook for the Federal Budget" (Schwabish, page 70). A question can set up the answer on
+    the next slide. Rosalind Reid mixes questions and phrases in her titles
     ([Rosalind Reid, tutorial deck, pages 13, 19 and 25](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
     Shankar's post asks for one structure in a list that a person skims
     ([Shankar, post, principle 3](https://fsdatalab.github.io/blog/agent-text-at-scale/#3-use-the-same-structure-and-the-same-vocabulary)).
-    A deck tells a story, so this guide follows Rosalind Reid.
-41. **Make each title say what the slide shows.** A metaphor in a title is fine when it explains the slide, by
-    rule 22. Do not write a slogan or a pun for its own sake.
-42. **Put the text on the left and the figure on the right.** English is read from left to right, so the text
+    A deck tells a story, so this guide lets the forms mix.
+58. **Make each title say what the slide shows.** A metaphor in a title is fine when it explains the slide, by
+    rule 36. Do not write a slogan or a pun for its own sake.
+59. **Show one point at a time.** Build a full slide point by point. The current point is at full strength,
+    the earlier points are grey, and the later points are hidden. Do not show all the points in grey and
+    darken them one by one, because the audience reads ahead (Schwabish, pages 73 to 77). The section "The
+    files of a talk" gives the syntax. The look of the grey belongs to the visual design of the deck.
+60. **Mark the point of the slide.** Mark the words that carry the point of a slide as the key words, and a
+    minor point as an aside. The theme of the deck shows the difference, for example by size or by a
+    highlight. The marks are this guide's own, and the section "The files of a talk" gives their syntax.
+61. **Show two or three works on a slide about other work.** Do not list every author and year from the
+    paper. Show the works that matter to the point, and show them in groups (Schwabish, page 78).
+62. **Put the text on the left and the figure on the right.** English is read from left to right, so the text
     then explains the figure
     ([Rosalind Reid, presentation tips, page 3](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
-43. **Use one background.** Use dark text on a light background for a deck with much text. Use a dark
+63. **Use one background.** Use dark text on a light background for a deck with much text. Use a dark
     background for a deck of graphics, and for a dark room. Do not change the background between slides
     ([Rosalind Reid, presentation tips, page 3](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
-44. **Use color to carry information.** A rainbow of colors for decoration only adds clutter
+64. **Use color to carry information.** A rainbow of colors for decoration only adds clutter
     ([Rosalind Reid, presentation tips, page 2](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf),
     and [Rosalind Reid, tutorial deck, page 59](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-45. **Show few equations, and explain each one in the script.** Say what each symbol means and what the
+65. **Show few equations, and explain each one in the script.** Say what each symbol means and what the
     equation says
     ([Rosalind Reid, tutorial deck, page 30](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-    Show at most 2 equations on a slide, which is this guide's own number.
+    Show at most 2 equations on a slide, which is this guide's own number. Build an equation term by term,
+    show a simple form of it, and say what each symbol means, even a common one (Schwabish, pages 78 to 80).
 
 ## Figures
 
 These rules come from Rosalind Reid's tutorial deck and her presentation tips.
 
-46. **Label every figure in plain words, and put a caption or a label next to it.** Do not paste a plot
+66. **Label every figure in plain words, and put a caption or a label next to it.** Do not paste a plot
     as the analysis software drew it. Check each axis. Give it a label in the audience's words, written
     across the slide and not up the side. A slide has no room for the caption that a paper gives a figure, so
     the labels must carry its meaning. Rosalind Reid gives this advice in
     [Rosalind Reid, presentation tips, page 3](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf).
-47. **Guide the eye to the important information.** Do not show a dense network that looks like a tangle, or
+67. **Guide the eye to the important information.** Do not show a dense network that looks like a tangle, or
     bars in three dimensions. Show the comparison that the story needs. Give it plain labels and units, on
     shared axes ([Rosalind Reid, tutorial deck, pages 51 to 54](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-48. **Draw a simple cartoon of a method.** A drawing of the idea teaches faster than the real data
+68. **Draw a simple cartoon of a method.** A drawing of the idea teaches faster than the real data
     ([Rosalind Reid, tutorial deck, page 31](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-49. **Redraw a figure from a paper for a general audience.** Use common names. Add a short key, and a
+69. **Redraw a figure from a paper for a general audience.** Use common names. Add a short key, and a
     note at each finding
     ([Rosalind Reid, tutorial deck, pages 33 and 34](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-50. **Prepare the audience before a video plays.** A video moves on before the audience can ask about it. So
+70. **Prepare the audience before a video plays.** A video moves on before the audience can ask about it. So
     before it starts, show one or two frames as still pictures. Explain the colors, the time that passes
     and the size of what is shown. Point at the part to watch. Rosalind Reid gives this
     advice in
     [Rosalind Reid, presentation tips, page 3](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf).
-51. **Use a picture for relief or humor between parts of the talk.** Reid says that pictures can give relief,
+71. **Use a picture for relief or humor between parts of the talk.** Reid says that pictures can give relief,
     pleasure and humor
     ([Rosalind Reid, written reports, page 20](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-written-reports.pdf)).
     Never add decoration inside a data figure.
 
 ## Help the listener hold the ideas
 
-52. **Show an earlier figure again** when a later slide depends on it. Listeners often ask a speaker to go back
+72. **Show an earlier figure again** when a later slide depends on it. Listeners often ask a speaker to go back
     ([Rosalind Reid, presentation tips, page 2](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
-53. **Add a teaching slide** at the start and before each new idea. Do it for each audience outside the
+73. **Add a teaching slide** at the start and before each new idea. Do it for each audience outside the
     speaker's field
     ([Rosalind Reid, presentation tips, page 4](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
-54. **Make two versions if the slides go online.** The version on the screen has few words. The online version
+74. **Make two versions if the slides go online.** The version on the screen has few words. The online version
     can carry more words, pictures and slides that explain
     ([Rosalind Reid, presentation tips, page 2](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
+75. **Put the detail for the likely questions in an appendix.** The appendix slides come after the last
+    slide, and a link from a slide can jump to them (Schwabish, pages 165 and 166). Mark each one as an
+    appendix slide, as the section "The files of a talk" shows.
+76. **Give a talk online a little more text.** The speaker cannot see the audience, and it is easily
+    distracted. Say when you pause so that the audience can read (Schwabish, page 164).
 
 ## The sketch test
 
@@ -322,71 +440,111 @@ Rosalind Reid ends her tutorial with an exercise
 Each person draws a sketch of one part of the project, and then explains the project with it in a minute.
 The sketch uses color to carry information, and common words instead of jargon and symbols.
 
-55. **Describe one sketch that explains the main idea of the talk, before you make the figures.** If you cannot
+77. **Describe one sketch that explains the main idea of the talk, before you make the figures.** If you cannot
     describe it, the story is not clear yet. The use of the exercise as a test is this guide's own rule.
 
 ## Prepare, practice and deliver
 
 These rules come from Rosalind Reid's presentation tips and from her tutorial deck. Her tips follow Montgomery.
 
-56. **Start early.** Outline the structure, think about other orders, and plan the pictures. If you move
+78. **Start early.** Outline the structure, think about other orders, and plan the pictures. If you move
     material, check that the slides still tell one story
     ([Rosalind Reid, presentation tips, page 1](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
-57. **Find a method of preparation that suits the speaker.** Reid writes out everything she wants to say, then
+79. **Find a method of preparation that suits the speaker.** Reid writes out everything she wants to say, then
     picks the main points, then makes the slides. She says that other speakers find other methods
     ([Rosalind Reid, presentation tips, page 5](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
-58. **Practice many times.** Montgomery recommends 10 times or more. Practice alone and for a test audience,
+80. **Practice many times.** Montgomery recommends 10 times or more. Practice alone and for a test audience,
     and give a big talk to a small audience first
     ([Rosalind Reid, presentation tips, page 1](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
-59. **Record a talk and watch it.** Reid found her own weak points this way
+81. **Record a talk and watch it.** Reid found her own weak points this way
     ([Rosalind Reid, presentation tips, page 5](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
-60. **Look at the listeners,** and watch for signs of attention
+82. **Look at the listeners,** and watch for signs of attention
     ([Rosalind Reid, tutorial deck, page 27](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-61. **Do not rush.** Rosalind Reid puts this advice first for the delivery of a talk
+83. **Do not rush.** Rosalind Reid puts this advice first for the delivery of a talk
     ([Rosalind Reid, tutorial deck, page 27](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-62. **Engage the audience, and adapt the talk.** If the talk is not formal, plan moments of informal exchange.
+84. **Engage the audience, and adapt the talk.** If the talk is not formal, plan moments of informal exchange.
     A question can show that the audience needs more explanation
     ([Rosalind Reid, presentation tips, page 1](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
-63. **Know the next slide.** Notes, a printed set of slides or an outline keep the talk from wandering
+85. **Know the next slide.** Notes, a printed set of slides or an outline keep the talk from wandering
     ([Rosalind Reid, presentation tips, pages 2 and 3](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
-64. **Stay calm and sure of yourself, also when something goes wrong.** Good preparation makes a speaker
+86. **Stay calm and sure of yourself, also when something goes wrong.** Good preparation makes a speaker
     sure of the material. A speaker who stays calm and polite gets through a failed projector or a hostile
     question. Rosalind Reid passes on this advice from Herbert L. Hirsch
     ([Rosalind Reid, tutorial deck, page 28](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf),
     and [Rosalind Reid, presentation tips, page 5](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
 
+87. **Plan the talk for 70 to 80 percent of its time.** The rest leaves room for the questions and for a
+    session that runs late (Schwabish, pages 148 and 150).
+
 An agent cannot practice a talk. Give the person a plan for practice. The plan has a run alone, a run for a
-test audience and a recorded run. Tell the person that
-the script is for practice, so that the talk does not become a dull recitation.
+test audience and a recorded run.
 
-## The deck format
+The script of each slide is in its notes. It can be loose, because the speaker practices with it and does not
+read it aloud. Start the notes with a line of cues, which names the points to make in a few words. The
+speaker glances at the cues during the talk. Tell the person that the script is for practice, so that the talk
+does not become a dull recitation.
 
-Write the deck as one Markdown file, which Marp, Slidev and reveal.js can show.
+## The files of a talk
+
+A talk has two files in one folder, which is named for the talk:
+
+- **`plan.md`** holds the plan, from [the template](https://github.com/rahuldave/nossaifd-talks/blob/main/templates/plan.md).
+  The person and the agent both edit it.
+- **`slides.qmd`** holds the slides and their notes, with no key `format` in its front matter, in the Markdown of
+  [htmpres](https://github.com/rahuldave/htmpres), a Quarto deck renderer in the style of Deckset. The agent
+  makes it from the plan. Either file can be edited later.
+
+The slides file carries the structure of the talk, and not its look. It says what each slide holds, what
+matters most and the order of the builds. The theme of htmpres gives the colors and the fonts. So use the
+classes below, and do not write colors or `style=` in the slides.
+
+- **Slides.** A line that starts with `##` starts a slide, and its text is the title. The first slide holds the
+  title of the talk. A line that is only `---` does nothing in htmpres, so use it only right before a `##`
+  line. Text before the first `##` is left out.
+- **Attributes.** Attributes go in braces at the end of the title line. `{data-section="..."}` names the section
+  of the outline that the slide belongs to. `{data-kind="appendix"}` puts the slide in the appendix.
+- **Notes.** Put the script in a block from `::: notes` to `:::`. Its first line starts with `Cue:` and
+  holds the cues.
+- **One point at a time.** Wrap a list in `::: {.incremental data-fragment-effect="dim"}` and `:::`. Each
+  point then appears in turn, and the earlier points turn grey.
+- **The point of a slide.** Mark the key words as `[the words]{.key}`, and a minor point as
+  `[the words]{.aside}`. htmpres is adding these classes, so check that the theme shows them.
+- **Code.** A code block steps through its lines with `data-steps`, as in
+  `` ```{.python data-steps="1-2|3|4-5"} ``. The other lines turn grey.
+- **Columns.** Put two panes side by side with `:::: {.ds-split}` and a `::: {.ds-pane}` block for each.
+  Use them for a picture and its text, or for code and its text.
+
+```markdown
+## Database reads cause the wait {data-section="The database repeats one job"}
+
+![A bar for each step of one search, with the database read the longest bar](https://example.com/timing.png)
+
+Time for each step of one search
+
+::: notes
+Cue: the long bar; the same twenty courses
+Here's where the eight seconds go.
+:::
+```
+
+htmpres does not yet typeset math, step text in time with code, or link to the appendix. The guide gives the
+rules for them now, and the slides use them when htmpres has them.
+[The example talk](https://github.com/rahuldave/nossaifd-talks/tree/main/examples/cache) has a full plan and its
+slides.
+
+### A deck from another tool
+
+The checker also reads a deck from another tool, as one Markdown file with any other extension. It does not
+read a plan for such a deck.
 
 - **Slides.** A line that is only `---` starts a new slide. Leave a blank line above it, because some tools
   read a line of text right above `---` as a heading.
 - **Front matter.** The file can start with YAML front matter. The checker reads only the key `marp`.
-- **Title.** The first heading of a slide is its title. The first slide holds the title of the talk.
-- **Script.** Put the script of a slide in an HTML comment at the end of the slide. Marp and Slidev show the
-  comment as the speaker notes. Slidev reads only the last comment of a slide, so use one comment.
-
-```markdown
-# Database reads cause the wait
-
-![Time for each step of one search](https://example.com/timing.png)
-
-Time for each step of one search
-
-<!--
-Here's where the eight seconds go.
--->
-```
-
-The checker also reads the notes of other tools:
-
-- a block from `::: notes` to `:::` (Pandoc and Quarto)
-- a block from `<aside class="notes">` to `</aside>` (reveal.js)
-- a line that starts with `Note:`, and the rest of the slide after it (reveal.js)
+- **Title.** The first heading of a slide is its title.
+- **Script.** The notes are an HTML comment for Marp and Slidev, or a block from `::: notes` to `:::` for
+  Pandoc and Quarto. For reveal.js, they are a block from `<aside class="notes">` to `</aside>`, or a line
+  that starts with `Note:` and the rest of the slide after it. Slidev reads only the last comment of a slide, so
+  use one comment.
 
 The checker reads `Note:` only in a deck with no key `marp` in its front matter. It decides for each slide. A
 slide that has an HTML comment or another block as notes keeps them, and its `Note:` line is text on the
@@ -397,21 +555,27 @@ A comment of only Marp directives, such as `<!-- _class: lead -->`, is not notes
 the script, only a line that starts with `_`, such as `_class: lead`, is a directive. Every other line is
 script, so a script line such as "title: we explain the chart" stays in the script.
 
-## Check the deck
+## Check the talk
 
 `check_talk.py` measures the rules that a program can measure:
 
 ```
-uv run --no-project python check_talk.py deck.md                # hard problems fail the check
-uv run --no-project python check_talk.py -v deck.md             # also show the soft notes
+uv run --no-project python check_talk.py plan.md                # check the plan alone
+uv run --no-project python check_talk.py slides.qmd             # check the slides and their plan
+uv run --no-project python check_talk.py -v slides.qmd          # also show the soft notes
 ```
 
-On a slide, it checks the items, the words, paragraphs, equations, captions of figures and the titles. In
-the script, it checks the length of each sentence, the filler "so" and questions. It does not check
-speaking time. The page
+Hard problems fail the check.
+
+In the plan, it checks that each section has an answer, and that the shape fits
+the two questions of rule 6. It fails the slides when the plan next to them is missing or has an empty section.
+On a slide, it checks the items, the words, paragraphs, equations, captions of figures and the titles.
+
+In the deck, it notes more slides than 75 percent of the minutes, a last slide with no
+"Questions?", and a script with no cues. In the script, it checks the length of each sentence, fillers and questions. The page
 [docs/check-talk.md](https://github.com/rahuldave/nossaifd-talks/blob/main/docs/check-talk.md) lists each check, and
-why it is hard or soft. The checker cannot judge the story, the news first, or the tone. Read the deck after it
-passes.
+why it is hard or soft. The checker cannot judge the story, the news first, or the tone. Read the plan and the
+slides after they pass.
 
 ## Sources
 
@@ -434,6 +598,11 @@ passes.
 - **Herbert L. Hirsch**, Essential Communication Strategies for Scientists, Engineers, and Technology
   Professionals, second edition, IEEE Press, 2003. Rosalind Reid's presentation tips pass on his advice on
   how a speaker carries a talk. Reid also gives tips with a colleague named McCormick.
+- **Jonathan Schwabish**, *Better Presentations*, subtitled "A Guide for Scholars, Researchers, and Wonks", Columbia
+  University Press, 2017. The plan, the shapes of the hourglass, the opening and closing statements, the
+  sections, the builds and much advice on delivery come from it. [The worksheet](WORKSHEET.md) copies his
+  presentation worksheet and its section, pages 14 to 23, under fair use. The rest of the guide states his
+  advice in its own words, with the pages.
 - **Shreya Shankar**, "Five Principles for Generating Readable AI Text in Bulk", 29 October 2026, at
   https://fsdatalab.github.io/blog/agent-text-at-scale/. The rule that a title starts with the words that set
   it apart comes from it.
@@ -441,4 +610,5 @@ passes.
   under the MIT licence. It supports the rule on contractions in the script.
 
 This guide states the advice in its own words, and it does not copy the slides or the pictures of the
-sources. It uses Rosalind Reid's material with her permission.
+sources. It uses Rosalind Reid's material with her permission. It quotes Schwabish's worksheet and a few of
+his examples under fair use.

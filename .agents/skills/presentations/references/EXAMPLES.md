@@ -9,7 +9,7 @@ nossaifd for reports, so some examples also name a rule of GUIDE.md.
 ## How to use the file
 
 Apply a rule from TALKS.md, and read the examples that name that rule. Each example ends with a line "Rule",
-so a search for "TALKS.md rule 38" finds every example of rule 38. Then write your own text. Do not copy an
+so a search for "TALKS.md rule 55" finds every example of rule 55. Then write your own text. Do not copy an
 example into your text.
 
 The examples follow the sections of TALKS.md. The examples for reports are in
@@ -32,6 +32,7 @@ example still teaches. A line "The project now" says what the project does, and 
 The letter of an example names its source:
 
 - **W, D and P** are Rosalind Reid's written reports, tutorial deck and presentation tips.
+- **S** is Jonathan Schwabish's book *Better Presentations*.
 - **E and B** come from the eval of Shreya Shankar's plain-writing skill. An eval is the set of test tasks
   with which Shreya Shankar measures her skill. E is a table from the eval, and B is a bad specimen from it.
 
@@ -39,7 +40,7 @@ The numbers are those of the examples file of nossaifd, so a number can be missi
 
 ## Sources
 
-The examples come from two works:
+The examples come from three works:
 
 - **"Communicating Your Work", a tutorial by Rosalind Reid**, which she taught in the course AC297r at the
   Institute for Applied Computational Science at Harvard in March 2015. It has three PDFs, the
@@ -47,6 +48,9 @@ The examples come from two works:
   [presentation tips](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf) (5 pages).
 - **The plain-writing skill by Shreya Shankar**, at
   [commit f0d3630](https://github.com/docwriter-org/plain-writing-skill/blob/f0d3630983ac7a82aa580f1c1509d72df739ee12/skills/plain-writing/SKILL.md) of https://github.com/docwriter-org/plain-writing-skill.
+
+- **Better Presentations, a book by Jonathan Schwabish**, subtitled "A Guide for Scholars, Researchers, and
+  Wonks", Columbia University Press, 2017. The book is not online, so each example names its pages.
 
 Scott Montgomery's book, The Chicago Guide to Communicating Science, appears only through Rosalind Reid's
 presentation tips, which draw mostly on it and quote it.
@@ -62,14 +66,18 @@ under the MIT licence.
 The plain-writing skill is under the MIT licence, copyright (c) 2026 Shreya Shankar. The examples come from
 the skill at commit f0d3630, and each one links to its lines.
 
+Schwabish's book is under copyright, and no licence covers it. The examples quote a few of his passages under
+fair use, for study and comment, with his name and the pages at each one.
+
 Some texts in the repository of the skill are not by Shreya Shankar. A model wrote the answers in the eval
 tables, and Anthropic Claude wrote the bad specimens. Each such example says who wrote it.
 
 # The examples
 
 The examples follow the sections of TALKS.md. The sources give no worked example for the
-sections "Find out about the talk first", "Help the listener hold the ideas", "The deck format" and "Check
-the deck".
+sections "Find out about the talk first", "Help the listener hold the ideas", "The files of a talk" and
+"Check the talk". [The example talk](https://github.com/rahuldave/nossaifd-talks/tree/main/examples/cache)
+shows the files of a talk, a plan and its slides, written for this guide.
 
 ## A talk is not a document
 
@@ -85,7 +93,7 @@ The spoken word is the music of knowledge: momentary, personal, expressive.
 
 **What it shows:** One metaphor can say in a few words how speech differs from print.
 
-**Rule:** The section "A talk is not a document" of TALKS.md, and TALKS.md rules 22 and 27.
+**Rule:** The section "A talk is not a document" of TALKS.md, and TALKS.md rules 36 and 44.
 
 ### P3. How speech differs from reading, quoted from Montgomery
 
@@ -98,7 +106,7 @@ But listening and reading are different. Remember: “Speaking is dynamic, trans
 **What it shows:** A talk moves on and depends on the people in the room, so a reading of a text fails as a
 talk.
 
-**Rule:** The section "A talk is not a document" of TALKS.md, and TALKS.md rule 62.
+**Rule:** The section "A talk is not a document" of TALKS.md, and TALKS.md rule 84.
 
 ## Fit the talk to its audience
 
@@ -113,7 +121,7 @@ Cardinal Rule: Look at your slides and expect to revise them every time. It is a
 **What it shows:** Before each new audience, check the fine points of every slide, for example the symbols on
 the axes.
 
-**Rule:** TALKS.md rule 6.
+**Rule:** TALKS.md rule 11.
 
 ### P12. Questions to learn from students
 
@@ -126,7 +134,71 @@ Use the feedback from undergraduate teaching to sort out what works in public ta
 
 **What it shows:** Ask two plain questions of an audience's reaction, to find what to keep in a public talk.
 
-**Rule:** TALKS.md rule 8.
+**Rule:** TALKS.md rule 13.
+
+## The shape of the talk
+
+### S1. A weak opening statement and a strong one
+
+Credit: Jonathan Schwabish, Better Presentations, pages 18 and 19.
+
+The weak opening:
+
+```text
+Thank you for having me. I’m going to talk about some of the work I’ve been doing on IT needs in the public
+sector. Before I begin, let me just say that this paper is in progress and I’m still working with the data.
+I’m also eager to hear any comments or questions you might have, so I’ll be sure to leave time at the end.
+```
+
+The strong opening:
+
+```text
+Changes in technology are enabling governments to respond to citizens in vastly different ways, improving
+efficiency and reducing costs. Those changes are having real impacts on state governments and specific
+government programs. I have collected data on 150 state agencies from 25 different states, and will show you
+how improving internal computer systems leads to a 15 percent increase in citizen satisfaction and a 10
+percent decrease in costs. My findings show that states that invest $50 million in their internal computer
+systems will see positive returns on those investments within 5 years.
+```
+
+**What it shows:** An opening statement gives the finding, the data and the size of the effect, and it does
+not apologize or invite comments.
+
+**Rule:** TALKS.md rule 18.
+
+### S2. A weak closing statement and a strong one
+
+Credit: Jonathan Schwabish, Better Presentations, pages 19 and 20.
+
+The weak closing:
+
+```text
+My results differ from the existing literature because I’ve used new, better data, and have modified the
+theoretic model in a variety of ways. The estimates show that improving internal computer systems lead to a 15
+percent increase in citizen satisfaction and a 10 percent decrease in costs, which are both pretty large
+numbers, right? Thank you for your time and I’m happy to answer any questions you might have.
+```
+
+The strong closing:
+
+```text
+Imagine that you are one of the more than 46 million people who currently receive food stamps. To apply for
+benefits, you need to take a day off of work—a big deal when you already live below the poverty line—arrange
+care for your kids, and maybe take a bus or two to the government office. What a difference it would make to
+be able to submit the application online.
+
+I’ve shown you how state agencies have improved their computer systems to make these kinds of processes easier
+and faster. While costing each state about $50 million on average, these changes have raised citizen
+satisfaction and engagement, and have improved the way they provide services to participants. Either as
+researchers working in the area of government and technology or in public-support programs like food stamps,
+or as someone responsible for the computer systems in your agency, I urge you to consider how these technology
+investments can ultimately improve the lives of people living in your states and your communities.
+```
+
+**What it shows:** A closing statement can carry the result in the story of one person, and then ask the
+audience to act.
+
+**Rule:** TALKS.md rules 16 and 18.
 
 ## The story
 
@@ -147,7 +219,7 @@ project presentations are stories
 
 **What it shows:** A project talk is the story of a problem and of its solution.
 
-**Rule:** TALKS.md rules 9 to 13, and GUIDE.md rule 20.
+**Rule:** TALKS.md rules 19 to 23, and GUIDE.md rule 20.
 
 ### D11. The hourglass as a progress marker
 
@@ -171,7 +243,7 @@ result
 
 **What it shows:** Show the structure of the talk again before each part, with the current part lit.
 
-**Rule:** TALKS.md rules 9 to 13 and rule 17, and GUIDE.md rules 20 and 21 for the shape.
+**Rule:** TALKS.md rules 19 to 23 and rule 27, and GUIDE.md rules 20 and 21 for the shape.
 
 ### D12. One line that defines each story element
 
@@ -201,7 +273,7 @@ implications
 
 **What it shows:** Each part of the story answers one plain question, which a single line can state.
 
-**Rule:** TALKS.md rules 9 to 13, and GUIDE.md rules 21, 23, 24, 25 and 26.
+**Rule:** TALKS.md rules 19 to 23, and GUIDE.md rules 21, 23, 24, 25 and 26.
 
 ### D13. A real motivation, in three slides
 
@@ -251,7 +323,7 @@ what’s in it for the world
 **What it shows:** Start from the big problem, then say what the work gives the listener, then what it gives
 the world.
 
-**Rule:** TALKS.md rule 9, and GUIDE.md rule 21.
+**Rule:** TALKS.md rule 19, and GUIDE.md rule 21.
 
 ### D14. A real description of the problem, in four slides
 
@@ -288,7 +360,7 @@ solution to be evaluated
 **What it shows:** Describe the problem in four steps. Go from how the thing works and why it is important,
 to what others did and what this work tests.
 
-**Rule:** TALKS.md rule 10, and GUIDE.md rule 23.
+**Rule:** TALKS.md rule 20, and GUIDE.md rule 23.
 
 ### P6. The structure of a professional talk
 
@@ -306,8 +378,8 @@ Structure of a professional talk:
 
 **What it shows:** A talk answers four questions in order, why, how, what was found and what it means.
 
-**Rule:** TALKS.md rules 9 to 13, with the paragraph after rule 13 on Montgomery's shorter form, and GUIDE.md
-rule 20.
+**Rule:** TALKS.md rules 19 to 23, with the paragraph after rule 23 on Montgomery's shorter form, and GUIDE.md
+rule 34.
 
 ### D7. One sentence spread over a series of slides
 
@@ -328,7 +400,7 @@ with words, symbols and pictures
 
 **What it shows:** A key sentence can build up over several slides, with an example between its parts.
 
-**Rule:** TALKS.md rules 9 to 13 for the story, and GUIDE.md rule 29 for "words, symbols and pictures".
+**Rule:** TALKS.md rules 19 to 23 for the story, and GUIDE.md rule 29 for "words, symbols and pictures".
 
 ### P7. The fine structure of a talk
 
@@ -345,7 +417,7 @@ Aristotelian formula: Have a beginning, a middle, and an end! The middle is the 
 **What it shows:** Open with thanks and a light note, give a short outline whose terms come back, and keep
 one middle.
 
-**Rule:** TALKS.md rules 15, 16, 17 and 23, and rule 32 for the humor.
+**Rule:** TALKS.md rules 25, 26, 27 and 37, and rule 49 for the humor.
 
 ### D2. The speaker slide
 
@@ -370,7 +442,7 @@ Editor, American Scientist magazine 1992–2008
 
 **What it shows:** Tell the audience the occasion, and why the speaker can speak on the subject.
 
-**Rule:** TALKS.md rule 16.
+**Rule:** TALKS.md rule 26.
 
 ### D3. The topic in one sentence
 
@@ -387,7 +459,7 @@ using words, pictures and symbols for elegant,clear communication to diverse aud
 
 **What it shows:** State the topic of the talk in one sentence, before the outline.
 
-**Rule:** TALKS.md rule 16.
+**Rule:** TALKS.md rule 26.
 
 ### D4. The agenda, and the agenda again as a marker
 
@@ -408,7 +480,7 @@ writing tips
 **What it shows:** Give a short outline. Show it again with the current part lit, so that the listener knows
 where the talk is.
 
-**Rule:** TALKS.md rule 17, rule 36 for the four items, and rule 23 for the repeat.
+**Rule:** TALKS.md rule 27, rule 53 for the four items, and rule 37 for the repeat.
 
 ### D15. Section cards
 
@@ -434,7 +506,7 @@ page 57: 6. humor
 
 **What it shows:** A card with only the name of the next part tells the listener that a new part starts.
 
-**Rule:** TALKS.md rule 17, and rule 39 for the numbered titles.
+**Rule:** TALKS.md rule 27, and rule 56 for the numbered titles.
 
 ### W17. A closing slide
 
@@ -452,7 +524,10 @@ thanks for listening
 **What it shows:** End a talk with the thanks and an invitation to ask questions, and repeat the shape that
 framed the talk.
 
-**Rule:** TALKS.md rule 18.
+**Rule:** TALKS.md rule 28.
+
+The project now puts the thanks to the team on the slide after the title slide. The last slide shows the
+conclusion with "Questions?" under it, and the thanks are spoken, by TALKS.md rule 28.
 
 ### D21. A slide of thanks
 
@@ -491,7 +566,9 @@ thank the audience for their attention
 
 **What it shows:** End with the team, the funders and the references on one slide, then thank the audience.
 
-**Rule:** TALKS.md rule 18, and GUIDE.md rule 27.
+**Rule:** TALKS.md rule 28, and GUIDE.md rule 27.
+
+The project now puts this slide second, after the title slide, by TALKS.md rule 28.
 
 ## The words of the script
 
@@ -500,9 +577,9 @@ Three examples in [the examples file of nossaifd](https://github.com/rahuldave/n
 - [W4, "One news story, spoken and written"](https://github.com/rahuldave/nossaifd/blob/main/EXAMPLES.md#w4-one-news-story-spoken-and-written), by Rosalind Reid,
   shows the spoken and the written version of one news story.
 - [S5, "Contractions"](https://github.com/rahuldave/nossaifd/blob/main/EXAMPLES.md#s5-contractions), from Shreya Shankar's plain-writing skill, shows contractions,
-  which a script uses by TALKS.md rule 20.
+  which a script uses by TALKS.md rule 34.
 - [S28, "Do not stack rhetorical questions"](https://github.com/rahuldave/nossaifd/blob/main/EXAMPLES.md#s28-do-not-stack-rhetorical-questions), from Shreya
-  Shankar's plain-writing skill, shows questions, which TALKS.md rule 21 governs in a script.
+  Shankar's plain-writing skill, shows questions, which TALKS.md rule 35 governs in a script.
 
 ### W5. The spoken version, marked up
 
@@ -522,7 +599,7 @@ A speaker often presents the “news” first, followed by the context.
 
 **What it shows:** In speech, the news comes first in the sentence, and the context comes after it.
 
-**Rule:** TALKS.md rule 19.
+**Rule:** TALKS.md rule 33.
 
 ### D9. A question as a title, over a photo
 
@@ -537,7 +614,7 @@ how can you tell your story?
 
 **What it shows:** A question as a title tells the listener what the next part of the talk answers.
 
-**Rule:** TALKS.md rule 21. Rule 40 also lets a title be a question.
+**Rule:** TALKS.md rule 35. Rule 57 also lets a title be a question.
 
 ### P8. The word "so"
 
@@ -549,7 +626,7 @@ The word “so.” This verbal crutch is a word that actually has a meaning, rou
 
 **What it shows:** Use "so" only to mean "therefore", and not as a filler.
 
-**Rule:** TALKS.md rule 26.
+**Rule:** TALKS.md rule 40.
 
 ## Methods of a storyteller
 
@@ -563,7 +640,7 @@ Scientific journals began in the 17th century as collections of talks that had b
 
 **What it shows:** A comparison with a familiar thing makes a point of history easy to remember.
 
-**Rule:** TALKS.md rule 27.
+**Rule:** TALKS.md rule 44.
 
 ### D22. An analogy in pictures, hands and their shadows
 
@@ -578,8 +655,8 @@ hand from a different angle.
 **What it shows:** A familiar thing, a shadow, can explain how many flat views of an object come from many
 directions.
 
-**Rule:** TALKS.md rule 27. The page gives no words, so the speaker says where the analogy stops, by
-TALKS.md rule 28.
+**Rule:** TALKS.md rule 44. The page gives no words, so the speaker says where the analogy stops, by
+TALKS.md rule 45.
 
 ### D8. A physicist who tells a story at the chalkboard
 
@@ -597,7 +674,7 @@ tag in the player reads "Joe Polchinski, UCS...", and the times are 00:04:51, 00
 **What it shows:** A speaker can explain a hard idea with drawings by hand, a physical object and gestures,
 step by step.
 
-**Rule:** TALKS.md rules 27, 31 and 62.
+**Rule:** TALKS.md rules 44, 48 and 84.
 
 ### D29. A metaphor in a headline
 
@@ -615,7 +692,7 @@ Violent Crime is a Beast Preying on Our City
 
 **What it shows:** A metaphor changes how the reader sees the subject, so choose it with care.
 
-**Rule:** TALKS.md rule 29.
+**Rule:** TALKS.md rule 46.
 
 **The project now:** GUIDE.md rule 33 permits a metaphor in a document too, when it explains the work.
 
@@ -647,7 +724,7 @@ cells form biofilms
 
 **What it shows:** One figure can set out all the cases of an argument in a grid, with a short label for each.
 
-**Rule:** TALKS.md rule 30.
+**Rule:** TALKS.md rule 47.
 
 ### D25. One picture that frames an argument, El Niño and the Pleiades
 
@@ -669,7 +746,7 @@ high clouds (10 kilometers)   sparse rainfall (October–March)   Pleiades appea
 **What it shows:** Two matched panels can show cause and effect. Here they show how the clouds of El Niño dim
 the stars and go with less rain.
 
-**Rule:** TALKS.md rule 30, and rule 44 for the red and blue arrows.
+**Rule:** TALKS.md rule 47, and rule 64 for the red and blue arrows.
 
 ### D23. A sketch in an informal style
 
@@ -684,7 +761,7 @@ shows a wavy blue band with a short colored segment, labelled "LEE".
 
 **What it shows:** A plain sketch can show a process in a friendly way that a polished chart does not.
 
-**Rule:** TALKS.md rule 31.
+**Rule:** TALKS.md rule 48.
 
 ### D30. A light line before the exercise
 
@@ -699,13 +776,13 @@ let’s do some work.
 
 **What it shows:** A short, informal joke can move the audience from listening to doing.
 
-**Rule:** TALKS.md rules 32 and 62.
+**Rule:** TALKS.md rules 49 and 84.
 
 ## Slides
 
 Examples [SP2, "Session titles"](https://github.com/rahuldave/nossaifd/blob/main/EXAMPLES.md#sp2-session-titles) and [SP3, "Order emails"](https://github.com/rahuldave/nossaifd/blob/main/EXAMPLES.md#sp3-order-emails),
 from Shreya Shankar's post "Five Principles for Generating Readable AI Text in Bulk", start a short item with
-the words that set it apart. They are in the examples file of nossaifd. TALKS.md rule 39 asks the same of a
+the words that set it apart. They are in the examples file of nossaifd. TALKS.md rule 56 asks the same of a
 slide title.
 
 ### P10. The minute test, as numbers
@@ -719,7 +796,7 @@ Information content: Assume that a slide will be viewed for one minute or less. 
 **What it shows:** A viewer finds the way round a slide in about 20 seconds and understands it in 30 to 40
 seconds more.
 
-**Rule:** TALKS.md rule 35.
+**Rule:** TALKS.md rule 52.
 
 ### D16. Text on the left, a photo on the right
 
@@ -751,8 +828,8 @@ design slides for a diverse audience
 **What it shows:** Put the text on the left and the picture on the right, because English is read from left
 to right.
 
-**Rule:** TALKS.md rule 42. The text of page 27 supports rules 60, 61 and 36. The text of page 30 supports
-rules 33, 37 and 45.
+**Rule:** TALKS.md rule 62. The text of page 27 supports rules 82, 83 and 53. The text of page 30 supports
+rules 50, 54 and 65.
 
 ### D5. A motto slide
 
@@ -766,7 +843,7 @@ less is more
 
 **What it shows:** A slide can hold one phrase that the speaker then explains.
 
-**Rule:** TALKS.md rule 38. The motto works as a section card, and TALKS.md rule 41 still asks a slide
+**Rule:** TALKS.md rule 55. The motto works as a section card, and TALKS.md rule 58 still asks a slide
 title to say what the slide shows.
 
 ### E5. Slide titles, with and without the skill (answers written by a model)
@@ -851,10 +928,10 @@ cannot support a decision.
 **What it shows:** With the skill, every title is in sentence case, without bold, and starts with a verb.
 Without it, the titles have title case, bold and "Not Just Scores".
 
-**Rule:** TALKS.md rules 39 and 41, and GUIDE.md rules 35 and 42. The first title of the skill, "Measure
-less, but keep the signal", is close to a slogan, which TALKS.md rule 41 warns against.
+**Rule:** TALKS.md rules 56 and 58, and GUIDE.md rules 35 and 42. The first title of the skill, "Measure
+less, but keep the signal", is close to a slogan, which TALKS.md rule 58 warns against.
 
-**The project now:** TALKS.md rule 40 lets the titles of a deck mix their forms, so one structure is not
+**The project now:** TALKS.md rule 57 lets the titles of a deck mix their forms, so one structure is not
 required.
 
 ### D1. The title slide
@@ -873,7 +950,7 @@ a tutorial
 
 **What it shows:** A title slide can hold the title, one picture and a subtitle, and nothing else.
 
-**Rule:** No rule names the title slide. The dark background fits TALKS.md rule 43 for a deck with many
+**Rule:** No rule names the title slide. The dark background fits TALKS.md rule 63 for a deck with many
 pictures.
 
 ### B8. A slide script of fragments and slogans (bad specimen, written by a model)
@@ -922,15 +999,15 @@ Full evaluation: the luxury you don't need. Smart sampling: the superpower you c
 **What it shows:** A script of fragments and slogans has these faults:
 
 - "Expensive. Prohibitive." are fragments, by GUIDE.md rule 7.
-- Headings such as "Confidence Without Compromise" are slogans in title case, by TALKS.md rule 41 and
+- Headings such as "Confidence Without Compromise" are slogans in title case, by TALKS.md rule 58 and
   GUIDE.md rule 42.
 - The arrow chain "More experiments → better models → ..." is not a sentence, by GUIDE.md rule 7.
 - Capitals for emphasis in "FOR you" and "REALLY" add force but no fact, by GUIDE.md rule 5.
 
-**Rule:** TALKS.md rule 41, and GUIDE.md rules 5, 7 and 42.
+**Rule:** TALKS.md rule 58, and GUIDE.md rules 5, 7 and 42.
 
 **The project now:** The metaphor "We're not testing every grain of sand to understand the beach" explains
-sampling, as TALKS.md rule 22 permits. Its questions are answered at once, as TALKS.md rule 21 permits.
+sampling, as TALKS.md rule 36 permits. Its questions are answered at once, as TALKS.md rule 35 permits.
 
 ## Figures
 
@@ -945,7 +1022,7 @@ Often graphics are inserted into a slide from a file created by a data-analysis 
 **What it shows:** A plot from analysis software often has missing labels, unknown symbols or sideways
 labels, and each one needs a fix.
 
-**Rule:** TALKS.md rule 46, and GUIDE.md rule 30 for a report.
+**Rule:** TALKS.md rule 66, and GUIDE.md rule 30 for a report.
 
 ### D27. Two bad data graphics
 
@@ -966,7 +1043,7 @@ data graphics should guide the eye to important information
 **What it shows:** A tangle of lines or a chart of bars in three dimensions hides the information, so do not
 use them.
 
-**Rule:** TALKS.md rule 47, rule 44, and GUIDE.md rule 30 for a report.
+**Rule:** TALKS.md rule 67, rule 64, and GUIDE.md rule 30 for a report.
 
 ### D28. A good interactive graphic, and its plots
 
@@ -992,8 +1069,8 @@ http://setosa.io/blog/2014/09/02/gridlock/
 **What it shows:** A good graphic says what to do and what to watch, and its plots compare cases on shared
 axes with plain labels.
 
-**Rule:** TALKS.md rules 46 and 47, rule 50 for the instructions before the simulation runs, and GUIDE.md
-rule 30 for a report.
+**Rule:** TALKS.md rules 66 and 67, rule 70 for the instructions before the simulation runs, and GUIDE.md
+rule 47 for a report.
 
 ### D18. Cartoons of two methods
 
@@ -1012,7 +1089,7 @@ simulated annealing        cluster analysis
 
 **What it shows:** A simple drawing of the idea of a method teaches faster than real data.
 
-**Rule:** TALKS.md rules 48 and 33.
+**Rule:** TALKS.md rules 68 and 50.
 
 ### D26. A simple drawing of a complex structure
 
@@ -1024,7 +1101,7 @@ coat. There is no text.
 
 **What it shows:** A simple drawing shows the parts of a complex structure more clearly than a photo.
 
-**Rule:** TALKS.md rule 48.
+**Rule:** TALKS.md rule 68.
 
 ### D19. A figure from a paper, as the scientists showed it
 
@@ -1057,7 +1134,7 @@ The word "Neoves" is spelled so on the slide. Example D20 shows the same finding
 **What it shows:** A figure made for specialists is too dense and uses Latin names, so a general audience
 cannot read it.
 
-**Rule:** TALKS.md rule 49, which the figure breaks. Rule 37 also applies.
+**Rule:** TALKS.md rule 69, which the figure breaks. Rule 54 also applies.
 
 ### D20. The same findings, redrawn for a general audience
 
@@ -1080,7 +1157,7 @@ The rest of the graphic is not copied here, because it is not Rosalind Reid's te
 **What it shows:** Redraw a dense figure with common names, a short key on how to read it, and one note at
 each finding.
 
-**Rule:** TALKS.md rule 49, rules 46 and 47, and GUIDE.md rule 30.
+**Rule:** TALKS.md rule 69, rules 66 and 67, and GUIDE.md rule 30.
 
 ### D6. A picture for relief and for "less is more"
 
@@ -1092,7 +1169,7 @@ Page 6 follows "less is more". Page 49 follows the section card "4. simplicity".
 **What it shows:** A slide with only a picture gives the audience relief, and a simple old print can show
 what simplicity means.
 
-**Rule:** TALKS.md rule 51.
+**Rule:** TALKS.md rule 71.
 
 ## The sketch test
 
@@ -1117,7 +1194,7 @@ Tips for drawing:
 **What it shows:** Test a talk by drawing one sketch of the work, and by explaining the work with it in one
 minute.
 
-**Rule:** TALKS.md rule 55, and rules 44 and 46 for the tips.
+**Rule:** TALKS.md rule 77, and rules 64 and 66 for the tips.
 
 ## Prepare, practice and deliver
 
@@ -1132,7 +1209,7 @@ I find that I must work through a talk by writing out all I would like to say, t
 **What it shows:** One method is to write out everything, choose the major points, make the slides, and then
 speak without a script.
 
-**Rule:** TALKS.md rule 57.
+**Rule:** TALKS.md rule 79.
 
 ### P4. A light aside in advice
 
@@ -1144,7 +1221,7 @@ Practice your talk when it is ready. Montgomery recommends doing so at least 10 
 
 **What it shows:** A short, honest aside makes hard advice feel human.
 
-**Rule:** TALKS.md rule 58, and rule 32 for the aside.
+**Rule:** TALKS.md rule 80, and rule 49 for the aside.
 
 ### P5. The pace of a talk, as numbers
 
@@ -1158,7 +1235,7 @@ A good rate of speed is about 90–120 words per minute. This means about 2,000 
 
 **Rule:** None now.
 
-**The project now:** TALKS.md rule 61 says not to rush, but it gives no rate. The project does not check speaking time or pace,
+**The project now:** TALKS.md rule 83 says not to rush, but it gives no rate. The project does not check speaking time or pace,
 as [Why the rules](https://github.com/rahuldave/nossaifd-talks/blob/main/docs/why.md) says.
 
 ### P14. Rosalind Reid's own weak points, found on a recording
@@ -1172,7 +1249,7 @@ Identify your weaknesses. Mine are nervousness and a tendency to talk far too fa
 **What it shows:** A recording shows weak points that the speaker does not notice, for example nerves and
 speed.
 
-**Rule:** TALKS.md rule 59, and rule 61.
+**Rule:** TALKS.md rule 81, and rule 83.
 
 ### D17. Two speakers who engage the audience
 
@@ -1189,7 +1266,7 @@ and "poise, confidence and dignity" is yellow.
 
 **What it shows:** Face the audience, talk with them, and use the hands and the board.
 
-**Rule:** TALKS.md rules 62 and 64.
+**Rule:** TALKS.md rules 84 and 86.
 
 ### P15. Poise, confidence and dignity, from Hirsch
 
@@ -1208,4 +1285,4 @@ Dignity: The unforeseen will happen. Audiences will be hostile, computers will m
 **What it shows:** Preparation gives confidence, confidence gives poise, and dignity carries a speaker through
 what goes wrong.
 
-**Rule:** TALKS.md rule 64.
+**Rule:** TALKS.md rule 86.

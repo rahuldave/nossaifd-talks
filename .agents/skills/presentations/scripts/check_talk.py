@@ -1,21 +1,32 @@
-"""Check a talk, written as one Markdown deck, against the measurable rules in TALKS.md.
+"""Check a talk against the measurable rules in TALKS.md: its slides, its script and its plan.
 
-    uv run --no-project python check_talk.py deck.md [deck.md ...]   report each deck; exit 1 if a hard rule is broken
-    uv run --no-project python check_talk.py -v deck.md              also show the soft notes, for a person to judge
+    uv run --no-project python check_talk.py slides.qmd [deck.md ...]   report each file; exit 1 on a hard problem
+    uv run --no-project python check_talk.py -v slides.qmd              also show the soft notes, for a person to judge
+    uv run --no-project python check_talk.py plan.md                    check only the plan of a talk
 
-The deck is one Markdown file. A line that is only --- starts a new slide. YAML front matter can open the file.
-The checker reads only its key "marp", and it does not check speaking time. The spoken script of a slide is in its
-notes: an HTML comment (Marp, Slidev), a "::: notes" block (Pandoc, Quarto) or an <aside class="notes"> block
-(reveal.js). In a deck with no "marp:" key, a line that starts with "Note:" also starts the script on a slide
-that has no other notes. The script then runs to the end of the slide.
+A talk made by this guide has two files in one folder. plan.md is the plan, from the template templates/plan.md,
+and slides.qmd holds the slides in the Markdown of htmpres. In a .qmd file, a line that starts with "## " starts a
+slide, and a line that is only --- must come right before such a line. The checker fails slides.qmd when plan.md
+is missing or has an empty section. It reads the time of the talk from the plan, and it notes a deck with more
+slides than 75 percent of the minutes, the time to plan for. A slide with {data-kind="appendix"} on its title
+line is in the appendix, which is not counted.
 
-The exit status is 0 when every deck passes, 1 when a deck has a hard problem, and 2 for a usage error, such as a
+Any other file is a Markdown deck, in which a line that is only --- starts a new slide. YAML front matter can open
+the file. The checker reads only its key "marp", and it does not check speaking time in such a deck.
+
+The spoken script of a slide is in its notes: a "::: notes" block (Pandoc, Quarto, htmpres), an HTML comment
+(Marp, Slidev) or an <aside class="notes"> block (reveal.js). In a deck with no "marp:" key, a line that starts
+with "Note:" also starts the script on a slide that has no other notes. The script then runs to the end of the
+slide. A line of the notes that starts with "Cue:" is the cue of the slide, and it is not script.
+
+The exit status is 0 when every file passes, 1 when a file has a hard problem, and 2 for a usage error, such as a
 missing file or an unknown option.
 
 The slide rules come from the tutorial "Communicating Your Work" and the presentation tips of Rosalind Reid,
-which draw on The Chicago Guide to Communicating Science by Scott L. Montgomery. The rule that a title starts with
-the words that set it apart comes from the post "Five Principles for Generating Readable AI Text in Bulk" by Shreya
-Shankar. TALKS.md names the numbers that are this guide's own. This checker shares no writing rule with check.py, the
+which draw on The Chicago Guide to Communicating Science by Scott L. Montgomery. The plan comes from the
+presentation worksheet of Jonathan Schwabish, Better Presentations. The rule that a title starts with the words
+that set it apart comes from the post "Five Principles for Generating Readable AI Text in Bulk" by Shreya Shankar.
+TALKS.md names the numbers that are this guide's own. This checker shares no writing rule with check.py, the
 checker for reports in nossaifd. It needs no other file, because it holds a copy of the Markdown reader of check.py.
 """
 
@@ -108,6 +119,15 @@ WORDS_SOFT = 30         # words on a slide: about 30 is this guide's number
 WORDS_HARD = 40         # more than 40 words fails: this guide's number
 MAX_EQUATIONS = 2       # equations on a slide: this guide's number for "few"
 SENTENCE_SOFT = 25      # words in a spoken sentence before a soft note: usually 20 to 25 at most
+SECTIONS_SOFT = 5       # sections in the outline before a soft note: Schwabish's "about five"
+PLANNED_SHARE = 75      # percent of the time of the talk to plan for: rule 87
+
+# The sections of a plan, from templates/plan.md, and the shapes of a talk
+PLAN_SECTIONS = ("The occasion", "The kind of talk", "The audience", "The headline", "The action",
+                 "The opening statement", "The closing statement", "The outline", "The questions")
+SHAPES = ("asymmetric hourglass", "symmetric hourglass", "funnel")
+PLACEHOLDERS = {"a point", "the first section, named by its point"}   # template text that is not an answer
+FILLERS = re.compile(r"\b(?:um+|uh+|the thing is)\b", re.I)          # fillers that Schwabish lists
 
 MARP_KEYS = {"theme", "style", "headingDivider", "size", "math", "title", "description", "author", "image",
              "keywords", "url", "marp", "lang", "paginate", "header", "footer", "class", "backgroundColor",
@@ -135,12 +155,18 @@ class Slide:
         self.body: list[str] = []          # the slide, with the notes blanked, so the line numbers stay the same
         self.notes: list[tuple[int, str]] = []  # (line in the file, text) of each line of the script
         self.matter: dict[str, str] = {}   # Slidev front matter of this slide, if any
+        self.attrs = ""                    # the attributes of the title line of an htmpres slide, as in {.key}
+        self.cues: list[tuple[int, str]] = []   # (line, text) of each "Cue:" line of the notes
         self._read(lines)
+        for where, text in self.notes:
+            if re.match(r"^\s*Cue:", text):
+                self.cues.append((where, text))
+        self.notes = [(where, "" if re.match(r"^\s*Cue:", text) else text) for where, text in self.notes]
         # The line to report for the whole slide: its first filled line
         self.first = next((line + i for i, text in enumerate(lines) if text.strip()), line)
 
     def _read(self, lines: list[str]) -> None:
-        mode, fence = "", ""   # mode: "", "comment", "div", "aside" or "note"
+        mode, fence, depth = "", "", 0   # mode: "", "comment", "div", "aside" or "note"; depth: divs open in notes
         comment: list[tuple[int, str]] = []
         for offset, line in enumerate(lines):
             where, stripped = self.line + offset, line.strip()
@@ -157,7 +183,11 @@ class Slide:
                     mode, comment = "", []
                 continue
             if mode in ("div", "aside"):
+                if mode == "div" and re.match(r"^:::+\s*\S", stripped):
+                    depth += 1        # a div inside the notes, such as ::: {.callout}, closes at its own :::
                 closing = re.match(r"^:::+\s*$", stripped) if mode == "div" else re.search(r"</aside>", line, re.I)
+                if closing and mode == "div" and depth:
+                    depth, closing = depth - 1, None
                 if not closing:
                     self.notes.append((where, re.sub(r"<[^>]+>", "", line)))
                 elif mode == "aside":
@@ -278,8 +308,8 @@ def front_matter(lines: list[str]) -> tuple[dict[str, str], int]:
     if end is None:
         return {}, 0
     body = lines[1:end]
-    key = re.compile(r"^([A-Za-z0-9_-]+):(?:\s+(.*))?$")
-    yaml = re.compile(r"^(?:[A-Za-z0-9_-]+:(?:\s|$)|\s+\S|-\s|#)")
+    key = re.compile(r"^([A-Za-z0-9_.-]+):(?:\s+(.*))?$")
+    yaml = re.compile(r"^(?:[A-Za-z0-9_.-]+:(?:\s|$)|\s+\S|-\s|#)")
     if not body or not key.match(body[0]) or not all(yaml.match(line) for line in body if line.strip()):
         return {}, 0
     found = {}
@@ -337,6 +367,229 @@ def split(text: str) -> tuple[dict[str, str], list[Slide]]:
         slide.number = len(kept) + 1
         kept.append(slide)
     return matter, kept
+
+
+def split_qmd(text: str, hard: list[str]) -> list[Slide]:
+    "Split an htmpres deck into slides. A line that starts with ## starts a slide, as htmpres reads it."
+    lines = text.removeprefix("\ufeff").split("\n")
+    _, skip = front_matter(lines)
+    chunks: list[tuple[int, list[str], str]] = []   # (first line, lines, attributes of the title)
+    chunk: list[str] = []
+    start, attrs, fence, before = 0, "", "", False
+    notes, comment = 0, False   # notes: the depth of divs inside a ::: notes block; comment: inside <!-- -->
+    for number, line in enumerate(lines[skip:], skip + 1):
+        stripped = line.strip()
+        mark = re.match(r"^(`{3,}|~{3,})", stripped)
+        heading = re.match(r"^##\s+(.+?)(?:\s+(\{.*\}))?\s*$", line)
+        if fence:
+            if mark and mark.group(1)[0] == fence[0] and len(mark.group(1)) >= len(fence):
+                fence = ""
+        elif mark:
+            fence = mark.group(1)
+        elif (notes or comment) and heading:
+            # htmpres splits at every ## outside code, so this heading cuts the notes or the comment in two
+            hard.append(f"line {number}: a ## line inside {'notes' if notes else 'an HTML comment'}, where htmpres "
+                        f"starts a new slide")
+            notes, comment = 0, False
+        elif comment or notes:
+            if comment:
+                comment = "-->" not in line
+            elif re.match(r"^:::+\s*$", stripped):
+                notes -= 1
+            elif re.match(r"^:::+\s*\S", stripped):
+                notes += 1
+        elif re.match(r"^:::+\s*\{?\s*\.?notes\s*\}?\s*$", stripped, re.I):
+            notes = 1
+        elif "<!--" in line and "-->" not in line.split("<!--", 1)[1]:
+            comment = True
+        else:
+            if heading:
+                if start:
+                    chunks.append((start, chunk, attrs))
+                chunk, start, attrs = ["## " + heading.group(1)], number, heading.group(2) or ""
+                continue
+            if stripped == "---":
+                after = next((l for l in lines[number:] if l.strip()), "")
+                if not re.match(r"^##\s", after):
+                    hard.append(f"line {number}: a --- line that is not right before a ## title: htmpres starts a "
+                                f"slide only at ## and shows --- as a rule")
+                continue
+            if not start and stripped:
+                before = before or number
+        if start:
+            chunk.append(line)
+    if start:
+        chunks.append((start, chunk, attrs))
+    if before:
+        hard.append(f"line {before}: text before the first ## title, which htmpres leaves out")
+    slides = []
+    for i, (at, part, attrs) in enumerate(chunks):
+        slide = Slide(i + 1, at, part)
+        slide.attrs = attrs
+        slides.append(slide)
+    return slides
+
+
+def appendix(slide: Slide) -> bool:
+    "Is the slide in the appendix, marked {data-kind=\"appendix\"} on its title line?"
+    return bool(re.search(r"data-kind\s*=\s*[\"']?appendix\b", slide.attrs))
+
+
+def _uncommented(text: str) -> str:
+    "The text with each HTML comment blanked. A comment keeps its lines, so the line numbers stay the same."
+    return re.sub(r"<!--.*?-->", lambda m: "\n" * m.group(0).count("\n"), text, flags=re.S)
+
+
+def _answer(lines: list[str]) -> list[str]:
+    "The filled lines of an answer. A bare label such as \"- Time:\" and the text of the template are empty."
+    out = []
+    for line in lines:
+        text = re.sub(r"^\s*(?:[-*+]|\d+\.)\s+", "", line).strip()
+        if not text or re.fullmatch(r"[A-Za-z][A-Za-z ]*:", text) or text.lower() in PLACEHOLDERS:
+            continue
+        out.append(text)
+    return out
+
+
+def _field(lines: list[str], label: str) -> str:
+    "The value of a field such as \"- Shape: funnel\", in lower case, or \"\"."
+    for line in lines:
+        match = re.match(rf"^\s*(?:[-*+]\s+)?{re.escape(label)}:\s*(.*)$", line, re.I)
+        if match:
+            return match.group(1).strip().rstrip(".,;").lower()
+    return ""
+
+
+def read_plan(text: str) -> dict[str, tuple[int, list[str]]]:
+    "The sections of a plan: the line of each ## heading, and the lines under it, with comments blanked."
+    sections: dict[str, tuple[int, list[str]]] = {}
+    seen: list[tuple[int, str]] = []   # (line, name) of each ## heading, in order, to find a repeated section
+    name, fence = "", ""
+    for number, line in enumerate(_uncommented(text.removeprefix("\ufeff")).split("\n"), 1):
+        mark = re.match(r"^(`{3,}|~{3,})", line.strip())
+        if fence:
+            fence = "" if mark and mark.group(1)[0] == fence[0] else fence
+        elif mark:
+            fence = mark.group(1)
+        elif line.startswith("## "):
+            name = line[3:].strip()
+            seen.append((number, name))
+            sections.setdefault(name, (number, []))
+            continue
+        if name:
+            sections[name][1].append(line)
+    sections[""] = (0, [f"{line}\t{name}" for line, name in seen])   # the headings, for check_plan
+    return sections
+
+
+def minutes_of(value: str) -> int | None:
+    """The minutes of a time such as "20 minutes", "1.5 hours", "90 seconds" or "an hour", rounded half up.
+    A bare number is minutes. A negative time gives None."""
+    found = re.search(r"(-?\d+(?:\.\d+)?|\ban?\b)\s*(hours?|hrs?|h\b|minutes?|mins?|seconds?|secs?|s\b)?",
+                      value, re.I)
+    if not found or (found.group(1).lower() in ("a", "an") and not found.group(2)):
+        return None
+    amount = 1.0 if found.group(1).lower() in ("a", "an") else float(found.group(1))
+    if amount < 0:
+        return None
+    unit = (found.group(2) or "m").lower()
+    scale = 60 if unit.startswith("h") else 1 / 60 if unit.startswith("s") else 1
+    return int(amount * scale + 0.5)
+
+
+def check_plan(text: str, hard: list[str], soft: list[str]) -> tuple[int | None, list[str]]:
+    "Check that every section of the plan has an answer. Returns the minutes of the talk and the outline sections."
+    sections = read_plan(text)
+    names: set[str] = set()
+    for entry in sections.pop("")[1]:
+        line, name = entry.split("\t", 1)
+        if name in names:
+            hard.append(f"line {line}: a second section \"{name}\": put its answer under the first one")
+        names.add(name)
+    for name in PLAN_SECTIONS:
+        if name not in sections:
+            hard.append(f"no section \"## {name}\": copy the sections of templates/plan.md")
+        elif name != "The outline" and not _answer(sections[name][1]):
+            hard.append(f"line {sections[name][0]}: the section \"{name}\" has no answer")
+    minutes = None
+    if "The occasion" in sections:
+        line, body = sections["The occasion"]
+        for label in ("Audience", "Occasion", "Time"):
+            if not _field(body, label):
+                hard.append(f"line {line}: the occasion has no {label.lower()}")
+        minutes = minutes_of(_field(body, "Time"))
+        if _field(body, "Time") and minutes is None:
+            hard.append(f"line {line}: the time of the talk has no number of minutes")
+        elif minutes is not None and minutes < 1:
+            hard.append(f"line {line}: the time of the talk is under a minute")
+    if "The kind of talk" in sections:
+        line, body = sections["The kind of talk"]
+        story, action, shape = _field(body, "Pure story"), _field(body, "Call to action"), _field(body, "Shape")
+        for label, value in (("Pure story", story), ("Call to action", action)):
+            if value not in ("yes", "no"):
+                hard.append(f"line {line}: \"{label}:\" must be yes or no")
+        if not _field(body, "Kind"):
+            hard.append(f"line {line}: the kind of talk is empty")
+        if shape not in SHAPES:
+            hard.append(f"line {line}: \"Shape:\" must be one of: " + ", ".join(SHAPES))
+        elif story in ("yes", "no") and action in ("yes", "no"):
+            expected = "symmetric hourglass" if action == "yes" else "funnel" if story == "yes" else SHAPES[0]
+            if shape != expected:
+                soft.append(f"line {line}: the shape is {shape}, and the answers ask for {expected}: "
+                            f"does the story need it?")
+    outline: list[str] = []
+    if "The outline" in sections:
+        line, body = sections["The outline"]
+        parts: list[tuple[int, str, list[str]]] = []
+        fence = ""
+        for offset, text_line in enumerate(body, 1):
+            mark = re.match(r"^(`{3,}|~{3,})", text_line.strip())
+            if mark or fence:
+                if fence and mark and mark.group(1)[0] == fence[0]:
+                    fence = ""
+                elif not fence:
+                    fence = mark.group(1)
+                if parts:
+                    parts[-1][2].append(text_line)
+                continue
+            if text_line.startswith("### "):
+                parts.append((line + offset, text_line[4:].strip(), []))
+            elif parts:
+                parts[-1][2].append(text_line)
+        if not parts:
+            hard.append(f"line {line}: the outline has no ### section")
+        for at, name, lines in parts:
+            if name.lower() in PLACEHOLDERS:
+                hard.append(f"line {at}: the outline still has the section of the template")
+            elif not _answer(lines):
+                hard.append(f"line {at}: the section \"{name}\" of the outline has no points")
+            outline.append(name)
+        if len(parts) > SECTIONS_SOFT:
+            soft.append(f"line {line}: {len(parts)} sections in the outline (about {SECTIONS_SOFT} at most)")
+    return minutes, outline
+
+
+def check_deck(slides: list[Slide], minutes: int | None, outline: list[str], soft: list[str]) -> None:
+    "Check the deck of a talk with a plan: the count of slides, the last slide, the cues and the sections."
+    main = [slide for slide in slides if not appendix(slide)]
+    for slide in slides:
+        if appendix(slide) and main and slide.number < main[-1].number:
+            soft.append(f"slide {slide.number}, line {slide.first}: an appendix slide before the last slide")
+    planned = max(1, minutes * PLANNED_SHARE // 100) if minutes else None
+    if planned is not None and len(main) > planned:
+        soft.append(f"{len(main)} slides for {minutes} minutes: plan {planned} minutes, {PLANNED_SHARE} percent of "
+                    f"the time, and at least a minute for each slide, and fewer slides is better")
+    if main and len(main) > 1 and not any(re.search(r"\bquestions\?", line, re.I) for line in main[-1].body):
+        soft.append(f"slide {main[-1].number}, line {main[-1].first}: the last slide has no \"Questions?\" under "
+                    f"its conclusion")
+    for slide in slides[1:]:
+        if "".join(text for _, text in slide.notes).strip() and not slide.cues:
+            soft.append(f"slide {slide.number}, line {slide.first}: a script with no \"Cue:\" line")
+        section = re.search(r"data-section\s*=\s*(?:\"([^\"]*)\"|'([^']*)')", slide.attrs)
+        name = section and (section.group(1) if section.group(1) is not None else section.group(2))
+        if section and outline and name not in outline:
+            soft.append(f"slide {slide.number}, line {slide.first}: the section \"{name}\" is not in "
+                        f"the outline of the plan")
 
 
 def said(text: str) -> list[str]:
@@ -453,7 +706,11 @@ def check_script(slides: list[Slide], hard: list[str], soft: list[str]) -> int:
                 hard.append(f"{at}: the filler 'So,' at the start of a sentence")
             elif re.match(r"^so\b", sentence, re.I):
                 soft.append(f"{at}: a sentence that starts with 'So': is it 'therefore'?")
-            if sentence.endswith("?"):
+            if FILLERS.search(sentence):
+                soft.append(f"{at}: a filler, {FILLERS.search(sentence).group(0)!r}: {sentence[:60]}")
+            if re.search(r"\b(?:do|does|are there) (?:you|anybody|anyone) (?:have )?any questions\b", sentence, re.I):
+                soft.append(f"{at}: ask \"What questions do you have?\" in place of {sentence[:40]!r}")
+            if sentence.endswith("?") and not re.fullmatch(r"what questions do you have\?", sentence, re.I):
                 after = spoken[index + 1][1] if index + 1 < len(spoken) else ""
                 if after.endswith("?"):
                     soft.append(f"{at}: two questions in a row: do they build tension?")
@@ -463,10 +720,32 @@ def check_script(slides: list[Slide], hard: list[str], soft: list[str]) -> int:
 
 
 def check(path: Path) -> tuple[list[str], list[str], str]:
-    "Check one deck. Returns the hard problems, the soft notes and a summary."
-    _, slides = split(path.read_text(encoding="utf-8"))
+    "Check one file. Returns the hard problems, the soft notes and a summary."
+    text = path.read_text(encoding="utf-8")
     hard: list[str] = []
     soft: list[str] = []
+    if path.name.lower() == "plan.md":
+        _, outline = check_plan(text, hard, soft)
+        return hard, soft, f"a plan with {len(outline)} section{'' if len(outline) == 1 else 's'} in its outline"
+    matter = front_matter(text.removeprefix("\ufeff").split("\n"))[0]
+    if path.suffix.lower() == ".qmd" and "format" not in matter:   # a Quarto deck with a format: is another tool
+        slides = split_qmd(text, hard)
+        plan = path.parent / "plan.md"
+        minutes, outline = None, []
+        if not plan.is_file():
+            hard.append(f"no plan.md next to {path.name}: fill in the plan from templates/plan.md before the slides")
+        else:
+            try:
+                plan_hard: list[str] = []
+                minutes, outline = check_plan(plan.read_text(encoding="utf-8"), plan_hard, soft)
+                hard.extend("plan.md, " + problem for problem in plan_hard)
+            except UnicodeDecodeError:
+                hard.append("plan.md is not UTF-8 text")
+            except OSError as error:
+                hard.append(f"plan.md cannot be read: {error.strerror}")
+        check_deck(slides, minutes, outline, soft)
+    else:
+        _, slides = split(text)
     if not slides:
         hard.append("no slides: the deck is empty")
     check_slides(slides, hard, soft)
@@ -501,6 +780,8 @@ def main() -> None:
             Path(name).read_text(encoding="utf-8")
         except UnicodeDecodeError:
             usage(f"{name} is not UTF-8 text: save the deck as UTF-8")
+        except OSError as error:
+            usage(f"{name} cannot be read: {error.strerror}")
     failed = False
     for name in names:
         hard, soft, summary = check(Path(name))

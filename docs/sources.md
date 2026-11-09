@@ -30,7 +30,7 @@ repository on GitHub. Her material, as she gave it:
 
 | File | What it holds | Pages | Used in |
 |---|---|---|---|
-| [Rosalind Reid, written reports](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-written-reports.pdf) | "Communicating Your Work: written reports". How a written sentence differs from a spoken one, the stress position, actions in verbs, revision | 23 | Rules 19, 24 and 51 of [the talk guide](../TALKS.md), and the examples W5 and W17 |
+| [Rosalind Reid, written reports](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-written-reports.pdf) | "Communicating Your Work: written reports". How a written sentence differs from a spoken one, the stress position, actions in verbs, revision | 23 | Rules 33, 38 and 71 of [the talk guide](../TALKS.md), and the examples W5 and W17 |
 | [Rosalind Reid, tutorial deck](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf) | "Communicating Your Work: a tutorial". The story of a project, the audience, slides and figures, the storyteller's tricks, an exercise | 59 | [The talk guide](../TALKS.md), and the examples that start with D |
 | [Rosalind Reid, presentation tips](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf) | "Some thoughts about presentations". Preparation, pace, practice, nine common problems, layout | 5 | [The talk guide](../TALKS.md), and the examples that start with P |
 
@@ -52,16 +52,30 @@ Rosalind Reid's presentation tips also pass on advice from Herbert L. Hirsch, *E
 Strategies for Scientists, Engineers, and Technology Professionals*, second edition, IEEE Press, 2003. The
 talk guide names Hirsch at the rule that uses it, and the example P15 quotes it.
 
+## Jonathan Schwabish
+
+Jonathan Schwabish wrote *Better Presentations*, subtitled "A Guide for Scholars, Researchers, and Wonks",
+from Columbia University Press, 2017. He is an economist and a writer on the presentation of data. The talk
+guide takes from the book the plan of a talk, the hourglass, the opening and closing statements, the
+sections of the outline, slides that build one point at a time, and advice on delivery. Each rule that
+uses the book gives its pages, as "Schwabish, pages 14 to 23".
+
+The book is under copyright, and no permission covers it. [The worksheet](../WORKSHEET.md) quotes his
+presentation worksheet and its section, pages 14 to 23, word for word, under fair use. The examples S1 and S2
+quote his openings and closings from that section. The rest of the talk guide states his advice in its own
+words. [A summary of the book](schwabish-summary.md) gives each chapter in this guide's own words, and it
+marks the parts of the book that are for the words of a talk, and those for the look of the slides.
+
 ## Shreya Shankar
 
 Two works by Shreya Shankar are sources:
 
 - [The plain-writing skill](https://github.com/docwriter-org/plain-writing-skill), under the MIT licence.
-  The talk guide cites it for contractions and for questions in the script, rules 20 and 21. The examples
+  The talk guide cites it for contractions and for questions in the script, rules 34 and 35. The examples
   E5 and B8 come from the eval of the skill.
 - ["Five Principles for Generating Readable AI Text in Bulk"](https://fsdatalab.github.io/blog/agent-text-at-scale/),
   a post from October 2026. It is about many short items that a reader skims, such as titles, list
-  items, notifications and the rows of a dashboard. The talk guide's rule 39, that a title starts with the
+  items, notifications and the rows of a dashboard. The talk guide's rule 56, that a title starts with the
   words that set it apart, comes from it.
 
 ## The guide for reports
