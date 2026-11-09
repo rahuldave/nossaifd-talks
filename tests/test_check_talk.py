@@ -116,7 +116,7 @@ class NotesTest(unittest.TestCase):
                  + '\n$$ a = b $$\n\n$$ c = d $$\n\n$$ e = f $$\n\n<!--\nWe cut the wait.\n-->\n')
         hard, _ = problems(deck(slide))
         self.assertTrue(any('10 items (at most 9)' in p for p in hard), hard)
-        self.assertTrue(any('3 equations (at most 2)' in p for p in hard), hard)
+        self.assertTrue(any('3 display equations (at most 2)' in p for p in hard), hard)
 
     def test_a_marp_directive_line_in_a_comment_is_not_script(self):
         _, slides = check_talk.split('# One\n\n<!--\n_class: lead\nSaid aloud.\n-->\n')
@@ -182,8 +182,13 @@ class SlideTest(unittest.TestCase):
     def test_few_equations(self):
         two = '# Two equations here\n\n$$ a = b $$\n\n$x = y$ and $5 and $10\n'
         self.assertEqual(problems(deck(two))[0], [])
-        hard, _ = problems(deck('# Three equations here\n\n$$\na = b\n$$\n\n$x = y$ and $p < q$\n'))
-        self.assertTrue(any('3 equations (at most 2)' in p for p in hard), hard)
+        # Only display equations count toward the limit, so inline relations do not.
+        self.assertEqual(problems(deck('# Inline math here\n\n$$\na = b\n$$\n\n$x = y$ and $p < q$\n'))[0], [])
+        hard, _ = problems(deck('# Three equations here\n\n$$\na = b\n$$\n\n$$ c = d $$\n\n```math\ne = f\n```\n'))
+        self.assertTrue(any('3 display equations (at most 2)' in p for p in hard), hard)
+        # An inline relation alone still needs a script.
+        hard, _ = problems(deck('# Inline only here\n\n$x = y$\n\n<!--\n-->\n'))
+        self.assertTrue(any('an equation with no script' in p for p in hard), hard)
 
     def test_an_equation_needs_a_script(self):
         hard, _ = problems(deck('# One equation here\n\n$$ a = b $$\n\n<!--\n-->\n'))

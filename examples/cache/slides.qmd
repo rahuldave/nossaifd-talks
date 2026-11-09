@@ -15,6 +15,8 @@ Every morning at nine, three thousand students open the course search, and the p
 We cut that wait to under a second, and the fix came from one fact about how students search.
 :::
 
+---
+
 ## Sam and Lee built the cache with me
 
 Sam Okafor and Lee Chen, platform team
@@ -23,6 +25,8 @@ Sam Okafor and Lee Chen, platform team
 Cue: credit the team
 Sam and Lee built this with me, and the registration office gave us four weeks of data.
 :::
+
+---
 
 ## Students wait eight seconds at nine {data-section="Students wait eight seconds at nine"}
 
@@ -41,6 +45,8 @@ Last term, one student tried four times and lost a seat in a full course.
 For you, the wait means more help tickets and angry email.
 :::
 
+---
+
 ## Database reads cause the wait {data-section="The database repeats one job"}
 
 ![A bar for each step of one search, with the database read the longest bar](timing.png)
@@ -55,6 +61,8 @@ The database reads the same course rows again for every student.
 Most students search for the same twenty courses.
 As a result, the database repeats one job three thousand times.
 :::
+
+---
 
 ## Cached pages skip the database {data-section="A copy for one minute"}
 
@@ -72,6 +80,8 @@ The next student who asks for the same page gets the copy, with no database read
 When a teacher changes a course, we clear the copies for that course at once.
 We chose memory over a new database, because memory needs no new server.
 :::
+
+---
 
 ## Hit rate sets the load {data-section="A copy for one minute"}
 
@@ -94,6 +104,8 @@ We call the share that finds a copy the hit rate.
 At a hit rate of nine in ten, the database does one tenth of the work.
 :::
 
+---
+
 ## Short copies failed at first {data-section="A copy for one minute"}
 
 - Ten-second copies missed most searches
@@ -106,6 +118,8 @@ We kept each copy for ten seconds, because we feared stale seat counts.
 Most searches came too late and missed the copy.
 A one-minute copy hit nine searches in ten, and teachers saw no wrong counts.
 :::
+
+---
 
 ## Search time fell to under a second {#result data-section="The wait fell to under a second"}
 
@@ -123,6 +137,8 @@ Help tickets about the search fell by half in the first week.
 And the students who used to give up now finish their search on the first try.
 :::
 
+---
+
 ## Most students ask for the same twenty courses
 
 [A one-minute copy answers them all]{.key}
@@ -137,6 +153,8 @@ Next we'll give the timetable page the same cache.
 Thank you for listening.
 What questions do you have?
 :::
+
+---
 
 ## Load on the database at peak {#appendix-load data-kind="appendix"}
 

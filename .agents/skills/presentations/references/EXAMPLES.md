@@ -825,8 +825,8 @@ design slides for a diverse audience
 • remove distractions, chartjunk
 ```
 
-**What it shows:** Put the text on the left and the picture on the right, because English is read from left
-to right.
+**What it shows:** Put the text beside the picture it explains. Here the text is on the left, so the audience
+reads it first, because English is read from left to right.
 
 **Rule:** TALKS.md rule 62. The text of page 27 supports rules 82, 83 and 53. The text of page 30 supports
 rules 50, 54 and 65.

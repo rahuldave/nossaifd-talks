@@ -51,12 +51,14 @@ no unit is minutes.
 A deck in htmpres is a `.qmd` file, as htmpres reads it:
 
 - A line that starts with `## ` starts a slide, and the rest of the line is the title. Attributes in braces at
-  the end of the line, such as `{data-kind="appendix"}`, are not part of the title. A `##` inside a code block
-  does not start a slide. A `##` inside notes or an HTML comment is a hard problem, because htmpres starts a
-  slide there and cuts the notes in two.
-- A `---` line inside notes or a comment is part of them, and it is not checked.
-- A line that is only `---` must come right before a `##` line, because htmpres does not start a slide there.
-- Text before the first `##` line is left out by htmpres, so the checker fails it.
+  the end of the line, such as `{data-kind="appendix"}`, are not part of the title.
+- A line that is only `---` also starts a slide, as in htmpres since its PR #14. A `---` with only blank lines
+  before a `##` makes one slide. Up to three spaces before `---` or `##` are allowed, and four make code.
+- A `---` or a `##` inside code, a comment, the notes or another `:::` block stays on its slide.
+- A slide that starts with `---` and has no `##` has no title. A `##` with only attributes, as in
+  `## {#backup data-kind="appendix"}`, gives such a slide its settings.
+- The checker reads the boundaries as htmpres's scanner does, line for line, from `lib/source.mjs` in htmpres.
+- Text before the first `---` or `##` is a first slide with no title.
 - The script of a slide is in a block from `::: notes` to `:::`. A line of the notes that starts with `Cue:`
   is the cue, and it is not script.
 - The first slide marked `{data-kind="appendix"}` starts the appendix, and every later slide is in it, as in
@@ -106,15 +108,13 @@ it is wrong, or the rule says "about".
 | A plan whose kind of talk is empty, whose "Pure story:" or "Call to action:" is not yes or no, or whose shape is not one of the three | 6 |
 | A plan whose outline has no `###` section, still has the section of the template, or has a section with no points | 30 |
 | A `.qmd` deck with no `plan.md` next to it, or with a plan that has a hard problem | 5 |
-| A `---` line in a `.qmd` deck that is not right before a `##` line, outside notes and comments | |
-| A `##` line inside the notes or an HTML comment of a `.qmd` deck | |
+| An empty slide in a `.qmd` deck, with no title and nothing on it, as two `---` lines in a row make | |
 | A section of the plan that appears twice | 5 |
-| Text before the first `##` line of a `.qmd` deck | |
 | A slide with more than 9 items. Each item of a list counts, nested or not | 53 |
 | A slide with more than 40 words. Tables count, and equations and figures do not | 54 |
 | A paragraph of two or more sentences on a slide. A full stop in an abbreviation, as in "Fig. 2." or "vs.", does not end a sentence | 55 |
 | Two titles that start with the same two words, but are not the same title | 56 |
-| More than 2 equations on a slide | 65 |
+| More than 2 display equations on a slide. Inline math does not count | 65 |
 | An equation on a slide with no script | 65 |
 | A figure with no line of text right above it or right below it. A Marp background, such as `![bg](photo.jpg)`, is not a figure | 66 |
 | A sentence of the script that starts with "So," and a comma | 40 |

@@ -5,8 +5,9 @@
     uv run --no-project python check_talk.py plan.md                    check only the plan of a talk
 
 A talk made by this guide has two files in one folder. plan.md is the plan, from the template templates/plan.md,
-and slides.qmd holds the slides in the Markdown of htmpres. In a .qmd file, a line that starts with "## " starts a
-slide, and a line that is only --- must come right before such a line. The checker fails slides.qmd when plan.md
+and slides.qmd holds the slides in the Markdown of htmpres. In a .qmd file, a line that is only --- starts a slide,
+and so does a line that starts with "## ", as in htmpres. A --- with only blank lines before a ## makes one slide.
+The checker fails slides.qmd when plan.md
 is missing or has an empty section. It reads the time of the talk from the plan, and it notes a deck with more
 slides than 75 percent of the minutes, the time to plan for. As in htmpres, the first slide with
 {data-kind="appendix"} on its title line starts the appendix, and every later slide is in it. The appendix is
@@ -119,7 +120,7 @@ ITEMS_SOFT = 5          # items on a slide before a soft note: this guide's numb
 ITEMS_HARD = 9          # items on a slide: Rosalind Reid's limit of short-term memory, 3 to 9 items
 WORDS_SOFT = 30         # words on a slide: about 30 is this guide's number
 WORDS_HARD = 40         # more than 40 words fails: this guide's number
-MAX_EQUATIONS = 2       # equations on a slide: this guide's number for "few"
+MAX_EQUATIONS = 2       # display equations on a slide, not inline math: this guide's number for "few"
 SENTENCE_SOFT = 25      # words in a spoken sentence before a soft note: usually 20 to 25 at most
 SECTIONS_SOFT = 5       # sections in the outline before a soft note: Schwabish's "about five"
 PLANNED_SHARE = 75      # percent of the time of the talk to plan for: rule 87
@@ -159,6 +160,7 @@ class Slide:
         self.matter: dict[str, str] = {}   # Slidev front matter of this slide, if any
         self.attrs = ""                    # the attributes of the title line of an htmpres slide, as in {.key}
         self.cues: list[tuple[int, str]] = []   # (line, text) of each "Cue:" line of the notes
+        self.untitled = False              # an htmpres slide with no title, started by --- or by an empty ##
         self._read(lines)
         for where, text in self.notes:
             if re.match(r"^\s*Cue:", text):
@@ -217,7 +219,18 @@ class Slide:
                     comment, mode = [(where, rest)], "comment"
                 self.body.append("")
                 continue
-            if re.match(r"^:::+\s*\{?\s*\.?notes\s*\}?\s*$", stripped, re.I):
+            masked = re.sub(r"(`+).*?\1", lambda m: "x" * len(m.group(0)), line)   # comment markers in inline code
+            if "<!--" in masked:
+                at = masked.index("<!--")
+                rest = masked[at + 4:]
+                if "-->" not in rest:   # a comment that opens after text on the line, and runs on
+                    comment, mode = [(where, line[at + 4:])], "comment"
+                    self.body.append(line[:at])
+                    continue
+                line = line[:at] + re.sub(r"<!--.*?-->", "", line[at:])   # a comment inside the line is not text
+                stripped = line.strip()
+            # The notes, as htmpres and Quarto read them: ::: notes or ::: {.notes}, exactly
+            if re.match(r"^:::+[ \t]*(?:notes|\{[ \t]*\.notes[ \t]*\})[ \t]*$", stripped):
                 mode = "div"
                 self.body.append("")
                 continue
@@ -251,6 +264,8 @@ class Slide:
 
     def title(self) -> tuple[int, str] | None:
         "The first heading of the slide, with its line in the file."
+        if self.untitled:
+            return None
         for line, text, kind in blocks(_without_math(self.body)):
             if kind == "head":
                 return self.line + line - 1, plain(text)
@@ -278,27 +293,32 @@ def _without_math(lines: list[str]) -> str:
     return "\n".join(out)
 
 
-def _equations(lines: list[str]) -> int:
-    "Count display equations, math code blocks, and inline math that states a relation."
-    count, inside = 0, ""
+def _equations(lines: list[str], inline: bool = True) -> int:
+    """Count display equations and math code blocks, and with inline, also inline math that states a relation.
+
+    A display equation is $$...$$ or \\[...\\], anywhere outside code, also in the middle of a line or in a list
+    item. A math code block, ```math or ~~~math, is one equation, and other code is left out. The limit of rule 65
+    counts only these. An inline relation, as $x = y$, still needs a script."""
+    count, text, fence = 0, [], ""
     for line in lines:
-        stripped = line.strip()
-        if inside:
-            if (inside == "$$" and stripped.endswith("$$")) or (inside == "\\[" and stripped.endswith("\\]")) \
-                    or (inside == "```" and stripped.startswith("```")):
-                inside = ""
+        mark = re.match(r"^\s*(`{3,}|~{3,})(.*)$", line)
+        if fence:
+            if mark and mark.group(1)[0] == fence[0] and len(mark.group(1)) >= len(fence) and not mark.group(2).strip():
+                fence = ""
+            text.append("")
             continue
-        if stripped.startswith("```math"):
-            count, inside = count + 1, "```"
+        if mark:
+            fence = mark.group(1)
+            count += mark.group(2).strip().strip("{}").lstrip(".").split(" ")[0] == "math"
+            text.append("")
             continue
-        if stripped.startswith("$$") or stripped.startswith("\\["):
-            count += 1
-            opener = stripped[:2]
-            closer = "$$" if opener == "$$" else "\\]"
-            if not (len(stripped) > 2 and stripped.endswith(closer)):
-                inside = opener
-            continue
-        count += sum(1 for m in INLINE_MATH.finditer(line) if RELATION.search(m.group(1)))
+        text.append(re.sub(r"`[^`]*`", "", line))   # inline code is not math
+    body = "\n".join(text)
+    displays = re.findall(r"\$\$.+?\$\$|\\\[.+?\\\]", body, re.S)
+    count += len(displays)
+    if inline:
+        rest = re.sub(r"\$\$.+?\$\$|\\\[.+?\\\]", " ", body, flags=re.S)
+        count += sum(1 for m in INLINE_MATH.finditer(rest) if RELATION.search(m.group(1)))
     return count
 
 
@@ -371,63 +391,146 @@ def split(text: str) -> tuple[dict[str, str], list[Slide]]:
     return matter, kept
 
 
-def split_qmd(text: str, hard: list[str]) -> list[Slide]:
-    "Split an htmpres deck into slides. A line that starts with ## starts a slide, as htmpres reads it."
-    lines = text.removeprefix("\ufeff").split("\n")
-    _, skip = front_matter(lines)
-    chunks: list[tuple[int, list[str], str]] = []   # (first line, lines, attributes of the title)
-    chunk: list[str] = []
-    start, attrs, fence, before = 0, "", "", False
-    notes, comment = 0, False   # notes: the depth of divs inside a ::: notes block; comment: inside <!-- -->
-    for number, line in enumerate(lines[skip:], skip + 1):
-        stripped = line.strip()
-        mark = re.match(r"^(`{3,}|~{3,})", stripped)
-        heading = re.match(r"^##\s+(.+?)(?:\s+(\{.*\}))?\s*$", line)
+def _strip_comments(text: str, open_: bool = False) -> tuple[str, bool]:
+    "The text outside HTML comments, and whether a comment is still open at the end of the line."
+    cursor, visible = 0, ""
+    while cursor < len(text):
+        marker = "-->" if open_ else "<!--"
+        index = text.find(marker, cursor)
+        if index < 0:
+            if not open_:
+                visible += text[cursor:]
+            break
+        if not open_:
+            visible += text[cursor:index]
+        cursor, open_ = index + len(marker), not open_
+    return visible, open_
+
+
+def _jtrim(text: str) -> str:
+    "Trim as JavaScript's trim() does, which also removes the byte order mark U+FEFF, as htmpres reads a line."
+    return re.sub(r"^[\s\ufeff]+|[\s\ufeff]+$", "", text)
+
+
+def scan_qmd(lines: list[str]) -> list[dict]:
+    """The kind of each line, as htmpres's scanner reads it (_extensions/htmpres/lib/source.mjs, scanSource).
+
+    A kind is "yaml", "comment", "code" or "body". Each line also records the depth of the ::: divs around it, and
+    whether it is inside an HTML comment. Only a body line at depth 0 outside a comment can start a slide."""
+    out = [{"text": line, "kind": "body", "depth": 0, "in_comment": False} for line in lines]
+    if lines and re.sub(r"[\s\ufeff]+$", "", lines[0].removeprefix("\ufeff")) == "---":
+        end = next((i for i in range(1, len(lines)) if re.match(r"^(?:---|\.\.\.)[ \t]*$", lines[i])), -1)
+        for i in range(end + 1 if end >= 0 else 0):
+            out[i]["kind"] = "yaml"
+    fence, raw, comment, depth = None, "", False, 0
+    for line in out:
+        line["depth"] = depth
+        text = line["text"]
+        if line["kind"] == "yaml":
+            continue
+        if comment:
+            line["in_comment"] = True
+            visible, comment = _strip_comments(text, True)
+            line["kind"] = "body" if _jtrim(visible) else "comment"
+            continue
+        if raw:
+            line["kind"] = "code"
+            if re.search(rf"</{raw}\s*>", text, re.I):
+                raw = ""
+            continue
         if fence:
-            if mark and mark.group(1)[0] == fence[0] and len(mark.group(1)) >= len(fence):
-                fence = ""
-        elif mark:
-            fence = mark.group(1)
-        elif (notes or comment) and heading:
-            # htmpres splits at every ## outside code, so this heading cuts the notes or the comment in two
-            hard.append(f"line {number}: a ## line inside {'notes' if notes else 'an HTML comment'}, where htmpres "
-                        f"starts a new slide")
-            notes, comment = 0, False
-        elif comment or notes:
-            if comment:
-                comment = "-->" not in line
-            elif re.match(r"^:::+\s*$", stripped):
-                notes -= 1
-            elif re.match(r"^:::+\s*\S", stripped):
-                notes += 1
-        elif re.match(r"^:::+\s*\{?\s*\.?notes\s*\}?\s*$", stripped, re.I):
-            notes = 1
-        elif "<!--" in line and "-->" not in line.split("<!--", 1)[1]:
-            comment = True
+            line["kind"] = "code"
+            closing = re.match(r"^ {0,3}(`+|~+)[ \t]*$", text)
+            if closing and closing.group(1)[0] == fence[0] and len(closing.group(1)) >= len(fence):
+                fence = None
+            continue
+        opening = re.match(r"^ {0,3}(`{3,}|~{3,})(.*)$", text)
+        if opening and (opening.group(1)[0] != "`" or "`" not in opening.group(2)):
+            fence, line["kind"] = opening.group(1), "code"
+            continue
+        raw_open = re.match(r"^ {0,3}<(pre|script|style|textarea)\b", text, re.I)
+        if raw_open:
+            line["kind"] = "code"
+            if not re.search(rf"</{raw_open.group(1)}\s*>", text, re.I):
+                raw = raw_open.group(1)
+        elif re.match(r"^(?: {4}|\t)", text):
+            line["kind"] = "code"
         else:
+            masked = re.sub(r"(`+).*?\1", lambda m: "x" * len(m.group(0)), text)   # a comment marker in inline code
+            visible, comment = _strip_comments(masked)
+            if "<!--" in masked and not _jtrim(visible):
+                line["kind"] = "comment"
+                continue
+            div = re.match(r"^ {0,3}(:{3,})[ \t]*(.*?)[\s\ufeff]*$", text)
+            if div and div.group(2):
+                depth += 1
+            elif div and depth:
+                depth -= 1
+    return out
+
+
+def split_qmd(text: str, hard: list[str]) -> list[Slide]:
+    """Split an htmpres deck into slides, as htmpres's slideSegments does.
+
+    A slide starts at a line that is only ---, or at a ## heading, outside code, comments and ::: divs. A --- with
+    only blank lines before a ## makes one slide. Text before the first boundary is an untitled first slide. A slide
+    with no title and no body, notes included, is a hard problem, as htmpres's lint reports it."""
+    # Split lines as htmpres does, at \r\n, \n or \r. The byte order mark stays, as htmpres keeps it, and is
+    # removed only to find the opening --- of the front matter.
+    lines = re.split(r"\r\n|\n|\r", text)
+    segments: list[dict] = []
+    current: dict | None = None
+    leading: list[int] = []   # comment lines before the first slide, which join it
+    for index, line in enumerate(scan_qmd(lines)):
+        if line["kind"] == "yaml":
+            continue
+        top = line["kind"] == "body" and not line["in_comment"] and line["depth"] == 0
+        separator = top and re.match(r"^ {0,3}---[ \t]*$", line["text"])
+        heading = re.match(r"^ {0,3}##(?:[ \t]+(.*?))?[ \t]*$", line["text"]) if top else None
+        if separator or heading:
+            leading = []
+            joined = (heading and current and current["boundary"] == "separator"
+                      and not any(_jtrim(lines[i]) for i in current["body"]))
+            if not joined:
+                if current:
+                    segments.append(current)
+                current = {"start": index, "boundary": "separator" if separator else "heading", "title": "",
+                           "attrs": "", "head": None, "body": []}
             if heading:
-                if start:
-                    chunks.append((start, chunk, attrs))
-                chunk, start, attrs = ["## " + heading.group(1)], number, heading.group(2) or ""
-                continue
-            if stripped == "---":
-                after = next((l for l in lines[number:] if l.strip()), "")
-                if not re.match(r"^##\s", after):
-                    hard.append(f"line {number}: a --- line that is not right before a ## title: htmpres starts a "
-                                f"slide only at ## and shows --- as a rule")
-                continue
-            if not start and stripped:
-                before = before or number
-        if start:
-            chunk.append(line)
-    if start:
-        chunks.append((start, chunk, attrs))
-    if before:
-        hard.append(f"line {before}: text before the first ## title, which htmpres leaves out")
+                content = _jtrim(heading.group(1) or "")
+                attrs = re.search(r"(?:^|[ \t]+)(\{.*\})$", content)
+                current["title"] = _jtrim(content[:attrs.start()] if attrs else content).replace("\\{", "{")\
+                    .replace("\\}", "}")
+                current["attrs"] = attrs.group(1) if attrs else ""
+                current["head"], current["boundary"] = index, "heading"
+            continue
+        if current is None and line["kind"] != "comment" and _jtrim(line["text"]):
+            current = {"start": (leading or [index])[0], "boundary": "implicit", "title": "", "attrs": "",
+                       "head": None, "body": list(leading)}
+            leading = []
+        if current is not None:
+            current["body"].append(index)
+        elif line["kind"] == "comment" or leading:
+            leading.append(index)
+    if current:
+        segments.append(current)
     slides = []
-    for i, (at, part, attrs) in enumerate(chunks):
-        slide = Slide(i + 1, at, part)
-        slide.attrs = attrs
+    for number, segment in enumerate(segments, 1):
+        end = segments[number]["start"] if number < len(segments) else len(lines)
+        part = list(lines[segment["start"]:end])
+        body = set(segment["body"])
+        for i in range(len(part)):
+            at = segment["start"] + i
+            if at == segment["head"]:
+                part[i] = "## " + segment["title"] if segment["title"] else ""
+            elif at not in body:
+                part[i] = ""   # the --- that started the slide, and blank lines before its heading
+        slide = Slide(number, segment["start"] + 1, part)
+        slide.attrs, slide.untitled = segment["attrs"], not segment["title"]
+        if not segment["title"] and not _jtrim("\n".join(lines[i] for i in segment["body"])):
+            hard.append(f"slide {number}, line {segment['start'] + 1}: an empty slide, which htmpres rejects. Add "
+                        f"content, or remove the --- or the ##. A --- with only blank lines before a ## makes one "
+                        f"slide")
         slides.append(slide)
     return slides
 
@@ -629,10 +732,10 @@ def check_slides(slides: list[Slide], hard: list[str], soft: list[str]) -> None:
                 hard.append(f"{at}: a paragraph of {count} sentences on a slide: {plain(raw)[:60]}")
             elif kind == "item" and count > 1:
                 soft.append(f"{at}: an item of {count} sentences: {plain(raw)[:60]}")
-        equations = _equations(slide.body)
+        equations = _equations(slide.body, inline=False)
         if equations > MAX_EQUATIONS:
-            hard.append(f"{where}: {equations} equations (at most {MAX_EQUATIONS})")
-        if equations and not "".join(text for _, text in slide.notes).strip():
+            hard.append(f"{where}: {equations} display equations (at most {MAX_EQUATIONS})")
+        if _equations(slide.body) and not "".join(text for _, text in slide.notes).strip():
             hard.append(f"{where}: an equation with no script to explain it")
         check_figures(slide, hard)
 

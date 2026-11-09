@@ -43,8 +43,8 @@ The checker for reports would fail every good slide, so a talk has its own check
 3. Copy `templates/plan.md` into the folder of the talk as `plan.md`, and fill in every section. Run the
    checker on it until it passes.
 4. Write the slides as `slides.qmd`, in the Markdown of [htmpres](https://github.com/rahuldave/htmpres). A
-   line that starts with `##` starts a slide, and the spoken script is in the notes of each slide. The
-   section "The files of a talk" of TALKS.md gives the format.
+   line that is only `---` starts a slide, and so does a line that starts with `##`. The spoken script is in
+   the notes of each slide. The section "The files of a talk" of TALKS.md gives the format.
 5. Run the checker on the slides, and fix each hard problem:
 
    ```
