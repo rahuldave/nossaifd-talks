@@ -115,6 +115,7 @@ it is wrong, or the rule says "about".
 | A paragraph of two or more sentences on a slide. A full stop in an abbreviation, as in "Fig. 2." or "vs.", does not end a sentence | 55 |
 | Two titles that start with the same two words, but are not the same title | 56 |
 | More than 2 display equations on a slide. Inline math does not count | 65 |
+| A `data-match` name that htmpres rejects: not lower-case letters, digits and hyphens, or `enclosing` | 65 |
 | An equation on a slide with no script | 65 |
 | A figure with no line of text right above it or right below it. A Marp background, such as `![bg](photo.jpg)`, is not a figure | 66 |
 | A sentence of the script that starts with "So," and a comma | 40 |
@@ -138,6 +139,8 @@ it is wrong, or the rule says "about".
 | A slide with a script and no `Cue:` line, in a `.qmd` deck | Some slides need no cue |
 | A slide whose `data-section` is not a section of the outline | The names can differ a little |
 | A slide after the first appendix slide that is not marked as one | htmpres puts it in the appendix, and the person may want it in the talk |
+| A summary in matched colors whose equation is outside an `.equation-steps` block | Its terms get no color, and htmpres gives no warning |
+| `style=`, `data-match-color`, `data-match-colors` or `data-background-color` on a slide | Rule 64 leaves color to the theme, and the person may have a reason |
 | "um", "uh" or "the thing is" in the script | A quote can hold them |
 | "Do you have any questions?" in the script | Ask "What questions do you have?" |
 

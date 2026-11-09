@@ -675,6 +675,41 @@ def check_plan(text: str, hard: list[str], soft: list[str]) -> tuple[int | None,
     return minutes, outline
 
 
+def _outside_code(lines: list[str]) -> str:
+    "The lines of a slide with fenced code and inline code left out, so that syntax shown as code is not read."
+    out, fence = [], ""
+    for line in lines:
+        mark = re.match(r"^\s*(`{3,}|~{3,})", line)
+        if fence:
+            if mark and mark.group(1)[0] == fence[0] and len(mark.group(1)) >= len(fence):
+                fence = ""
+            continue
+        if mark:
+            fence = mark.group(1)
+            continue
+        out.append(re.sub(r"`[^`]*`", "", line))
+    return "\n".join(out)
+
+
+def check_marks(slides: list[Slide], hard: list[str], soft: list[str]) -> None:
+    "Check the names of a summary in matched colors, and that no slide sets a color, by rule 64."
+    for slide in slides:
+        where = f"slide {slide.number}, line {slide.first}"
+        text = _outside_code(slide.body) + "\n" + slide.attrs
+        names = re.findall(r"data-match=[\"']([^\"']*)[\"']", text)
+        for name in names:
+            if name == "enclosing" or not re.fullmatch(r"[a-z][a-z0-9-]*", name):
+                hard.append(f"{where}: the name data-match=\"{name}\", which htmpres rejects. Start it with a "
+                            f"lower-case letter, use lower-case letters, digits and hyphens, and do not use enclosing")
+        terms = set(re.findall(r"\\htmlClass\{([^}]*)\}", text))
+        if "data-step-summary" in slide.attrs and terms & set(names) and ".equation-steps" not in text:
+            soft.append(f"{where}: an equation outside an .equation-steps block, so its terms get no color in the "
+                        f"summary")
+        color = re.search(r"(?<![\w-])(style|data-match-colors?(?:-dark)?|data-background-color)=", text)
+        if color:
+            soft.append(f"{where}: {color.group(1)}= sets a color in the slides. Leave color to the theme, by rule 64")
+
+
 def check_deck(slides: list[Slide], minutes: int | None, outline: list[str], soft: list[str]) -> None:
     "Check the deck of a talk with a plan: the count of slides, the last slide, the cues and the sections."
     # As in htmpres, the first appendix slide starts the appendix, and every later slide is in it.
@@ -853,6 +888,7 @@ def check(path: Path) -> tuple[list[str], list[str], str]:
             except OSError as error:
                 hard.append(f"plan.md cannot be read: {error.strerror}")
         check_deck(slides, minutes, outline, soft)
+        check_marks(slides, hard, soft)
     else:
         _, slides = split(text)
     if not slides:

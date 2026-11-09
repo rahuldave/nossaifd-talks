@@ -477,6 +477,37 @@ class ExampleSyntaxTest(unittest.TestCase):
             self.assertIn(f'\\htmlClass{{{term}}}', text, term)
         for index in steps.group(2).split('|'):
             self.assertIn(f'data-fragment-index="{index}"', text, index)
+        # The summary in matching colors: each named explanation has its equation term, and no colors are set.
+        self.assertIn('data-step-summary="match"', text)
+        summary = [part for part in re.split(r'^(?=## )', text, flags=re.M) if 'data-step-summary="match"' in part]
+        self.assertEqual(len(summary), 1)
+        names = re.findall(r'data-match="([^"]*)"', text)
+        self.assertEqual(sorted(names), ['hit-rate', 'searches'])
+        for name in names:
+            self.assertIn(f'data-match="{name}"', summary[0], name)
+            self.assertIn(f'\\htmlClass{{{name}}}', summary[0], name)
+        self.assertIn('.equation-steps', summary[0])
+        self.assertNotIn('data-match-color', text)
+
+    def test_the_marks_of_a_summary_and_colors_in_the_slides(self):
+        eq = '$$ \\htmlClass{rate}{h} $$'
+        def notes(body, attrs='{data-step-summary="match"}'):
+            return run({'plan.md': PLAN, 'slides.qmd': qmd(slide('Title of the talk'),
+                        slide('Rate sets the load', body=body, attrs=attrs), slide('The end of it', body='Questions?'))},
+                       'slides.qmd')[:2]
+        for name in ('Hit_Rate', 'enclosing'):
+            hard, _ = notes(f'{eq}\n\n[Text]{{.fragment data-match="{name}"}}')
+            self.assertTrue(any('which htmpres rejects' in line for line in hard), (name, hard))
+        _, soft = notes(f'::: {{}}\n{eq}\n:::\n\n[Text]{{.fragment data-match="rate"}}')
+        self.assertTrue(any('outside an .equation-steps block' in line for line in soft), soft)
+        hard, soft = notes(f'::: {{.equation-steps data-equation-steps="rate"}}\n{eq}\n:::\n\n'
+                           f'[Text]{{.fragment data-fragment-index="1" data-match="rate"}}')
+        self.assertFalse(any('equation-steps' in line or 'rejects' in line for line in hard + soft), hard + soft)
+        for attr in ('style="color: red"', 'data-match-color="#245c88"', 'data-match-colors-dark="rate=#fff"'):
+            _, soft = notes(f'[Text]{{{attr}}}', attrs='')
+            self.assertTrue(any('Leave color to the theme' in line for line in soft), (attr, soft))
+        _, soft = notes('```\n[Text]{style="color: red" data-match="Bad_Name"}\n```', attrs='')
+        self.assertFalse(any('color' in line or 'rejects' in line for line in soft), soft)
 
     def test_the_guide_no_longer_says_htmpres_lacks_the_features(self):
         for name in ('TALKS.md', 'docs/check-talk.md'):
