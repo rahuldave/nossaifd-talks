@@ -188,10 +188,42 @@ class DeckTest(unittest.TestCase):
                                      slide('Extra data', attrs='{data-kind="appendix"}'))
         self.assertFalse(any('no "Questions?"' in line for line in soft), soft)
 
-    def test_an_appendix_slide_before_the_last_slide_is_a_soft_note(self):
-        _, soft, _ = self.deck_notes(slide('Title of the talk'), slide('Extra data', attrs='{data-kind="appendix"}'),
-                                     slide('The end of it', body='Questions?'))
-        self.assertTrue(any('appendix slide before the last slide' in line for line in soft), soft)
+    def test_every_slide_after_the_first_appendix_slide_is_in_the_appendix(self):
+        # htmpres puts every slide after the first appendix slide in the appendix, marked or not.
+        body = [slide('Title of the talk'), slide('Extra data', attrs='{data-kind="appendix"}'),
+                slide('The end of it', body='Questions?')]
+        _, soft, _ = self.deck_notes(*body)
+        self.assertTrue(any('slide 3, line' in line and 'comes after slide 2, the first appendix slide' in line
+                            for line in soft), soft)
+        # Only the title slide is left in the talk, so there is no last slide to check for "Questions?".
+        self.assertFalse(any('no "Questions?"' in line for line in soft), soft)
+        points = [slide(f'Point number {i}') for i in range(9)]
+        _, soft, _ = self.deck_notes(slide('Title of the talk'), slide('The end of it', body='Questions?'),
+                                     slide('Extra data', attrs='{data-kind="appendix"}'), *points)
+        self.assertFalse(any('slides for 12 minutes' in line for line in soft), soft)
+        self.assertEqual(sum('first appendix slide' in line for line in soft), 9, soft)
+        _, soft, _ = self.deck_notes(slide('Title of the talk'), slide('The end of it', body='Questions?'),
+                                     slide('Extra data', attrs='{data-kind="appendix"}'),
+                                     slide('More data', attrs="{#more data-kind='appendix'}"))
+        self.assertFalse(any('appendix' in line for line in soft), soft)
+
+    def test_only_an_exact_appendix_value_starts_the_appendix(self):
+        # htmpres reads data-kind exactly, so appendix-old and spaces around = do not start the appendix.
+        for attrs in ('{data-kind="appendix-old"}', '{data-kind = "appendix"}'):
+            slides = check_talk.split_qmd(qmd(slide('One'), slide('Two words', attrs=attrs)), [])
+            self.assertFalse(check_talk.appendix(slides[1]), attrs)
+        for attrs in ('{data-kind="appendix"}', "{#a data-kind='appendix'}", '{.x data-kind=appendix}'):
+            slides = check_talk.split_qmd(qmd(slide('One'), slide('Two words', attrs=attrs)), [])
+            self.assertTrue(check_talk.appendix(slides[1]), attrs)
+
+    def test_span_attributes_are_not_words_on_the_slide(self):
+        self.assertEqual(check_talk.plain('[Each miss reads it]{.key .fragment data-fragment-index="2"}'),
+                         'Each miss reads it')
+        spans = '\n\n'.join(f'[Each miss reads the database once]{{.key .fragment data-fragment-index="{i}"}}'
+                              for i in range(1, 5))
+        hard, soft, _ = self.deck_notes(slide('Title of the talk'), slide('Hit rate sets the load', body=spans),
+                                        slide('The end of it', body='Questions?'))
+        self.assertFalse(any('words' in line for line in hard + soft), hard + soft)
 
     def test_a_script_with_no_cue_and_a_section_not_in_the_outline(self):
         _, soft, _ = self.deck_notes(slide('Title of the talk'),
@@ -288,6 +320,30 @@ class ReviewTest(unittest.TestCase):
                                                             slide('A point', attrs="{data-section='Nowhere'}"),
                                                             slide('The end', body='Questions?'))}, 'slides.qmd')
         self.assertTrue(any('"Nowhere" is not in the outline' in line for line in soft), soft)
+
+
+class ExampleSyntaxTest(unittest.TestCase):
+    "The example talk uses htmpres syntax that holds together: links, ids and equation steps."
+
+    def test_links_ids_and_equation_steps_match(self):
+        import re
+        text = (REPO / 'examples' / 'cache' / 'slides.qmd').read_text(encoding='utf-8')
+        ids = set(re.findall(r'^## .*\{#([\w-]+)', text, re.M))
+        links = set(re.findall(r'\]\(#([\w-]+)\)', text))
+        self.assertTrue(links and links <= ids, (links, ids))
+        steps = re.search(r'data-equation-steps="([^"]+)" data-step-indices="([^"]+)"', text)
+        terms = steps.group(1).replace(',', '|').split('|')
+        self.assertEqual(len(steps.group(1).split('|')), len(steps.group(2).split('|')))
+        for term in terms:
+            self.assertIn(f'\\htmlClass{{{term}}}', text, term)
+        for index in steps.group(2).split('|'):
+            self.assertIn(f'data-fragment-index="{index}"', text, index)
+
+    def test_the_guide_no_longer_says_htmpres_lacks_the_features(self):
+        for name in ('TALKS.md', 'docs/check-talk.md'):
+            text = (REPO / name).read_text(encoding='utf-8')
+            for stale in ('does not yet typeset', 'htmpres is adding', 'ds-split'):
+                self.assertNotIn(stale, text, (name, stale))
 
 
 class ReferenceTest(unittest.TestCase):

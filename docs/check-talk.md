@@ -59,8 +59,9 @@ A deck in htmpres is a `.qmd` file, as htmpres reads it:
 - Text before the first `##` line is left out by htmpres, so the checker fails it.
 - The script of a slide is in a block from `::: notes` to `:::`. A line of the notes that starts with `Cue:`
   is the cue, and it is not script.
-- A slide marked `{data-kind="appendix"}` is in the appendix. The count of slides and the check of the last
-  slide leave the appendix out.
+- The first slide marked `{data-kind="appendix"}` starts the appendix, and every later slide is in it, as in
+  htmpres. The count of slides and the check of the last slide leave the appendix out. A later slide that is not
+  marked is a soft note, because it may belong in the talk.
 
 ## A deck from another tool
 
@@ -136,7 +137,7 @@ it is wrong, or the rule says "about".
 | A last slide with no "Questions?" | The last slide shows the conclusion and asks for questions, and the words can differ |
 | A slide with a script and no `Cue:` line, in a `.qmd` deck | Some slides need no cue |
 | A slide whose `data-section` is not a section of the outline | The names can differ a little |
-| An appendix slide before the last slide | The person may want it there |
+| A slide after the first appendix slide that is not marked as one | htmpres puts it in the appendix, and the person may want it in the talk |
 | "um", "uh" or "the thing is" in the script | A quote can hold them |
 | "Do you have any questions?" in the script | Ask "What questions do you have?" |
 

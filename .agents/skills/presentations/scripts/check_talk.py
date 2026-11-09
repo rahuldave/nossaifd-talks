@@ -8,8 +8,9 @@ A talk made by this guide has two files in one folder. plan.md is the plan, from
 and slides.qmd holds the slides in the Markdown of htmpres. In a .qmd file, a line that starts with "## " starts a
 slide, and a line that is only --- must come right before such a line. The checker fails slides.qmd when plan.md
 is missing or has an empty section. It reads the time of the talk from the plan, and it notes a deck with more
-slides than 75 percent of the minutes, the time to plan for. A slide with {data-kind="appendix"} on its title
-line is in the appendix, which is not counted.
+slides than 75 percent of the minutes, the time to plan for. As in htmpres, the first slide with
+{data-kind="appendix"} on its title line starts the appendix, and every later slide is in it. The appendix is
+not counted.
 
 Any other file is a Markdown deck, in which a line that is only --- starts a new slide. YAML front matter can open
 the file. The checker reads only its key "marp", and it does not check speaking time in such a deck.
@@ -99,6 +100,7 @@ def blocks(text: str) -> list[tuple[int, str, str]]:  # (line, text, kind) with 
 def plain(text: str) -> str:  # Prose with inline code as one word, link text kept, markup gone
     "Reduce Markdown inline syntax to plain words."
     text = re.sub(r"`[^`]*`", "CODE", text)
+    text = re.sub(r"\[([^\]]*)\]\{[^}]*\}", r"\1", text)  # a span such as [words]{.key .fragment}
     text = re.sub(r"!?\[([^\]]*)\]\([^)]*\)", r"\1", text)
     text = re.sub(r"https?://\S+", "URL", text)
     text = re.sub(r'"[^"\n]*"', "QUOTE", text)  # quoted words are examples being talked about, not prose
@@ -432,7 +434,8 @@ def split_qmd(text: str, hard: list[str]) -> list[Slide]:
 
 def appendix(slide: Slide) -> bool:
     "Is the slide in the appendix, marked {data-kind=\"appendix\"} on its title line?"
-    return bool(re.search(r"data-kind\s*=\s*[\"']?appendix\b", slide.attrs))
+    # The value must be exactly appendix, as htmpres reads it: not appendix-old, and no spaces around the =.
+    return bool(re.search(r"(?:^|[\s{])data-kind=(?:\"appendix\"|'appendix'|appendix)(?=[\s}]|$)", slide.attrs))
 
 
 def _uncommented(text: str) -> str:
@@ -571,10 +574,13 @@ def check_plan(text: str, hard: list[str], soft: list[str]) -> tuple[int | None,
 
 def check_deck(slides: list[Slide], minutes: int | None, outline: list[str], soft: list[str]) -> None:
     "Check the deck of a talk with a plan: the count of slides, the last slide, the cues and the sections."
-    main = [slide for slide in slides if not appendix(slide)]
-    for slide in slides:
-        if appendix(slide) and main and slide.number < main[-1].number:
-            soft.append(f"slide {slide.number}, line {slide.first}: an appendix slide before the last slide")
+    # As in htmpres, the first appendix slide starts the appendix, and every later slide is in it.
+    start = next((i for i, slide in enumerate(slides) if appendix(slide)), len(slides))
+    main = slides[:start]
+    for slide in slides[start + 1:]:
+        if not appendix(slide):
+            soft.append(f"slide {slide.number}, line {slide.first}: this slide is in the appendix, because it "
+                        f"comes after slide {slides[start].number}, the first appendix slide")
     planned = max(1, minutes * PLANNED_SHARE // 100) if minutes else None
     if planned is not None and len(main) > planned:
         soft.append(f"{len(main)} slides for {minutes} minutes: plan {planned} minutes, {PLANNED_SHARE} percent of "
