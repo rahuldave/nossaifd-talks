@@ -679,10 +679,11 @@ Then look for the patterns of model prose in the script, by rules 50 to 54 of GU
 prints only the script, with each line on its line of the deck. The linter of
 [Oskar Austegard's declauding skill](https://github.com/oaustegard/claude-skills/tree/6baa7290da972191749acda03c63297e67b3fc26/declauding) reads it. The
 repository nossaifd ships that skill as its second skill, `declauding`, in `.agents/skills/declauding/`. If
-the skill is not installed, download [the linter](https://github.com/rahuldave/nossaifd/blob/main/.agents/skills/declauding/scripts/declaude_lint.py) from nossaifd:
+the declauding skill is not installed, download [the linter](https://github.com/rahuldave/nossaifd/blob/main/.agents/skills/declauding/scripts/declaude_lint.py) from nossaifd:
 
 ```
 uv run --no-project python check_talk.py --script slides.qmd > script.md
+# If the declauding skill is not installed, use the path of the linter that you downloaded
 uv run --no-project python .agents/skills/declauding/scripts/declaude_lint.py --skip-quoted --no-html script.md
 ```
 
