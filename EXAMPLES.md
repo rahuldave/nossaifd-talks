@@ -572,7 +572,7 @@ The project now puts this slide second, after the title slide, by TALKS.md rule 
 
 ## The words of the script
 
-Three examples in [the examples file of nossaifd](https://github.com/rahuldave/nossaifd/blob/main/EXAMPLES.md) also belong here:
+[The examples file of nossaifd](https://github.com/rahuldave/nossaifd/blob/main/EXAMPLES.md) has three examples that also belong here:
 
 - [W4, "One news story, spoken and written"](https://github.com/rahuldave/nossaifd/blob/main/EXAMPLES.md#w4-one-news-story-spoken-and-written), by Rosalind Reid,
   shows the spoken and the written version of one news story.

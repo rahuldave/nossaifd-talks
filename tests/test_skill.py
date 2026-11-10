@@ -50,6 +50,47 @@ class PackageTest(unittest.TestCase):
         self.assertNotIn('scripts/check.py', text)
 
 
+class CountOpeningTest(unittest.TestCase):
+    "GUIDE.md rule 38 of nossaifd: a heading or a paragraph does not open with a count that only announces."
+    PAGES = ['README.md', 'TALKS.md', 'EXAMPLES.md', 'WORKSHEET.md', 'docs/check-talk.md', 'docs/sources.md',
+             'docs/why.md', 'docs/schwabish-summary.md', '.agents/skills/presentations/SKILL.md']
+    # A count and a noun that end the line or a label, or that a verb of announcing follows. A count that says
+    # what the items share, as in "Two tall prints stand side by side", stays, by rule 38.
+    COUNT = re.compile(r'^(#+ +|[-*] +|\d+\. +|\*\*[^*]+\*\* +)?'
+                       r'(Two|Three|Four|Five|Six|Seven|Eight|Nine|Ten|Eleven|Twelve|[2-9]|1[0-2]) +'
+                       r'[a-z]+( [a-z]+)?(:|\.?$| (go|are|follow|matter|exist|apply|to know)\b)')
+
+    def openings(self, text):
+        "Each line that starts a heading, a list item or a paragraph, outside code fences."
+        fenced, before = False, ''
+        for number, line in enumerate(text.splitlines(), 1):
+            if line.lstrip().startswith('```'):
+                fenced = not fenced
+            elif not fenced and (not before.strip() or before.startswith('#') or re.match(r'#|[-*] |\d+\. ', line)):
+                yield number, line.strip()
+            before = line
+
+    def test_no_heading_or_paragraph_opens_with_a_count(self):
+        for name in self.PAGES:
+            for number, line in self.openings((REPO / name).read_text()):
+                with self.subTest(page=name, line=number):
+                    self.assertIsNone(self.COUNT.match(line), line)
+
+    def test_the_pattern_finds_a_count_that_only_announces(self):
+        for line in ['## Two principles', '## 3 principles', 'Two things go', 'Two cautions:', 'Two problems:',
+                     '- Two things go wrong.', '**Declutter.** Two things go wrong.', '3 things to know']:
+            self.assertIsNotNone(self.COUNT.match(line), line)
+
+    def test_the_pattern_keeps_a_count_that_says_what_the_items_share(self):
+        for line in ['Two tall prints stand side by side.', 'Three shapes, and the fix differs for each:',
+                     'Two rules of TALKS.md disagree here, 12 and 40.', 'Two theories support his principles.']:
+            self.assertIsNone(self.COUNT.match(line), line)
+
+    def test_only_openings_outside_code_are_read(self):
+        text = 'A line\nTwo things go\n\n```\nTwo things go\n```\n\n- Two cautions:\n'
+        self.assertEqual([n for n, _ in self.openings(text)], [1, 8])
+
+
 class StandaloneTest(unittest.TestCase):
     def test_check_talk_imports_no_other_file_of_the_repository(self):
         source = (REPO / 'check_talk.py').read_text()

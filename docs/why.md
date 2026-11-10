@@ -15,9 +15,9 @@ Most disagreements go away when you ask how a person takes in the text. There ar
 
 A rule that is right for one way can be wrong for another. So each choice below names the way it is for.
 
-## Two principles
+## Rosalind Reid before Shankar, and the story before a rule
 
-The project's author set these two principles. They decide most of the choices below.
+The project's author set these two principles. Most of the choices below follow from them.
 
 1. **Rosalind Reid's advice comes before Shankar's.** When the two disagree about the same kind of text,
    the guides follow Rosalind Reid. She edited *American Scientist* from 1992 to 2008, and she taught her
