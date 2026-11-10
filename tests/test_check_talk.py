@@ -358,6 +358,77 @@ class FrontMatterTest(unittest.TestCase):
             self.assertIn('HARD no slides', result.stdout)
 
 
+class ScriptOptionTest(unittest.TestCase):
+    "The option --script prints the script of one deck, each line on its line of the deck, for the linter of the declauding skill by Oskar Austegard."
+
+    def script(self, text, name='deck.md'):
+        with tempfile.TemporaryDirectory() as temp:
+            page = Path(temp) / name
+            page.write_text(text, encoding='utf-8')
+            return subprocess.run([sys.executable, str(REPO / 'check_talk.py'), '--script', str(page)],
+                                  capture_output=True, text=True, cwd=temp)
+
+    def test_each_line_of_the_script_stays_on_its_line(self):
+        text = '# One\n\nA slide.\n\n<!--\nFirst said.\nCue: pause\nSecond said.\n-->\n'
+        result = self.script(text)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        lines = result.stdout.split('\n')
+        self.assertEqual(lines[5], 'First said.')
+        self.assertEqual(lines[6], '')          # the cue is not script
+        self.assertEqual(lines[7], 'Second said.')
+        self.assertEqual([line for line in lines[:5] if line], [])   # the slide is not script
+        self.assertEqual(len(lines), len(text.split('\n')) + 1)
+
+    def test_an_htmpres_deck_gives_its_notes(self):
+        text = '---\npagetitle: T\n---\n\n## One\n\nA slide.\n\n::: notes\nWe cut the wait.\n:::\n'
+        lines = self.script(text, 'slides.qmd').stdout.split('\n')
+        self.assertEqual(lines[9], 'We cut the wait.')
+        self.assertEqual(sum(1 for line in lines if line), 1)
+
+    def test_the_example_deck_gives_its_script_and_no_slide_text(self):
+        out = self.script((REPO / 'examples/cache/slides.qmd').read_text(), 'slides.qmd').stdout
+        self.assertIn('Thank you to the platform team', out)
+        self.assertNotIn('## ', out)
+        self.assertNotIn('Cue:', out)
+
+    def test_code_and_block_markers_in_the_notes_are_left_out(self):
+        # Review finding: a fence or a ::: block inside the notes reached the linter.
+        text = ('## One\n\nA slide.\n\n::: notes\nWe cut the wait.\n```python\nx = 1\n```\n'
+                '::: {.callout}\nThe cache helps.\n:::\n:::\n')
+        lines = self.script(text, 'slides.qmd').stdout.split('\n')
+        said = [line for line in lines if line]
+        self.assertEqual(said, ['We cut the wait.', 'The cache helps.'])
+        self.assertEqual(lines[10], 'The cache helps.')
+
+    def test_other_tools_and_line_endings_keep_each_line_in_place(self):
+        cases = {
+            'marp': ('---\nmarp: true\n---\n\n# One\n\n<!-- _class: lead -->\n\n<!--\nWe cut the wait.\n-->\n',
+                     9, 'We cut the wait.'),
+            'aside': ('# One\n\n<aside class="notes">\nWe cut the wait.\n</aside>\n', 3, 'We cut the wait.'),
+            'note': ('# One\n\nA slide.\n\nNote: We cut the wait.\n', 4, 'Note: We cut the wait.'),
+            'crlf': ('\ufeff# One\r\n\r\n<!--\r\nWe cut the wait.\r\n-->\r\n', 3, 'We cut the wait.'),
+            'appendix': ('## One\n\n::: notes\nFirst.\n:::\n\n## More {data-kind="appendix"}\n\n::: notes\n'
+                         'Second.\n:::\n', 9, 'Second.'),
+        }
+        for name, (text, index, expected) in cases.items():
+            with self.subTest(name):
+                out = self.script(text, 'slides.qmd' if name == 'appendix' else 'deck.md').stdout
+                lines = re.split(r'\r\n|\n|\r', out)
+                self.assertIn(expected.removeprefix('Note: '), lines[index], (name, lines))
+                self.assertEqual(sum(1 for line in lines if line.strip()), 2 if name == 'appendix' else 1, (name, lines))
+
+    def test_script_takes_one_deck_and_not_a_plan(self):
+        with tempfile.TemporaryDirectory() as temp:
+            a, b = Path(temp) / 'a.md', Path(temp) / 'plan.md'
+            a.write_text('# One\n', encoding='utf-8')
+            b.write_text('# Plan\n', encoding='utf-8')
+            for args in ([str(a), str(a)], [str(b)]):
+                result = subprocess.run([sys.executable, str(REPO / 'check_talk.py'), '--script', *args],
+                                        capture_output=True, text=True)
+                self.assertEqual(result.returncode, 2, args)
+                self.assertIn('--script takes one deck', result.stderr)
+
+
 class DeckTest(unittest.TestCase):
     def test_the_example_deck_passes(self):
         result = run((REPO / 'tests/fixtures/deck.md').read_text())

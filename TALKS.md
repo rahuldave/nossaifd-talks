@@ -154,7 +154,11 @@ and "funnel" are this guide's own.
 17. **Use the funnel only for a pure story.** The opening gives the problem and a hint of the attempts, and
     the talk builds to the result at the end, in the order of Rosalind Reid's five parts
     ([Rosalind Reid, tutorial deck, page 16](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
-    A bug hunt that holds back the cause is a pure story.
+    A bug hunt that holds back the cause is a pure story. State the problem in the opening as a puzzle with
+    facts, as in "The build slowed from 4 minutes to 40 in one week, and no commit touched the build files."
+    Do not promise an answer and name nothing, as in "You'll see why at the end". The ban on such a teaser
+    comes from rule 20 of GUIDE.md, which takes it from Oskar Austegard's declauding skill,
+    [register entries 8](https://github.com/oaustegard/claude-skills/blob/6baa7290da972191749acda03c63297e67b3fc26/declauding/references/register.md?plain=1#L175) and [42](https://github.com/oaustegard/claude-skills/blob/6baa7290da972191749acda03c63297e67b3fc26/declauding/references/register.md?plain=1#L843).
 18. **Write the opening statement and the closing statement in full, in the plan.** The opening statement is
     the first thing said after the thanks. It is bold and full of content, and it does not apologize or invite
     comments. The closing statement restates the headline, and for a call to action it asks for the action. A
@@ -257,8 +261,8 @@ slide has two exceptions of its own:
     ([Rosalind Reid, presentation tips, page 4](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)).
     Shankar's plain-writing skill forbids them
     ([Shankar, plain-writing skill, rule 23](https://github.com/docwriter-org/plain-writing-skill/blob/f0d3630983ac7a82aa580f1c1509d72df739ee12/skills/plain-writing/SKILL.md?plain=1#L240-L246)),
-    and this guide follows Rosalind Reid. In the script, the rule takes the place of the rules of GUIDE.md on
-    questions.
+    and this guide follows Rosalind Reid. The answer can be a short phrase, as in speech. In the script, the
+    rule takes the place of the rules of GUIDE.md on questions.
 36. **Use analogy, metaphor and humor, in the script and on the slides.** Rosalind Reid gives them as methods
     of a storyteller, for written, visual and spoken work
     ([Rosalind Reid, tutorial deck, page 40](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-communicating-your-work-deck.pdf)).
@@ -285,7 +289,33 @@ slide has two exceptions of its own:
 43. **Plan a pause after a key point.** A pause gives the audience time to take the point in (Schwabish, page
     150). Mark it in the cue of the slide.
 
-Everything else in GUIDE.md applies to the script and to the slides.
+Everything else in GUIDE.md applies to the script and to the slides. That includes rules 50 to 55 of
+GUIDE.md, "Patterns of model prose". They come from
+[Oskar Austegard's declauding skill](https://github.com/oaustegard/claude-skills/tree/6baa7290da972191749acda03c63297e67b3fc26/declauding), and so do
+parts of rules 9, 10, 20, 32, 34, 36, 37, 38 and 43 of GUIDE.md. Apply rule 10 of GUIDE.md, not more than two
+nouns in a row, with care in a title. Write "Database reads cause the wait" and not "Database read load
+causes the wait".
+
+Rules 9, 10, 34 and 50 to 55 of GUIDE.md also apply to the plan. The opening statement and
+the closing statement of the plan are script, by rule 18.
+
+The script keeps four exceptions to these rules, because a listener hears each sentence once:
+
+- **A closing line that repeats.** Rule 50 of GUIDE.md asks not to end a paragraph with a short, quotable line
+  that repeats it. In the script, rules 37 and 38 of this guide ask for a repeated key idea and a memorable
+  phrase. So a closing line that repeats the point is correct.
+- **A short answer.** Rule 36 of GUIDE.md asks for an answer in full sentences. In the script, a short phrase
+  can answer a question, as in speech, by rule 35 of this guide.
+- **"This" for what is on the screen.** Rule 37 of GUIDE.md asks for a noun in place of a vague "This". In the
+  script, "this" can point at the slide, as in "This is the wait at nine", said while the curve is on the
+  screen.
+- **A spoken count.** Rule 38 of GUIDE.md lets a count stand in front of the list that it counts, when the
+  count also says what the items share or how they differ. In the script, such a count can come before items
+  that follow in later sentences, as in "Two changes cut the wait. The first is a cache." The listener cannot
+  see a list, so the count says how much comes.
+
+The choice of these exceptions is the project's own, and
+[Why the rules](https://github.com/rahuldave/nossaifd-talks/blob/main/docs/why.md) gives it.
 
 ## Methods of a storyteller
 
@@ -645,6 +675,22 @@ In the deck, it notes more slides than 75 percent of the minutes, a last slide w
 why it is hard or soft. The checker cannot judge the story, the news first, or the tone. Read the plan and the
 slides after they pass.
 
+Then look for the patterns of model prose in the script, by rules 50 to 54 of GUIDE.md. The option `--script`
+prints only the script, with each line on its line of the deck. The linter of
+[Oskar Austegard's declauding skill](https://github.com/oaustegard/claude-skills/tree/6baa7290da972191749acda03c63297e67b3fc26/declauding) reads it. The
+repository nossaifd ships that skill as its second skill, `declauding`, in `.agents/skills/declauding/`. If
+the skill is not installed, download [the linter](https://github.com/rahuldave/nossaifd/blob/main/.agents/skills/declauding/scripts/declaude_lint.py) from nossaifd:
+
+```
+uv run --no-project python check_talk.py --script slides.qmd > script.md
+uv run --no-project python .agents/skills/declauding/scripts/declaude_lint.py --skip-quoted --no-html script.md
+```
+
+The option `--no-html` keeps the linter from reading a script with a tag in it as a web page. The linter
+exits with status 1 whenever it has a note. Each note is a candidate, and the four exceptions of the section
+"The words of the script" can make it wrong. A question that the next sentence answers is correct, by rule
+35. So is "What questions do you have?", by rule 41.
+
 ## Sources
 
 - **Rosalind Reid**, "Communicating Your Work", a tutorial for the course AC297r at the Institute for Applied
@@ -676,6 +722,10 @@ slides after they pass.
   it apart comes from it.
 - **Shreya Shankar**, the plain-writing skill, at https://github.com/docwriter-org/plain-writing-skill,
   under the MIT licence. It supports the rule on contractions in the script.
+- **Oskar Austegard**, the declauding skill, in https://github.com/oaustegard/claude-skills, folder
+  `declauding`, version 0.14.0 at commit 6baa729, under the MIT licence, copyright (c) 2025 Oskar Austegard.
+  Rules 50 to 55 of GUIDE.md come from it, and the ban on a teaser in rule 17 of this guide. This guide
+  cites its register, and it runs its linter on the script.
 
 This guide states the advice in its own words, and it does not copy the slides or the pictures of the
 sources. It uses Rosalind Reid's material with her permission. It quotes Schwabish's worksheet and a few of

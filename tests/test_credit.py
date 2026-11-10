@@ -219,5 +219,33 @@ class CreditTest(unittest.TestCase):
                          ['index.qmd', 'sources/reid/x.md'])
 
 
+
+def austegard_uncredited(paths):  # The files that use the declauding skill and do not name its author in full
+    "Each file that mentions the declauding skill must name Oskar Austegard, as each use of Rosalind Reid names her."
+    found = []
+    for path in paths:
+        text = path.read_text(encoding='utf-8', errors='replace')
+        if re.search(r'declaud', text, re.I) and 'Oskar Austegard' not in text:
+            found.append(path.relative_to(REPO).as_posix())
+    return found
+
+
+class AustegardCreditTest(unittest.TestCase):
+    "The declauding skill by Oskar Austegard, under the MIT licence, keeps its credit at each use."
+
+    def tracked(self):
+        names = subprocess.run(['git', 'ls-files'], cwd=REPO, capture_output=True, text=True, check=True).stdout
+        return [REPO / n for n in names.split() if Path(n).suffix in TEXT or Path(n).name == 'Justfile']
+
+    def test_each_file_that_uses_the_declauding_skill_names_its_author(self):
+        self.assertEqual(austegard_uncredited(self.tracked()), [])
+
+    def test_a_file_that_drops_the_name_fails(self):
+        with tempfile.TemporaryDirectory(dir=REPO) as temp:
+            page = Path(temp) / 'x.md'
+            page.write_text('Run the linter of the declauding skill.\n', encoding='utf-8')
+            self.assertEqual(len(austegard_uncredited([page])), 1)
+
+
 if __name__ == '__main__':
     unittest.main()

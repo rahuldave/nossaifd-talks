@@ -70,6 +70,25 @@ Schwabish's pages are those printed in his book, which is not online.
 | The script | Schwabish says not to memorize or read a talk, and to keep the notes short (pages 20 and 158). Rosalind Reid writes out everything she wants to say first ([Rosalind Reid, presentation tips, page 5](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)) | The script is in the notes, for practice, and it can be loose. A line of cues starts the notes, and it is clearly marked |
 | Quotes from the book | The book is under copyright, and no permission covers it | The worksheet, its section and his examples of openings and closings are quoted under fair use, with the pages. The rest is in this guide's own words |
 
+## Choices about the declauding skill
+
+GUIDE.md of nossaifd took rules 50 to 55 from [Oskar Austegard's declauding skill](https://github.com/oaustegard/claude-skills/tree/6baa7290da972191749acda03c63297e67b3fc26/declauding).
+It also changed rules 9, 10, 20, 32, 34, 36, 37, 38 and 43 with parts of the skill. The project's author chose on 10
+November 2026 to apply them to talks, with four exceptions for the script. The exception to rule 50 follows
+Rosalind Reid's advice to repeat a key idea. The other three are the project's own, for speech.
+
+| Rule of GUIDE.md | What it asks | The choice for a talk |
+|---|---|---|
+| 50 | No short, quotable line at the end of a paragraph that repeats it ([Oskar Austegard's declauding skill, register entry 12, "Aphoristic closer"](https://github.com/oaustegard/claude-skills/blob/6baa7290da972191749acda03c63297e67b3fc26/declauding/references/register.md?plain=1#L234)) | Slides and the plan: yes. The script: a line that repeats the point is correct, because Rosalind Reid asks a speaker to repeat a key idea ([Rosalind Reid, presentation tips, page 2](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-presentation-tips.pdf)) |
+| 36 | An answer to a question in full sentences ([Oskar Austegard's declauding skill, register entry 10](https://github.com/oaustegard/claude-skills/blob/6baa7290da972191749acda03c63297e67b3fc26/declauding/references/register.md?plain=1#L201)) | Slides: yes. The script: a short phrase can answer, as in speech, by rule 35 of the talk guide |
+| 37 | A noun in place of a vague "This" ([Oskar Austegard's declauding skill, register entry 40](https://github.com/oaustegard/claude-skills/blob/6baa7290da972191749acda03c63297e67b3fc26/declauding/references/register.md?plain=1#L788)) | Slides: yes. The script: "this" can point at what is on the screen |
+| 38 | A count only in front of a list that says what the items share ([Oskar Austegard's declauding skill, register entry 38](https://github.com/oaustegard/claude-skills/blob/6baa7290da972191749acda03c63297e67b3fc26/declauding/references/register.md?plain=1#L720)) | Slides: yes. The script: a count that says what the items share is correct with no list, because the listener cannot see one |
+| 20 | No teaser that promises an answer and names nothing ([Oskar Austegard's declauding skill, register entries 8](https://github.com/oaustegard/claude-skills/blob/6baa7290da972191749acda03c63297e67b3fc26/declauding/references/register.md?plain=1#L175) and [42](https://github.com/oaustegard/claude-skills/blob/6baa7290da972191749acda03c63297e67b3fc26/declauding/references/register.md?plain=1#L843)) | Rule 17 of the talk guide states the problem of a funnel as a puzzle with facts |
+| 9, 10, 34, 51 to 55 | The rest | Apply as they are. Apply rule 10, not more than two nouns in a row, with care in a title |
+
+The talk checker does not measure these rules. `just declaude` runs the linter of
+[Oskar Austegard's declauding skill](https://github.com/oaustegard/claude-skills/tree/6baa7290da972191749acda03c63297e67b3fc26/declauding) on the script, and its notes never fail the check.
+
 ## Choices for documents
 
 The guide for reports makes its own choices. Examples are the passive voice, where the result goes and

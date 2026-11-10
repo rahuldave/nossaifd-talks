@@ -3,6 +3,7 @@
     uv run --no-project python check_talk.py slides.qmd [deck.md ...]   report each file; exit 1 on a hard problem
     uv run --no-project python check_talk.py -v slides.qmd              also show the soft notes, for a person to judge
     uv run --no-project python check_talk.py plan.md                    check only the plan of a talk
+    uv run --no-project python check_talk.py --script slides.qmd        print only the script, for another checker
 
 A talk made by this guide has two files in one folder. plan.md is the plan, from the template templates/plan.md,
 and slides.qmd holds the slides in the Markdown of htmpres. In a .qmd file, a line that is only --- starts a slide,
@@ -20,6 +21,11 @@ The spoken script of a slide is in its notes: a "::: notes" block (Pandoc, Quart
 (Marp, Slidev) or an <aside class="notes"> block (reveal.js). In a deck with no "marp:" key, a line that starts
 with "Note:" also starts the script on a slide that has no other notes. The script then runs to the end of the
 slide. A line of the notes that starts with "Cue:" is the cue of the slide, and it is not script.
+
+With --script, the checker prints the script of one deck and checks nothing. Each line of the script stays on its
+line of the deck, and every other line is blank, so a line number from another checker, such as the linter of
+the declauding skill by Oskar Austegard (https://github.com/oaustegard/claude-skills, MIT licence), is a line of the
+deck. The lines that start with "Cue:", code and the markers of ::: blocks are left out.
 
 The exit status is 0 when every file passes, 1 when a file has a hard problem, and 2 for a usage error, such as a
 missing file or an unknown option.
@@ -899,9 +905,36 @@ def check(path: Path) -> tuple[list[str], list[str], str]:
     return hard, soft, f"{len(slides)} slide{'' if len(slides) == 1 else 's'}, {words} words of script"
 
 
+def script(path: Path) -> str:
+    "The script of a deck, each line on its line of the deck, and every other line blank."
+    text = path.read_text(encoding="utf-8")
+    matter = front_matter(text.removeprefix("\ufeff").split("\n"))[0]
+    if path.suffix.lower() == ".qmd" and "format" not in matter:
+        slides = split_qmd(text, [])
+    else:
+        slides = split(text)[1]
+    lines = [""] * len(text.split("\n"))
+    for slide in slides:
+        fence = ""
+        for where, line in slide.notes:
+            opening = re.match(r"^\s*(`{3,}|~{3,})", line)
+            if fence:
+                closing = re.match(r"^\s*(`+|~+)\s*$", line)
+                if closing and closing.group(1)[0] == fence[0] and len(closing.group(1)) >= len(fence):
+                    fence = ""
+                continue          # code in the notes is not said
+            if opening:
+                fence = opening.group(1)
+                continue
+            if re.match(r"^\s*:{3,}", line):
+                continue          # the marker of a ::: block
+            lines[where - 1] = line
+    return "\n".join(lines)
+
+
 def main() -> None:
     "Check every deck named on the command line."
-    args, verbose, names = sys.argv[1:], False, []
+    args, verbose, names, only_script = sys.argv[1:], False, [], False
 
     def usage(message: str) -> None:
         print(f"check_talk.py: {message}", file=sys.stderr)
@@ -912,6 +945,8 @@ def main() -> None:
         arg = args.pop(0)
         if arg == "-v":
             verbose = True
+        elif arg == "--script":
+            only_script = True
         elif arg.startswith("-") and arg != "-":
             usage(f"unknown option {arg}")
         else:
@@ -927,6 +962,11 @@ def main() -> None:
             usage(f"{name} is not UTF-8 text: save the deck as UTF-8")
         except OSError as error:
             usage(f"{name} cannot be read: {error.strerror}")
+    if only_script:
+        if len(names) != 1 or Path(names[0]).name.lower() == "plan.md":
+            usage("--script takes one deck")
+        print(script(Path(names[0])))
+        sys.exit(0)
     failed = False
     for name in names:
         hard, soft, summary = check(Path(name))
