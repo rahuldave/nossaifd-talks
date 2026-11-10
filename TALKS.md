@@ -661,7 +661,7 @@ slides after they pass.
   The rule of news first in speech, and the roles of words and pictures, come from
   [the written reports](https://github.com/rahuldave/nossaifd-talks/blob/main/sources/reid/reid-2015-written-reports.pdf).
 - **Scott L. Montgomery**, The Chicago Guide to Communicating Science, University of Chicago Press, 2003.
-  Rosalind Reid's presentation tips draw mostly on this book. Two examples are the short structure of a
+  Rosalind Reid's presentation tips draw mostly on this book. It gives, for example, the short structure of a
   professional talk, and the advice to practice 10 times or more.
 - **Herbert L. Hirsch**, Essential Communication Strategies for Scientists, Engineers, and Technology
   Professionals, second edition, IEEE Press, 2003. Rosalind Reid's presentation tips pass on his advice on

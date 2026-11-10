@@ -167,10 +167,9 @@ with the deck or embed them.
 **Declutter (pages 65 to 70).** <u>Start from a blank slide, and not from the default layout of a title and</u>
 <u>bullets. A slide full of text is a crutch for the speaker. Each slide should have one goal.</u>
 
-Two things go
-wrong with a slide full of text. First, the audience reads and stops listening, because reading and
-listening use the same parts of the brain, after Stanislas Dehaene. Second, the audience reads faster than
-the speaker talks, finishes and drifts away, and so a surprise in the data loses its effect.
+A slide full of text makes the audience read and stop listening. The cause, after Stanislas Dehaene, is
+that reading and listening use the same parts of the brain. The audience also reads faster than the speaker talks,
+finishes and drifts away, and so a surprise in the data loses its effect.
 
 If a point is short and the speaker says it, leave it off the slide. Delete the bullet marks, because the
 space between lines separates them. Show a logo only on the first and last slides, and leave out the web

@@ -68,7 +68,7 @@ marks the parts of the book that are for the words of a talk, and those for the 
 
 ## Shreya Shankar
 
-Two works by Shreya Shankar are sources:
+The project uses two works by Shreya Shankar:
 
 - [The plain-writing skill](https://github.com/docwriter-org/plain-writing-skill), under the MIT licence.
   The talk guide cites it for contractions and for questions in the script, rules 34 and 35. The examples
