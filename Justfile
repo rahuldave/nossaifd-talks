@@ -7,9 +7,9 @@ set positional-arguments
 python := "uv run --no-project --quiet python"
 smalldocs := "uvx --from smalldocs==0.5.5 smalldocs"
 
-# The checker for reports, check.py of nossaifd, at a fixed commit of its main branch. Move it when
-# check.py changes there.
-nossaifd_commit := "ec80717f074c68dfa5fecb0c8c19ba49398a2f76"
+# check.py and the declauding skill of nossaifd, at a fixed commit of its main branch. Move it when either
+# changes there. The declauding skill is by Oskar Austegard (github.com/oaustegard/claude-skills, MIT licence).
+nossaifd_commit := "0bba4434954372304825a14233343a0ac0a6460c"
 
 [private]
 default:
@@ -42,6 +42,23 @@ prose:
     {{python}} -I "$tool_root/check.py" README.md TALKS.md EXAMPLES.md docs/check-talk.md docs/sources.md docs/why.md \
         docs/schwabish-summary.md .agents/skills/presentations/SKILL.md
 
+# Note the patterns of model prose in the script of each deck, with the linter of Oskar Austegard's declauding
+# skill, by GUIDE.md rules 50 to 54. Its notes are candidates for a person to judge, so they never fail.
+declaude *decks:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    [ $# -gt 0 ] || set -- tests/fixtures/deck.md examples/cache/slides.qmd
+    tool_root="$(mktemp -d)"
+    trap 'rm -rf -- "$tool_root"' EXIT
+    curl -fsSL "https://raw.githubusercontent.com/rahuldave/nossaifd/{{nossaifd_commit}}/.agents/skills/declauding/scripts/declaude_lint.py" -o "$tool_root/declaude_lint.py"
+    for deck in "$@"; do
+        echo "$deck:"
+        {{python}} check_talk.py --script "$deck" > "$tool_root/script.md"
+        # The linter exits 1 for a note, so a crash shows only on stderr
+        {{python}} -I "$tool_root/declaude_lint.py" --skip-quoted --no-html "$tool_root/script.md" 2> "$tool_root/err" || true
+        if [ -s "$tool_root/err" ]; then cat "$tool_root/err" >&2; exit 1; fi
+    done
+
 # Build the site into _site with smalldocs
 site:
     {{smalldocs}} render .
@@ -55,6 +72,7 @@ check:
     just lint
     just test
     just prose
+    just declaude
     just site-check
 
 # Check skill-package.json with skill-package-maker at a fixed commit

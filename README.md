@@ -102,6 +102,8 @@ what the guide chose where the sources disagree.
   contractions and questions in the script.
 - **["Five Principles for Generating Readable AI Text in Bulk"](https://fsdatalab.github.io/blog/agent-text-at-scale/),
   by Shreya Shankar.** It gives the rule that a slide title starts with the words that set it apart.
+- **[The declauding skill by Oskar Austegard](https://github.com/oaustegard/claude-skills/tree/6baa7290da972191749acda03c63297e67b3fc26/declauding)**, under the MIT
+  licence. The rules of GUIDE.md on the patterns of model prose come from it, and its linter checks the script.
 
 ## Licence
 

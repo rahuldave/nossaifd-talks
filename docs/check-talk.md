@@ -17,6 +17,7 @@ Give the checker one or more files:
 uv run --no-project python check_talk.py talk/plan.md
 uv run --no-project python check_talk.py talk/slides.qmd
 uv run --no-project python check_talk.py -v talk/slides.qmd
+uv run --no-project python check_talk.py --script talk/slides.qmd
 ```
 
 The checker reads a file by its name. A file named `plan.md` is a plan, and it is checked alone. A file that
@@ -26,6 +27,10 @@ tool. Any other file is a deck from another tool, with no plan.
 
 The first command shows the hard problems of the plan. The `-v` option also shows the soft notes. The checker
 does not check pace, and it has no option for a time slot. It reads the time from the plan.
+
+The `--script` option prints the script of one deck and checks nothing. Each line of the script stays on its line
+of the deck, and every other line is blank. Code and the markers of blocks in the notes are blank too. So a line
+number from the linter of [Oskar Austegard's declauding skill](https://github.com/oaustegard/claude-skills/tree/6baa7290da972191749acda03c63297e67b3fc26/declauding) is a line of the deck.
 
 The program ends with one of three exit statuses:
 
