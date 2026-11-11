@@ -246,5 +246,20 @@ class PassOrderTest(unittest.TestCase):
                'the talk checker runs again', 'the linter runs once more'))
 
 
+class GateTest(unittest.TestCase):
+    "The pages that the gate of nossaifd checks. These fail check.py on purpose: a script, a copy of a book or a test."
+    KNOWN = ['WORKSHEET.md', 'docs/notes/schwabish-choices.md', 'examples/cache/plan.md', 'examples/cache/slides.qmd', 'tests/fixtures/deck.md']
+
+    def test_only_the_known_pages_fail_the_gate(self):
+        sys.path.insert(0, str(REPO / ".agents/skills/nossaifd/scripts"))
+        import prose_gate
+        names = subprocess.run(["git", "ls-files"], cwd=REPO, capture_output=True, text=True, check=True).stdout.split()
+        pages = [n for n in names if prose_gate.is_page(n)]
+        run = subprocess.run([sys.executable, "-I", str(REPO / ".agents/skills/nossaifd/scripts/check.py"), *pages],
+                             cwd=REPO, capture_output=True, text=True)
+        failing = sorted(re.findall(r"(?m)^(\S+): [1-9]\d* hard", run.stdout))
+        self.assertEqual(failing, sorted(self.KNOWN))
+
+
 if __name__ == '__main__':
     unittest.main()
