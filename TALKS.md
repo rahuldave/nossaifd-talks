@@ -702,6 +702,8 @@ Revise the script with these passes, in this order. nossaifd revises its own pag
    - Keep the four exceptions of the section "The words of the script".
    - Judge each note of the linter. Then read each sentence of the script against the register of the
      skill, because the linter finds only some patterns.
+   - Keep word for word each bad example that the deck shows on purpose, by rule 55 of GUIDE.md. Keep it
+     even when the linter or the checker marks it. A bad example teaches only next to its fix.
 
    If no subagent tool exists, read the script again from the top, and do these things yourself. If the
    declaude skill is not installed, follow rules 50 to 55 of GUIDE.md.
@@ -720,6 +722,9 @@ Revise the script with these passes, in this order. nossaifd revises its own pag
 5. Run `check_talk.py` again, and fix only what the revision broke.
 6. Run the linter once more, to check that the fixes brought back no pattern. Then read the slides and
    the script yourself.
+
+In every step, keep each bad example that the deck shows on purpose, by rule 55 of GUIDE.md. Put a bad
+example on a slide in a code block, because the talk checker skips code.
 
 ## Sources
 

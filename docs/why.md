@@ -101,6 +101,10 @@ In the passes on the pages of nossaifd, the
 declaude pass found problems that `check.py` cannot find. The second run of `check.py` caught what the
 revision broke.
 
+The project's author chose on 11 November 2026 to keep each bad example of a deck word for word, as rule 55
+of GUIDE.md asks. A talk about writing or about a mistake shows the bad version next to
+its fix, and a declaude pass would otherwise rewrite it.
+
 ## Choices for documents
 
 The guide for reports makes its own choices. Examples are the passive voice, where the result goes and
