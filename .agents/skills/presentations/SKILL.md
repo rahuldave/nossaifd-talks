@@ -71,6 +71,11 @@ the skill `declaude`. Run its linter on the script, as the section "Check the ta
 declaude skill is not installed, download [the linter](https://github.com/rahuldave/nossaifd/blob/main/.agents/skills/declaude/scripts/declaude_lint.py). The linter exits with status 1 whenever it has a note,
 and each note is a candidate for you to judge.
 
+Revise the script in the order of the passes in "Check the talk" of TALKS.md. Run the talk checker first.
+Then give the declaude pass to an agent that did not write the script. Then run the diff of the declaude
+skill, and put back each claim that the revision lost. Then run the talk checker again, and the linter once
+more.
+
 Analogy, metaphor and humor are allowed in the script and on the slides when they explain the work, as
 Rosalind Reid advises. The words on a slide follow the guide too, except in two ways:
 

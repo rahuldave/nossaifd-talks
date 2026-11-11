@@ -692,6 +692,35 @@ exits with status 1 whenever it has a note. Each note is a candidate, and the fo
 "The words of the script" can make it wrong. A question that the next sentence answers is correct, by rule
 35. So is "What questions do you have?", by rule 41.
 
+Revise the script with these passes, in this order. nossaifd revises its own pages in the same order.
+
+1. Run `check_talk.py` on the deck, and fix each hard problem.
+2. Keep a copy of the deck. Print its script to `draft.md` with `--script`.
+3. Give the deck to an agent that did not write it, such as a subagent. A writer misses its own habits.
+   Tell the agent these things:
+   - Revise the script by the steps of the declaude skill, and follow this guide.
+   - Keep the four exceptions of the section "The words of the script".
+   - Judge each note of the linter. Then read each sentence of the script against the register of the
+     skill, because the linter finds only some patterns.
+
+   If no subagent tool exists, read the script again from the top, and do these things yourself. If the
+   declaude skill is not installed, follow rules 50 to 55 of GUIDE.md.
+4. Print the script of the revision to `script.md`. Run the diff of the declaude skill on the two scripts,
+   and put back each claim that the revision lost. The diff exits with status 1 whenever it lists a
+   change. Each change is a candidate, and a change that the revision made on purpose is correct. If the
+   declaude skill is not installed, download
+   [the diff](https://github.com/rahuldave/nossaifd/blob/main/.agents/skills/declaude/scripts/declaude_diff.py)
+   from nossaifd:
+
+   ```
+   # If the declaude skill is not installed, use the path of the diff that you downloaded
+   uv run --no-project python .agents/skills/declaude/scripts/declaude_diff.py draft.md script.md
+   ```
+
+5. Run `check_talk.py` again, and fix only what the revision broke.
+6. Run the linter once more, to check that the fixes brought back no pattern. Then read the slides and
+   the script yourself.
+
 ## Sources
 
 - **Rosalind Reid**, "Communicating Your Work", a tutorial for the course AC297r at the Institute for Applied
