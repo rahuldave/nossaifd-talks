@@ -82,6 +82,22 @@ machine needs `just` and `uv`.
 - `just site` builds the site into `_site/` with smalldocs.
 - `just package-lint` checks `skill-package.json`.
 
+This repository uses the flow of [nossaifd](https://github.com/rahuldave/nossaifd/blob/main/docs/flow.md) for
+its pages. The folder `.agents/skills/` holds two skills from nossaifd, so that the flow can run.
+
+One is the skill `nossaifd`. The other is the skill `declaude`, by Oskar Austegard, under the MIT licence, from
+[his repository](https://github.com/oaustegard/claude-skills/tree/6baa7290da972191749acda03c63297e67b3fc26/declauding).
+The package installs neither skill. It installs only `presentations`.
+
+- `AGENTS.md` and `CLAUDE.md` tell an agent to use the nossaifd skill for each page.
+- The hooks in `.claude/settings.json` and `.codex/hooks.json` stop a turn once when a changed page has a
+  hard problem or no record of its passes.
+- The workflow `nossaifd-prose.yml` checks each page that a pull request changes.
+
+After the passes, `just prose-record page.md` records a page, and `just prose-status` lists the pages that
+still need them. `just nossaifd-install` installs the two skills again from nossaifd. `just prose` and
+`just declaude` use the checker and the linter of these skills.
+
 ## Where the rules come from
 
 [Sources and credit](docs/sources.md) says what each source gives, and [Why the rules](docs/why.md) says

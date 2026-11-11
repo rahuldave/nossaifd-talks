@@ -7,9 +7,11 @@ set positional-arguments
 python := "uv run --no-project --quiet python"
 smalldocs := "uvx --from smalldocs==0.5.5 smalldocs"
 
-# check.py and the declaude skill of nossaifd, at a fixed commit of its main branch. Move it when either
-# changes there. The declaude skill is by Oskar Austegard (github.com/oaustegard/claude-skills, MIT licence).
-nossaifd_commit := "fdaecc6cfe5b678da30e7afb24de85ae453ca5d8"
+# The skills nossaifd and declaude, from github.com/rahuldave/nossaifd, live in .agents/skills/ for the prose flow
+# of nossaifd. The declaude skill is by Oskar Austegard (github.com/oaustegard/claude-skills, MIT licence).
+# The package ships only presentations. The recipes use the checker and the linter of these skills.
+check_py := ".agents/skills/nossaifd/scripts/check.py"
+declaude_lint := ".agents/skills/declaude/scripts/declaude_lint.py"
 
 [private]
 default:
@@ -36,10 +38,7 @@ prose:
     #!/usr/bin/env bash
     set -euo pipefail
     {{python}} check_talk.py tests/fixtures/deck.md examples/cache/plan.md examples/cache/slides.qmd
-    tool_root="$(mktemp -d)"
-    trap 'rm -rf -- "$tool_root"' EXIT
-    curl -fsSL "https://raw.githubusercontent.com/rahuldave/nossaifd/{{nossaifd_commit}}/check.py" -o "$tool_root/check.py"
-    {{python}} -I "$tool_root/check.py" README.md TALKS.md EXAMPLES.md docs/check-talk.md docs/sources.md docs/why.md \
+    {{python}} -I {{check_py}} README.md TALKS.md EXAMPLES.md docs/check-talk.md docs/sources.md docs/why.md \
         docs/schwabish-summary.md .agents/skills/presentations/SKILL.md
 
 # Note the patterns of model prose in the script of each deck, with the linter of Oskar Austegard's declaude
@@ -50,12 +49,11 @@ declaude *decks:
     [ $# -gt 0 ] || set -- tests/fixtures/deck.md examples/cache/slides.qmd
     tool_root="$(mktemp -d)"
     trap 'rm -rf -- "$tool_root"' EXIT
-    curl -fsSL "https://raw.githubusercontent.com/rahuldave/nossaifd/{{nossaifd_commit}}/.agents/skills/declaude/scripts/declaude_lint.py" -o "$tool_root/declaude_lint.py"
     for deck in "$@"; do
         echo "$deck:"
         {{python}} check_talk.py --script "$deck" > "$tool_root/script.md"
         # The linter exits 1 for a note, so a crash shows only on stderr
-        {{python}} -I "$tool_root/declaude_lint.py" --skip-quoted --no-html "$tool_root/script.md" 2> "$tool_root/err" || true
+        {{python}} -I {{declaude_lint}} --skip-quoted --no-html "$tool_root/script.md" 2> "$tool_root/err" || true
         if [ -s "$tool_root/err" ]; then cat "$tool_root/err" >&2; exit 1; fi
     done
 
@@ -66,6 +64,19 @@ site:
 # Check the site with smalldocs: the options, the links and the Markdown
 site-check:
     {{smalldocs}} check .
+
+# Install the skills nossaifd and declaude again from the main branch of nossaifd, for the prose flow
+nossaifd-install:
+    npx -y skills add rahuldave/nossaifd -a codex --skill '*' -y
+
+# List the changed pages that still need the steps of the nossaifd skill
+prose-status:
+    {{python}} -I .agents/skills/nossaifd/scripts/prose_gate.py status
+
+# Record each page after step 8 of the nossaifd skill: just prose-record page.md. A path is from the current folder
+[no-cd]
+prose-record +pages:
+    {{python}} -I "{{justfile_directory()}}/.agents/skills/nossaifd/scripts/prose_gate.py" record "$@"
 
 # Everything a commit must pass: the lint, the tests, the prose and the site
 check:
@@ -87,4 +98,4 @@ package-lint:
 
 # Check that each link to a skill of another package has a fallback, with the checker of a jnterfaces clone: just links ../jnterfaces
 links jnterfaces="../jnterfaces":
-    find .agents/skills -type f \( -name '*.md' -o -name '*.sh' -o -name '*.py' -o -name '*.yaml' \) -exec {{python}} "$1/scripts/check_skill_links.py" --package . --resolve "$1" {} +
+    find .agents/skills/presentations -type f \( -name '*.md' -o -name '*.sh' -o -name '*.py' -o -name '*.yaml' \) -exec {{python}} "$1/scripts/check_skill_links.py" --package . --resolve "$1" {} +

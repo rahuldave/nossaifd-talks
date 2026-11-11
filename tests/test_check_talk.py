@@ -472,7 +472,7 @@ class SkillTest(unittest.TestCase):
 
     def test_every_link_in_the_skill_resolves(self):
         # The package linter reads every [text](target) in a skill's Markdown, also inside a code block, so this does too
-        pages = sorted((REPO / '.agents/skills').glob('*/**/*.md'))
+        pages = sorted(SKILL.glob('**/*.md'))   # The installed skills of nossaifd are its pages, not ours
         self.assertTrue(any(p.name == 'TALKS.md' for p in pages) and any(p.name == 'EXAMPLES.md' for p in pages))
         for page in pages:
             for target in re.findall(r'\[[^\]]*\]\(([^)]*)\)', page.read_text(encoding='utf-8')):

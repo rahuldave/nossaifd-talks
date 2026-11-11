@@ -20,7 +20,8 @@ class PackageTest(unittest.TestCase):
         self.assertEqual(manifest['repository']['name'], 'nossaifd-talks')
         self.assertEqual(manifest['repository']['url'], 'https://github.com/rahuldave/nossaifd-talks')
         self.assertEqual(manifest['skills'], [{'name': 'presentations', 'path': '.agents/skills/presentations'}])
-        self.assertEqual(sorted(p.name for p in (REPO / '.agents/skills').iterdir()), ['presentations'])
+        # The skills nossaifd and declaude are installed for the prose flow, and the package does not ship them
+        self.assertEqual(sorted(p.name for p in (REPO / '.agents/skills').iterdir()), ['declaude', 'nossaifd', 'presentations'])
         self.assertNotIn('installers', manifest)
         self.assertEqual([e['name'] for e in manifest['executables']['required']], ['uv'])
         self.assertIn('rahuldave/nossaifd-talks', manifest['npx']['install'])
@@ -33,8 +34,10 @@ class PackageTest(unittest.TestCase):
 
     def test_the_report_parts_of_nossaifd_are_gone(self):
         for name in ('GUIDE.md', 'check.py', 'tests/test_check.py', 'docs/checker.md', 'docs/build.py',
-                     'docs/site.css', '.agents/skills/nossaifd', '.agents/just'):
+                     'docs/site.css', '.agents/just'):
             self.assertFalse((REPO / name).exists(), name)
+        # .agents/skills/nossaifd is the skill installed from nossaifd for the prose flow, not the old report parts
+        self.assertTrue((REPO / '.agents/skills/nossaifd/scripts/prose_gate.py').is_file())
 
     def test_the_skill_names_its_licence_and_the_licence_matches(self):
         text = (SKILL / 'SKILL.md').read_text()
@@ -137,6 +140,50 @@ class ReaderTest(unittest.TestCase):
                          ['Use a tool, e.g. a linter.', 'Then stop.'])
 
 
+class ProseFlowTest(unittest.TestCase):
+    "The flow of nossaifd: the instruction, the hooks and the workflow, as its docs/flow.md installs them."
+    ASSETS = REPO / '.agents/skills/nossaifd/assets'
+
+    def test_the_parts_are_the_assets_of_the_nossaifd_skill(self):
+        for part, asset in (('.claude/settings.json', 'claude-settings-hook.json'),
+                            ('.codex/hooks.json', 'codex-hooks.json'),
+                            ('.github/workflows/nossaifd-prose.yml', 'prose-check.yml')):
+            self.assertEqual((REPO / part).read_text(encoding='utf-8'), (self.ASSETS / asset).read_text(encoding='utf-8'), part)
+        self.assertIn((self.ASSETS / 'agents-prose.md').read_text(encoding='utf-8'), (REPO / 'AGENTS.md').read_text(encoding='utf-8'))
+        self.assertIn('@AGENTS.md', (REPO / 'CLAUDE.md').read_text(encoding='utf-8').split())
+
+    def test_the_installed_skills_are_whole_and_locked(self):
+        for name in ('nossaifd', 'declaude'):
+            self.assertTrue((REPO / '.agents/skills' / name / 'SKILL.md').is_file(), name)
+        lock = json.loads((REPO / 'skills-lock.json').read_text(encoding='utf-8'))
+        self.assertEqual(sorted(lock['skills']), ['declaude', 'nossaifd'])
+        self.assertEqual({v['source'] for v in lock['skills'].values()}, {'rahuldave/nossaifd'})
+
+    def test_the_readme_section_on_the_flow_credits_the_declaude_skill(self):
+        text = ' '.join((REPO / 'README.md').read_text(encoding='utf-8').split())
+        self.assertEqual(text.count('the skill `declaude`, by Oskar Austegard, under the MIT licence'), 1)
+
+    def test_the_recipes_of_the_flow(self):
+        justfile = (REPO / 'Justfile').read_text(encoding='utf-8')
+        for line in ("nossaifd-install:\n    npx -y skills add rahuldave/nossaifd -a codex --skill '*' -y\n",
+                     'prose-status:\n    {{python}} -I .agents/skills/nossaifd/scripts/prose_gate.py status\n',
+                     '[no-cd]\nprose-record +pages:\n    {{python}} -I "{{justfile_directory()}}/.agents/skills/'
+                     'nossaifd/scripts/prose_gate.py" record "$@"\n',
+                     '    {{python}} -I {{check_py}} README.md'):
+            self.assertIn(line, justfile)
+        self.assertIn('    just prose\n', justfile[justfile.index('\ncheck:'):])
+
+    def test_the_hooks_find_the_gate_and_the_recipes_use_the_installed_tools(self):
+        for name in ('nossaifd/scripts/prose_gate.py', 'nossaifd/scripts/check.py', 'declaude/scripts/declaude_lint.py'):
+            self.assertTrue((REPO / '.agents/skills' / name).is_file(), name)
+        for part in ('.claude/settings.json', '.codex/hooks.json'):
+            self.assertEqual(sorted(json.loads((REPO / part).read_text(encoding='utf-8'))['hooks']), ['Stop', 'UserPromptSubmit'])
+        justfile = (REPO / 'Justfile').read_text(encoding='utf-8')
+        self.assertIn('check_py := ".agents/skills/nossaifd/scripts/check.py"', justfile)
+        self.assertNotIn('raw.githubusercontent.com/rahuldave/nossaifd', justfile)
+        self.assertIn('find .agents/skills/presentations -type f', justfile)   # just links reads only our skill
+
+
 class PassOrderTest(unittest.TestCase):
     "The script goes through the passes of nossaifd in order: checker, declaude pass, diff, checker, linter."
     # The declaude skill, with its linter and its diff, is by Oskar Austegard (MIT licence).
@@ -197,6 +244,21 @@ class PassOrderTest(unittest.TestCase):
               ('revise the script in the order of the passes of nossaifd', 'First comes the talk checker',
                'agent that did not write the script makes the declaude pass', 'the diff of the declaude skill',
                'the talk checker runs again', 'the linter runs once more'))
+
+
+class GateTest(unittest.TestCase):
+    "The pages that the gate of nossaifd checks. These fail check.py on purpose: a script, a copy of a book or a test."
+    KNOWN = ['WORKSHEET.md', 'docs/notes/schwabish-choices.md', 'examples/cache/plan.md', 'examples/cache/slides.qmd', 'tests/fixtures/deck.md']
+
+    def test_only_the_known_pages_fail_the_gate(self):
+        sys.path.insert(0, str(REPO / ".agents/skills/nossaifd/scripts"))
+        import prose_gate
+        names = subprocess.run(["git", "ls-files"], cwd=REPO, capture_output=True, text=True, check=True).stdout.split()
+        pages = [n for n in names if prose_gate.is_page(n)]
+        run = subprocess.run([sys.executable, "-I", str(REPO / ".agents/skills/nossaifd/scripts/check.py"), *pages],
+                             cwd=REPO, capture_output=True, text=True)
+        failing = sorted(re.findall(r"(?m)^(\S+): [1-9]\d* hard", run.stdout))
+        self.assertEqual(failing, sorted(self.KNOWN))
 
 
 if __name__ == '__main__':
