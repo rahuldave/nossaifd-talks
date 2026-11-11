@@ -137,5 +137,45 @@ class ReaderTest(unittest.TestCase):
                          ['Use a tool, e.g. a linter.', 'Then stop.'])
 
 
+class PassOrderTest(unittest.TestCase):
+    "The script goes through the passes of nossaifd in order: checker, declaude pass, diff, checker, linter."
+    # The declaude skill, with its linter and its diff, is by Oskar Austegard (MIT licence).
+
+    def passes(self, text):
+        section = text[text.index('Revise the script with these passes'):text.index('\n## Sources')]
+        return [int(n) for n in re.findall(r'(?m)^(\d+)\. ', section)], section
+
+    def test_the_passes_run_in_the_order_of_nossaifd(self):
+        numbers, section = self.passes((REPO / 'TALKS.md').read_text(encoding='utf-8'))
+        self.assertEqual(numbers, [1, 2, 3, 4, 5, 6])
+        steps = re.split(r'(?m)^\d+\. ', section)[1:]
+        self.assertIn('check_talk.py', steps[0])
+        self.assertIn('draft.md', steps[1])
+        self.assertIn('--script', steps[1])
+        self.assertIn('agent that did not write it', steps[2])
+        self.assertIn('four exceptions', steps[2])
+        self.assertIn('If no subagent tool exists', steps[2])
+        self.assertIn('declaude skill is not installed', ' '.join(steps[2].split()))
+        self.assertIn('declaude_diff.py draft.md script.md', steps[3])
+        self.assertIn('blob/main/.agents/skills/declaude/scripts/declaude_diff.py', steps[3])
+        self.assertIn('status 1', steps[3])
+        self.assertNotIn('bad example', section)   # The rule on bad examples is not adopted yet
+        self.assertIn('fix only what the revision broke', steps[4])
+        self.assertIn('linter once more', steps[5])
+
+    def test_the_skill_and_the_choices_give_the_same_order(self):
+        def order(name, phrases):
+            text = ' '.join((REPO / name).read_text(encoding='utf-8').split())
+            found = [text.index(p) for p in phrases]
+            self.assertEqual(found, sorted(found), name)
+        order('.agents/skills/presentations/SKILL.md',
+              ('Run the talk checker first', 'agent that did not write the script', 'run the diff of the declaude',
+               'run the talk checker again', 'the linter once more'))
+        order('docs/why.md',
+              ('revise the script in the order of the passes of nossaifd', 'First comes the talk checker',
+               'agent that did not write the script makes the declaude pass', 'the diff of the declaude skill',
+               'the talk checker runs again', 'the linter runs once more'))
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -91,6 +91,16 @@ Oskar Austegard calls the skill declauding. nossaifd calls its copy declaude, be
 The talk checker does not measure these rules. `just declaude` runs the linter of
 [Oskar Austegard's declaude skill](https://github.com/oaustegard/claude-skills/tree/6baa7290da972191749acda03c63297e67b3fc26/declauding) on the script, and its notes never fail the check.
 
+The project's author chose on 10 November 2026 to revise the script in the order of the passes of
+nossaifd. The order is in [docs/declaude.md of nossaifd](https://github.com/rahuldave/nossaifd/blob/main/docs/declaude.md).
+First comes the talk checker. Then an agent that did not write the script makes the declaude pass. Then the
+diff of the declaude skill finds each claim that the revision lost. Then the talk checker runs again, and
+the linter runs once more.
+
+In the passes on the pages of nossaifd, the
+declaude pass found problems that `check.py` cannot find. The second run of `check.py` caught what the
+revision broke.
+
 ## Choices for documents
 
 The guide for reports makes its own choices. Examples are the passive voice, where the result goes and
