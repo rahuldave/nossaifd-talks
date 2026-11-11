@@ -206,9 +206,9 @@ literature. The grey of layering, the hierarchy of type and the highlights are t
 
 ## Chapter 5. The data visualization slide (pages 83 to 115). Look
 
-This chapter is about charts on slides. You chose to keep chart advice for the separate visualization
-repository, and you said that both books are for the look of slides. So its slide parts go to the skill
-on visual design.
+This chapter is about charts on slides. The project's author chose to keep chart advice for the separate
+visualization repository, and said that both books are for the look of slides. So the slide parts of the
+chapter go to the skill on visual design.
 
 **Preattentive attributes (pages 84 to 87).** The eye notices some features before conscious attention, such as
 color, intensity, size, shape, position, enclosure and others. Use one or two of them to point at the
@@ -373,7 +373,7 @@ are two decks, a companion document, notes written for a reader, or a recording 
 
 Do not start at the computer. Think about the message and what the audience should do. Visualize the
 content, unify what you say with what you show, and focus the audience on one point at a time. A talk
-gives the audience something that the paper cannot give, which is the speaker.
+gives the audience the speaker, and a paper cannot.
 
 ## Further readings (pages 171 and 172)
 

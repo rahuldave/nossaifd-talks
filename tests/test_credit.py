@@ -12,6 +12,8 @@ import unittest
 
 REPO = Path(__file__).resolve().parents[1]
 TEXT = {'.md', '.py', '.yaml', '.yml', '.json', '.just'}
+# The skills nossaifd and declaude, installed from nossaifd with npx for its prose flow. They are its files
+INSTALLED = ('.agents/skills/nossaifd/', '.agents/skills/declaude/', 'skills-lock.json')   # and the lock file of npx
 # The pages that must name her whether or not they mention her by surname: each one is built on her work.
 MUST = ['README.md', 'TALKS.md', 'EXAMPLES.md', 'docs/sources.md', 'docs/why.md', 'docs/check-talk.md', 'check_talk.py',
         '.agents/skills/presentations/SKILL.md', '.agents/skills/presentations/agents/openai.yaml',
@@ -100,7 +102,7 @@ def files():  # Every text file in the repository that git tracks or would add, 
                             capture_output=True, text=True, check=True).stdout.split('\n')
     for name in listed:
         path = REPO / name
-        if name and path.suffix in TEXT and path.is_file() and not name.startswith('tests/'):
+        if name and path.suffix in TEXT and path.is_file() and not name.startswith(('tests/',) + INSTALLED):
             yield name, path.read_text(encoding='utf-8')
 
 
@@ -235,7 +237,8 @@ class AustegardCreditTest(unittest.TestCase):
 
     def tracked(self):
         names = subprocess.run(['git', 'ls-files'], cwd=REPO, capture_output=True, text=True, check=True).stdout
-        return [REPO / n for n in names.split() if Path(n).suffix in TEXT or Path(n).name == 'Justfile']
+        return [REPO / n for n in names.split() if (Path(n).suffix in TEXT or Path(n).name == 'Justfile')
+                and not n.startswith(INSTALLED)]
 
     def test_each_file_that_uses_the_declaude_skill_names_its_author(self):
         self.assertEqual(austegard_uncredited(self.tracked()), [])
@@ -308,14 +311,15 @@ class DeclaudeNameTest(unittest.TestCase):
 
     def test_each_paragraph_with_a_path_into_the_skill_gives_the_fallback(self):
         for path, name, text in self.files():
-            if path.suffix == '.md':   # The Justfile downloads the linter, so it needs no fallback
+            if path.suffix == '.md':   # The Justfile runs the installed linter, so it needs no fallback
                 self.assertEqual(unfallen(text), [], name)
         self.assertTrue(unfallen('Run .agents/skills/declaude/scripts/declaude_lint.py on the script.'))
 
-    def test_the_justfile_pins_the_rename_and_downloads_from_declaude(self):
+    def test_the_justfile_runs_the_linter_of_the_installed_declaude_skill(self):
         justfile = (REPO / 'Justfile').read_text(encoding='utf-8')
-        self.assertRegex(justfile, r'(?m)^nossaifd_commit := "fdaecc6cfe5b678da30e7afb24de85ae453ca5d8"$')
-        self.assertIn('{{nossaifd_commit}}/.agents/skills/declaude/scripts/declaude_lint.py', justfile)
+        self.assertIn('declaude_lint := ".agents/skills/declaude/scripts/declaude_lint.py"', justfile)
+        self.assertIn('{{python}} -I {{declaude_lint}} --skip-quoted --no-html', justfile)
+        self.assertTrue((REPO / '.agents/skills/declaude/scripts/declaude_lint.py').is_file())
 
 
 if __name__ == '__main__':

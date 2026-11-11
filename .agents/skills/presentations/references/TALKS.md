@@ -1,6 +1,6 @@
 # Talks and slides
 
-A guide for talks, slide decks and talk scripts that an AI model writes and a person gives. It is the companion
+This file is a guide for talks, slide decks and talk scripts that an AI model writes and a person gives. It is the companion
 of [GUIDE.md](https://github.com/rahuldave/nossaifd/blob/main/GUIDE.md), the guide of the project nossaifd for
 documents that a person reads.
 
@@ -476,8 +476,8 @@ waits for a separate guide to visualization.
     slide, and a link from a slide can jump to them (Schwabish, pages 165 and 166). Mark the first appendix
     slide, and give each appendix slide an id, so that a slide of the talk can link to it and the appendix
     slide can link back. The section "The files of a talk" shows how.
-76. **Give a talk online a little more text.** The speaker cannot see the audience, and it is easily
-    distracted. Say when you pause so that the audience can read (Schwabish, page 164).
+76. **Give a talk online a little more text.** The speaker cannot see the audience, and the audience is
+    easily distracted. Say when you pause so that the audience can read (Schwabish, page 164).
 
 ## The sketch test
 
@@ -663,10 +663,8 @@ uv run --no-project python check_talk.py slides.qmd             # check the slid
 uv run --no-project python check_talk.py -v slides.qmd          # also show the soft notes
 ```
 
-Hard problems fail the check.
-
-In the plan, it checks that each section has an answer, and that the shape fits
-the two questions of rule 6. It fails the slides when the plan next to them is missing or has an empty section.
+Hard problems fail the check. In the plan, the checker makes sure that each section has an answer, and that the
+shape fits the two questions of rule 6. It fails the slides when the plan next to them is missing or has an empty section.
 On a slide, it checks the items, the words, paragraphs, equations, captions of figures and the titles.
 
 In the deck, it notes more slides than 75 percent of the minutes, a last slide with no

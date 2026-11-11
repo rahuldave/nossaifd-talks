@@ -103,8 +103,8 @@ has only lowercase `key: value` lines is the front matter of the next slide, as 
 ## What it checks
 
 The checker sorts what it finds into hard problems and soft notes. A hard problem breaks a rule, and the
-program can be sure of it. A soft note marks something that a person must judge. The program cannot tell if
-it is wrong, or the rule says "about".
+program can be sure of it. A soft note marks something that a person must judge. Either the program cannot
+tell if it is wrong, or the rule says "about".
 
 | Hard problem | Rule in TALKS.md |
 |---|---|
@@ -149,7 +149,7 @@ it is wrong, or the rule says "about".
 | "um", "uh" or "the thing is" in the script | A quote can hold them |
 | "Do you have any questions?" in the script | Ask "What questions do you have?" |
 
-## Why the split is where it is
+## Why a check is hard or soft
 
 A check is hard when the program measures the rule exactly and the rule has a clear limit. The count of items,
 the count of words and the count of equations are exact. "So," with a comma is the filler. "So" with no comma
@@ -169,7 +169,7 @@ checker leaves it out.
 The checker reads the plan, the slides and the script only. It skips code blocks, HTML, link targets and the labels
 inside an image. It does not apply the rules of [GUIDE.md](https://github.com/rahuldave/nossaifd/blob/main/GUIDE.md), the guide of nossaifd for reports. Read the
 words of the slides against GUIDE.md yourself. Do not run `check.py`, the checker for reports, on a deck.
-It also reads the script, and it fails the contractions there.
+`check.py` also reads the script, and it fails the contractions there.
 
 nossaifd ships the recipe `just prose`, and jnterfaces installs it with the role `prose`. The recipe runs
 `check.py` on every

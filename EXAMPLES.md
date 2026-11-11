@@ -652,8 +652,8 @@ higher above a plane, with their shadows below. At bottom center, one hand hangs
 screens. Lines run from points above, through the hand, to the screens. Each screen shows the shadow of the
 hand from a different angle.
 
-**What it shows:** A familiar thing, a shadow, can explain how many flat views of an object come from many
-directions.
+**What it shows:** A familiar thing, a shadow, can explain how an object gives a different flat view from
+each direction.
 
 **Rule:** TALKS.md rule 44. The page gives no words, so the speaker says where the analogy stops, by
 TALKS.md rule 45.
@@ -926,7 +926,7 @@ cannot support a decision.
 ```
 
 **What it shows:** With the skill, every title is in sentence case, without bold, and starts with a verb.
-Without it, the titles have title case, bold and "Not Just Scores".
+Without it, the titles have title case, bold and the contrast "Not Just Scores".
 
 **Rule:** TALKS.md rules 56 and 58, and GUIDE.md rules 35 and 42. The first title of the skill, "Measure
 less, but keep the signal", is close to a slogan, which TALKS.md rule 58 warns against.
