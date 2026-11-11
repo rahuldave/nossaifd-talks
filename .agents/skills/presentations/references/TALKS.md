@@ -157,7 +157,7 @@ and "funnel" are this guide's own.
     A bug hunt that holds back the cause is a pure story. State the problem in the opening as a puzzle with
     facts, as in "The build slowed from 4 minutes to 40 in one week, and no commit touched the build files."
     Do not promise an answer and name nothing, as in "You'll see why at the end". The ban on such a teaser
-    comes from rule 20 of GUIDE.md, which takes it from Oskar Austegard's declauding skill,
+    comes from rule 20 of GUIDE.md, which takes it from Oskar Austegard's declaude skill,
     [register entries 8](https://github.com/oaustegard/claude-skills/blob/6baa7290da972191749acda03c63297e67b3fc26/declauding/references/register.md?plain=1#L175) and [42](https://github.com/oaustegard/claude-skills/blob/6baa7290da972191749acda03c63297e67b3fc26/declauding/references/register.md?plain=1#L843).
 18. **Write the opening statement and the closing statement in full, in the plan.** The opening statement is
     the first thing said after the thanks. It is bold and full of content, and it does not apologize or invite
@@ -291,7 +291,7 @@ slide has two exceptions of its own:
 
 Everything else in GUIDE.md applies to the script and to the slides. That includes rules 50 to 55 of
 GUIDE.md, "Patterns of model prose". They come from
-[Oskar Austegard's declauding skill](https://github.com/oaustegard/claude-skills/tree/6baa7290da972191749acda03c63297e67b3fc26/declauding), and so do
+[Oskar Austegard's declaude skill](https://github.com/oaustegard/claude-skills/tree/6baa7290da972191749acda03c63297e67b3fc26/declauding), and so do
 parts of rules 9, 10, 20, 32, 34, 36, 37, 38 and 43 of GUIDE.md. Apply rule 10 of GUIDE.md, not more than two
 nouns in a row, with care in a title. Write "Database reads cause the wait" and not "Database read load
 causes the wait".
@@ -677,14 +677,14 @@ slides after they pass.
 
 Then look for the patterns of model prose in the script, by rules 50 to 54 of GUIDE.md. The option `--script`
 prints only the script, with each line on its line of the deck. The linter of
-[Oskar Austegard's declauding skill](https://github.com/oaustegard/claude-skills/tree/6baa7290da972191749acda03c63297e67b3fc26/declauding) reads it. The
-repository nossaifd ships that skill as its second skill, `declauding`, in `.agents/skills/declauding/`. If
-the declauding skill is not installed, download [the linter](https://github.com/rahuldave/nossaifd/blob/main/.agents/skills/declauding/scripts/declaude_lint.py) from nossaifd:
+[Oskar Austegard's declaude skill](https://github.com/oaustegard/claude-skills/tree/6baa7290da972191749acda03c63297e67b3fc26/declauding) reads it. The
+repository nossaifd ships that skill as its second skill, `declaude`, in `.agents/skills/declaude/`. If
+the declaude skill is not installed, download [the linter](https://github.com/rahuldave/nossaifd/blob/main/.agents/skills/declaude/scripts/declaude_lint.py) from nossaifd:
 
 ```
 uv run --no-project python check_talk.py --script slides.qmd > script.md
-# If the declauding skill is not installed, use the path of the linter that you downloaded
-uv run --no-project python .agents/skills/declauding/scripts/declaude_lint.py --skip-quoted --no-html script.md
+# If the declaude skill is not installed, use the path of the linter that you downloaded
+uv run --no-project python .agents/skills/declaude/scripts/declaude_lint.py --skip-quoted --no-html script.md
 ```
 
 The option `--no-html` keeps the linter from reading a script with a tag in it as a web page. The linter
@@ -723,8 +723,9 @@ exits with status 1 whenever it has a note. Each note is a candidate, and the fo
   it apart comes from it.
 - **Shreya Shankar**, the plain-writing skill, at https://github.com/docwriter-org/plain-writing-skill,
   under the MIT licence. It supports the rule on contractions in the script.
-- **Oskar Austegard**, the declauding skill, in https://github.com/oaustegard/claude-skills, folder
+- **Oskar Austegard**, the declaude skill, in https://github.com/oaustegard/claude-skills, folder
   `declauding`, version 0.14.0 at commit 6baa729, under the MIT licence, copyright (c) 2025 Oskar Austegard.
+  Oskar Austegard calls it declauding, and nossaifd ships it as the skill `declaude`.
   Rules 50 to 55 of GUIDE.md come from it, and the ban on a teaser in rule 17 of this guide. This guide
   cites its register, and it runs its linter on the script.
 

@@ -7,9 +7,9 @@ set positional-arguments
 python := "uv run --no-project --quiet python"
 smalldocs := "uvx --from smalldocs==0.5.5 smalldocs"
 
-# check.py and the declauding skill of nossaifd, at a fixed commit of its main branch. Move it when either
-# changes there. The declauding skill is by Oskar Austegard (github.com/oaustegard/claude-skills, MIT licence).
-nossaifd_commit := "0bba4434954372304825a14233343a0ac0a6460c"
+# check.py and the declaude skill of nossaifd, at a fixed commit of its main branch. Move it when either
+# changes there. The declaude skill is by Oskar Austegard (github.com/oaustegard/claude-skills, MIT licence).
+nossaifd_commit := "fdaecc6cfe5b678da30e7afb24de85ae453ca5d8"
 
 [private]
 default:
@@ -42,7 +42,7 @@ prose:
     {{python}} -I "$tool_root/check.py" README.md TALKS.md EXAMPLES.md docs/check-talk.md docs/sources.md docs/why.md \
         docs/schwabish-summary.md .agents/skills/presentations/SKILL.md
 
-# Note the patterns of model prose in the script of each deck, with the linter of Oskar Austegard's declauding
+# Note the patterns of model prose in the script of each deck, with the linter of Oskar Austegard's declaude
 # skill, by GUIDE.md rules 50 to 54. Its notes are candidates for a person to judge, so they never fail.
 declaude *decks:
     #!/usr/bin/env bash
@@ -50,7 +50,7 @@ declaude *decks:
     [ $# -gt 0 ] || set -- tests/fixtures/deck.md examples/cache/slides.qmd
     tool_root="$(mktemp -d)"
     trap 'rm -rf -- "$tool_root"' EXIT
-    curl -fsSL "https://raw.githubusercontent.com/rahuldave/nossaifd/{{nossaifd_commit}}/.agents/skills/declauding/scripts/declaude_lint.py" -o "$tool_root/declaude_lint.py"
+    curl -fsSL "https://raw.githubusercontent.com/rahuldave/nossaifd/{{nossaifd_commit}}/.agents/skills/declaude/scripts/declaude_lint.py" -o "$tool_root/declaude_lint.py"
     for deck in "$@"; do
         echo "$deck:"
         {{python}} check_talk.py --script "$deck" > "$tool_root/script.md"

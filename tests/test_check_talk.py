@@ -359,7 +359,7 @@ class FrontMatterTest(unittest.TestCase):
 
 
 class ScriptOptionTest(unittest.TestCase):
-    "The option --script prints the script of one deck, each line on its line of the deck, for the linter of the declauding skill by Oskar Austegard."
+    "The option --script prints the script of one deck, each line on its line of the deck, for the linter of the declaude skill by Oskar Austegard."
 
     def script(self, text, name='deck.md'):
         with tempfile.TemporaryDirectory() as temp:

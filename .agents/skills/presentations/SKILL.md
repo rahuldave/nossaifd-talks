@@ -65,10 +65,10 @@ The guide is for documents. The section "The words of the script" of TALKS.md li
 speech. In the script, put the news first, and use contractions. Prefer one question and its answer.
 Several questions in a row are allowed when they build tension. Repetition is allowed in the script.
 
-Rules 50 to 55 of GUIDE.md, from [Oskar Austegard's declauding skill](https://github.com/oaustegard/claude-skills/tree/6baa7290da972191749acda03c63297e67b3fc26/declauding),
-apply too, with the four exceptions for the script in TALKS.md. The repository nossaifd ships that skill as
-the skill `declauding`. Run its linter on the script, as the section "Check the talk" of TALKS.md shows. If the
-declauding skill is not installed, download [the linter](https://github.com/rahuldave/nossaifd/blob/main/.agents/skills/declauding/scripts/declaude_lint.py). The linter exits with status 1 whenever it has a note,
+Rules 50 to 55 of GUIDE.md, from [Oskar Austegard's declaude skill](https://github.com/oaustegard/claude-skills/tree/6baa7290da972191749acda03c63297e67b3fc26/declauding),
+apply too, with the four exceptions for the script in TALKS.md. Oskar Austegard calls the skill declauding. The repository nossaifd ships that skill as
+the skill `declaude`. Run its linter on the script, as the section "Check the talk" of TALKS.md shows. If the
+declaude skill is not installed, download [the linter](https://github.com/rahuldave/nossaifd/blob/main/.agents/skills/declaude/scripts/declaude_lint.py). The linter exits with status 1 whenever it has a note,
 and each note is a candidate for you to judge.
 
 Analogy, metaphor and humor are allowed in the script and on the slides when they explain the work, as
