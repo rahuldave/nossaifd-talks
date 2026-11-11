@@ -30,7 +30,7 @@ does not check pace, and it has no option for a time slot. It reads the time fro
 
 The `--script` option prints the script of one deck and checks nothing. Each line of the script stays on its line
 of the deck, and every other line is blank. Code and the markers of blocks in the notes are blank too. So a line
-number from the linter of [Oskar Austegard's declauding skill](https://github.com/oaustegard/claude-skills/tree/6baa7290da972191749acda03c63297e67b3fc26/declauding) is a line of the deck.
+number from the linter of [Oskar Austegard's declaude skill](https://github.com/oaustegard/claude-skills/tree/6baa7290da972191749acda03c63297e67b3fc26/declauding) is a line of the deck. Oskar Austegard calls the skill declauding.
 
 The program ends with one of three exit statuses:
 

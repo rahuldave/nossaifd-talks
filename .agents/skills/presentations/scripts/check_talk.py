@@ -24,7 +24,7 @@ slide. A line of the notes that starts with "Cue:" is the cue of the slide, and 
 
 With --script, the checker prints the script of one deck and checks nothing. Each line of the script stays on its
 line of the deck, and every other line is blank, so a line number from another checker, such as the linter of
-the declauding skill by Oskar Austegard (https://github.com/oaustegard/claude-skills, MIT licence), is a line of the
+the declaude skill by Oskar Austegard (https://github.com/oaustegard/claude-skills, MIT licence), is a line of the
 deck. The lines that start with "Cue:", code and the markers of ::: blocks are left out.
 
 The exit status is 0 when every file passes, 1 when a file has a hard problem, and 2 for a usage error, such as a

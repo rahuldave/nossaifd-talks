@@ -80,9 +80,9 @@ The project uses two works by Shreya Shankar:
 
 ## Oskar Austegard
 
-[The declauding skill by Oskar Austegard](https://github.com/oaustegard/claude-skills/tree/6baa7290da972191749acda03c63297e67b3fc26/declauding), in the repository
+[The declaude skill by Oskar Austegard](https://github.com/oaustegard/claude-skills/tree/6baa7290da972191749acda03c63297e67b3fc26/declauding), in the repository
 oaustegard/claude-skills, version 0.14.0 at commit 6baa729, under the MIT licence, copyright (c) 2025 Oskar
-Austegard. GUIDE.md of nossaifd takes rules 50 to 55 from it, and the talk guide applies them, with four
+Austegard. Oskar Austegard calls it declauding, and nossaifd ships it as the skill `declaude`. GUIDE.md of nossaifd takes rules 50 to 55 from it, and the talk guide applies them, with four
 exceptions for the script. The ban on a teaser in rule 17 of the talk guide comes from its register, entries 8
 and 42. `just declaude` runs its linter on the script of a deck, from the copy that nossaifd ships. The README of
 the skill names its own sources, such as the Wikipedia page "Signs of AI writing".

@@ -220,8 +220,8 @@ class CreditTest(unittest.TestCase):
 
 
 
-def austegard_uncredited(paths):  # The files that use the declauding skill and do not name its author in full
-    "Each file that mentions the declauding skill must name Oskar Austegard, as each use of Rosalind Reid names her."
+def austegard_uncredited(paths):  # The files that use the declaude skill and do not name its author in full
+    "Each file that mentions the declaude skill must name Oskar Austegard, as each use of Rosalind Reid names her."
     found = []
     for path in paths:
         text = path.read_text(encoding='utf-8', errors='replace')
@@ -231,20 +231,91 @@ def austegard_uncredited(paths):  # The files that use the declauding skill and 
 
 
 class AustegardCreditTest(unittest.TestCase):
-    "The declauding skill by Oskar Austegard, under the MIT licence, keeps its credit at each use."
+    "The declaude skill by Oskar Austegard, under the MIT licence, keeps its credit at each use."
 
     def tracked(self):
         names = subprocess.run(['git', 'ls-files'], cwd=REPO, capture_output=True, text=True, check=True).stdout
         return [REPO / n for n in names.split() if Path(n).suffix in TEXT or Path(n).name == 'Justfile']
 
-    def test_each_file_that_uses_the_declauding_skill_names_its_author(self):
+    def test_each_file_that_uses_the_declaude_skill_names_its_author(self):
         self.assertEqual(austegard_uncredited(self.tracked()), [])
 
     def test_a_file_that_drops_the_name_fails(self):
         with tempfile.TemporaryDirectory(dir=REPO) as temp:
             page = Path(temp) / 'x.md'
-            page.write_text('Run the linter of the declauding skill.\n', encoding='utf-8')
+            page.write_text('Run the linter of the declaude skill.\n', encoding='utf-8')
             self.assertEqual(len(austegard_uncredited([page])), 1)
+
+
+OLD_NAME = re.compile(r'declauding', re.I)
+HIS_LINK = re.compile(r'https://github\.com/oaustegard/claude-skills/(?:tree|blob)/[0-9a-f]{40}/')
+HIS_FOLDER = re.compile(HIS_LINK.pattern + r'declauding(?=[/)\s]|$)|folder\s+`declauding`')
+HIS_NAME = re.compile(r'Oskar Austegard calls (?:it|the skill) declauding')
+WHY_NAME = 'because check.py and the linter read the word declauding as an -ing form'
+
+
+def old_name_uses(text, name=''):
+    "Each use of the old name declauding, other than his folder, one sentence that gives his name, and the reason."
+    text = HIS_FOLDER.sub('', ' '.join(text.split()))
+    text = HIS_NAME.sub('', text, count=1)
+    if name == 'docs/why.md':
+        text = text.replace(WHY_NAME, '', 1)
+    return OLD_NAME.findall(text)
+
+
+INTRODUCTIONS = ('README.md', 'TALKS.md', 'docs/sources.md', 'docs/check-talk.md', 'docs/why.md',
+                 '.agents/skills/presentations/SKILL.md', '.agents/skills/presentations/references/TALKS.md')
+
+
+def unfallen(text):
+    "Each paragraph that names a path into the declaude skill and gives no fallback for a missing skill."
+    return [p for p in re.split(r'\n\s*\n', text)
+            if '.agents/skills/declaude/' in p and 'If the declaude skill is not installed' not in ' '.join(p.split())]
+
+
+class DeclaudeNameTest(unittest.TestCase):
+    "nossaifd renamed its copy of the skill to declaude. Links to his repository keep his folder, declauding."
+
+    def files(self):
+        return [(p, p.relative_to(REPO).as_posix(), p.read_text(encoding='utf-8', errors='replace'))
+                for p in AustegardCreditTest().tracked() if p.name != 'test_credit.py']
+
+    def test_no_file_uses_the_old_name_outside_his_folder(self):
+        for _, name, text in self.files():
+            self.assertEqual(old_name_uses(text, name), [], name)
+
+    def test_the_old_path_the_old_skill_name_and_a_second_exempt_phrase_fail(self):
+        self.assertTrue(old_name_uses('.agents/skills/declauding/scripts/declaude_lint.py'))
+        self.assertTrue(old_name_uses('the declauding skill'))
+        self.assertTrue(old_name_uses('the word declauding as an -ing form'))   # outside docs/why.md
+        twice = 'Oskar Austegard calls it declauding. Oskar Austegard calls it declauding.'
+        self.assertTrue(old_name_uses(twice))
+        self.assertFalse(old_name_uses('https://github.com/oaustegard/claude-skills/tree/'
+                                       '6baa7290da972191749acda03c63297e67b3fc26/declauding/references'))
+
+    def test_every_link_to_his_repository_keeps_his_folder(self):
+        count = 0
+        for _, name, text in self.files():
+            for match in HIS_LINK.finditer(text):
+                count += 1
+                self.assertRegex(text[match.end():match.end() + 11], r'^declauding[/)\s]', name)
+        self.assertGreater(count, 0)
+
+    def test_each_page_that_introduces_the_skill_gives_his_name_for_it_once(self):
+        for name in INTRODUCTIONS:
+            text = ' '.join((REPO / name).read_text(encoding='utf-8').split())
+            self.assertEqual(len(HIS_NAME.findall(text)), 1, name)
+
+    def test_each_paragraph_with_a_path_into_the_skill_gives_the_fallback(self):
+        for path, name, text in self.files():
+            if path.suffix == '.md':   # The Justfile downloads the linter, so it needs no fallback
+                self.assertEqual(unfallen(text), [], name)
+        self.assertTrue(unfallen('Run .agents/skills/declaude/scripts/declaude_lint.py on the script.'))
+
+    def test_the_justfile_pins_the_rename_and_downloads_from_declaude(self):
+        justfile = (REPO / 'Justfile').read_text(encoding='utf-8')
+        self.assertRegex(justfile, r'(?m)^nossaifd_commit := "fdaecc6cfe5b678da30e7afb24de85ae453ca5d8"$')
+        self.assertIn('{{nossaifd_commit}}/.agents/skills/declaude/scripts/declaude_lint.py', justfile)
 
 
 if __name__ == '__main__':
