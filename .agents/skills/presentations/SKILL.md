@@ -74,7 +74,7 @@ and each note is a candidate for you to judge.
 Revise the script in the order of the passes in "Check the talk" of TALKS.md. Run the talk checker first.
 Then give the declaude pass to an agent that did not write the script. Then run the diff of the declaude
 skill, and put back each claim that the revision lost. Then run the talk checker again, and the linter once
-more.
+more. In every step, keep each bad example that the deck shows on purpose word for word, by rule 55 of GUIDE.md.
 
 Analogy, metaphor and humor are allowed in the script and on the slides when they explain the work, as
 Rosalind Reid advises. The words on a slide follow the guide too, except in two ways:

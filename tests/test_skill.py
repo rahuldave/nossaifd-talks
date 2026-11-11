@@ -159,9 +159,26 @@ class PassOrderTest(unittest.TestCase):
         self.assertIn('declaude_diff.py draft.md script.md', steps[3])
         self.assertIn('blob/main/.agents/skills/declaude/scripts/declaude_diff.py', steps[3])
         self.assertIn('status 1', steps[3])
-        self.assertNotIn('bad example', section)   # The rule on bad examples is not adopted yet
+        self.assertIn('Keep word for word each bad example that the deck shows on purpose, by rule 55 of GUIDE.md. '
+                      'Keep it even when the linter or the checker marks it. '
+                      'A bad example teaches only next to its fix.', ' '.join(steps[2].split()))
+        after = ' '.join(steps[5].split())   # The rule holds in every step, not only in the declaude pass
+        self.assertIn('In every step, keep each bad example that the deck shows on purpose, by rule 55 of GUIDE.md.',
+                      after)
+        self.assertIn('in a code block, because the talk checker skips code', after)
         self.assertIn('fix only what the revision broke', steps[4])
         self.assertIn('linter once more', steps[5])
+
+    def test_a_bad_example_in_a_code_block_on_a_slide_passes_the_checker(self):
+        bad = 'This paragraph is the bad example. It has two sentences and it fills the slide.'
+        deck = '---\ntitle: T\n---\n\n## Bad slides hide the point\n\n{}\n\n::: {{.notes}}\nCue: show it.\n:::\n'
+        with tempfile.TemporaryDirectory() as temp:
+            for body, hard in (('```\n' + bad + '\n```', 0), (bad, 1)):
+                path = Path(temp) / 'deck.md'
+                path.write_text(deck.format(body), encoding='utf-8')
+                run = subprocess.run([sys.executable, '-I', str(REPO / 'check_talk.py'), str(path)],
+                                     capture_output=True, text=True)
+                self.assertIn(f'{hard} hard', run.stdout)
 
     def test_the_skill_and_the_choices_give_the_same_order(self):
         def order(name, phrases):
@@ -171,6 +188,11 @@ class PassOrderTest(unittest.TestCase):
         order('.agents/skills/presentations/SKILL.md',
               ('Run the talk checker first', 'agent that did not write the script', 'run the diff of the declaude',
                'run the talk checker again', 'the linter once more'))
+        skill = ' '.join((REPO / '.agents/skills/presentations/SKILL.md').read_text(encoding='utf-8').split())
+        self.assertIn('In every step, keep each bad example that the deck shows on purpose word for word, '
+                      'by rule 55 of GUIDE.md.', skill)
+        why = ' '.join((REPO / 'docs/why.md').read_text(encoding='utf-8').split())
+        self.assertIn('to keep each bad example of a deck word for word, as rule 55 of GUIDE.md asks.', why)
         order('docs/why.md',
               ('revise the script in the order of the passes of nossaifd', 'First comes the talk checker',
                'agent that did not write the script makes the declaude pass', 'the diff of the declaude skill',
