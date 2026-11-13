@@ -1,5 +1,6 @@
 """Check the skill package: the manifest, the files that the skill ships, and the Markdown reader of check_talk.py."""
 import json
+import os
 from pathlib import Path
 import re
 import shutil
@@ -169,8 +170,7 @@ class ProseFlowTest(unittest.TestCase):
                      'prose-status:\n    {{python}} -I .agents/skills/nossaifd/scripts/prose_gate.py status\n',
                      '[no-cd]\nprose-record +pages:\n    {{python}} -I "{{justfile_directory()}}/.agents/skills/'
                      'nossaifd/scripts/prose_gate.py" record "$@"\n',
-                     '[no-cd]\nprose-check +pages:\n    {{python}} -I "{{justfile_directory()}}/.agents/skills/'
-                     'nossaifd/scripts/prose_gate.py" check -v "$@"\n',
+                     '[no-cd]\nprose-check *args:\n    {{python}} -I "{{justfile_directory()}}/.agents/skills/nossaifd/scripts/prose_gate.py" check-changed "$@"\n',
                      '    {{python}} -I {{check_py}} README.md'):
             self.assertIn(line, justfile)
         self.assertIn('    just prose\n', justfile[justfile.index('\ncheck:'):])
@@ -259,6 +259,49 @@ class PassOrderTest(unittest.TestCase):
               ('revise the script in the order of the passes of nossaifd', 'First comes the talk checker',
                'agent that did not write the script makes the declaude pass', 'the diff of the declaude skill',
                'the talk checker runs again', 'the linter runs once more'))
+
+
+class ProseCheckTest(unittest.TestCase):
+    @unittest.skipUnless(shutil.which('just'), 'needs just')
+    def test_prose_check_with_no_page_checks_the_changed_pages(self):
+        "With no page, just prose-check checks each page changed since HEAD, through the map."
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            shutil.copy(REPO / 'Justfile', root / 'Justfile')
+            shutil.copytree(REPO / '.agents', root / '.agents')
+            deck = (REPO / 'examples/cache/slides.qmd').read_text(encoding='utf-8')
+            (root / 'talk').mkdir()
+            (root / 'talk/slides.qmd').write_text(deck, encoding='utf-8')
+            shutil.copy(REPO / 'examples/cache/plan.md', root / 'talk/plan.md')
+            (root / 'page.md').write_text('# A page\n\nA plain page.\n', encoding='utf-8')
+            git = dict(cwd=root, check=True, capture_output=True)
+            subprocess.run(['git', 'init', '-q'], **git)
+            subprocess.run(['git', 'add', '-A'], **git)
+            subprocess.run(['git', '-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-qm', 'base'], **git)
+            # GitHub Actions sets CI, which makes check-changed compare with a base. This test is about a local run
+            local = {k: v for k, v in os.environ.items() if k != 'CI' and not k.startswith('GITHUB_')}
+
+            def run(*args, env=local):
+                return subprocess.run(['just', 'prose-check', *args], cwd=root, capture_output=True, text=True, env=env)
+            same = run()
+            self.assertEqual(same.returncode, 0, same.stdout + same.stderr)
+            self.assertIn('no page changed', same.stdout + same.stderr)
+            (root / 'talk/slides.qmd').write_text(deck + '\n', encoding='utf-8')
+            (root / 'page.md').write_text("# A page\n\nIt's a page with a contraction.\n", encoding='utf-8')
+            changed = run()
+            self.assertEqual(changed.returncode, 1, changed.stdout + changed.stderr)
+            self.assertIn('talk/slides.qmd: checked by .agents/skills/presentations/scripts/check_talk.py, 0 hard', changed.stdout)
+            self.assertIn('page.md: checked by check.py of the skill, 1 hard', changed.stdout)
+            one = run('talk/slides.qmd')
+            self.assertEqual(one.returncode, 0, one.stdout + one.stderr)
+            self.assertNotIn('page.md', one.stdout)
+            # In CI, with a base, it checks the pages that HEAD changed since the base
+            base = subprocess.run(['git', 'rev-parse', 'HEAD'], **git).stdout.decode().strip()
+            subprocess.run(['git', 'add', '-A'], **git)
+            subprocess.run(['git', '-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-qm', 'change'], **git)
+            ci = run('--base', base, env=dict(local, CI='true'))
+            self.assertEqual(ci.returncode, 1, ci.stdout + ci.stderr)
+            self.assertIn('page.md: checked by check.py of the skill, 1 hard', ci.stdout)
 
 
 class GateTest(unittest.TestCase):
