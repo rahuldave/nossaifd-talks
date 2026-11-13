@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "checkers": [
+    {
+      "pages": ["**/slides.qmd", "examples/**/plan.md"],
+      "checker": ".agents/skills/presentations/scripts/check_talk.py"
+    }
+  ]
+}
