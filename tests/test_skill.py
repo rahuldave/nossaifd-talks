@@ -169,9 +169,24 @@ class ProseFlowTest(unittest.TestCase):
                      'prose-status:\n    {{python}} -I .agents/skills/nossaifd/scripts/prose_gate.py status\n',
                      '[no-cd]\nprose-record +pages:\n    {{python}} -I "{{justfile_directory()}}/.agents/skills/'
                      'nossaifd/scripts/prose_gate.py" record "$@"\n',
+                     '[no-cd]\nprose-check +pages:\n    {{python}} -I "{{justfile_directory()}}/.agents/skills/'
+                     'nossaifd/scripts/prose_gate.py" check -v "$@"\n',
                      '    {{python}} -I {{check_py}} README.md'):
             self.assertIn(line, justfile)
         self.assertIn('    just prose\n', justfile[justfile.index('\ncheck:'):])
+
+    def test_prose_check_uses_the_map_from_a_subfolder(self):
+        if not shutil.which('just'):
+            self.skipTest('just is not installed')
+        run = subprocess.run(['just', 'prose-check', 'cache/slides.qmd', '../templates/plan.md'], cwd=REPO / 'examples',
+                             capture_output=True, text=True)
+        self.assertEqual(run.returncode, 0, run.stdout + run.stderr)
+        self.assertIn('examples/cache/slides.qmd: checked by .agents/skills/presentations/scripts/check_talk.py, 0 hard',
+                      run.stdout)
+        # The template's answers are blank, so it keeps check.py
+        self.assertIn('templates/plan.md: checked by check.py of the skill, 0 hard', run.stdout)
+        failing = subprocess.run(['just', 'prose-check', '../WORKSHEET.md'], cwd=REPO / 'examples', capture_output=True, text=True)
+        self.assertEqual(failing.returncode, 1, failing.stdout + failing.stderr)
 
     def test_the_hooks_find_the_gate_and_the_recipes_use_the_installed_tools(self):
         for name in ('nossaifd/scripts/prose_gate.py', 'nossaifd/scripts/check.py', 'declaude/scripts/declaude_lint.py'):
@@ -247,19 +262,42 @@ class PassOrderTest(unittest.TestCase):
 
 
 class GateTest(unittest.TestCase):
-    "The pages that the gate of nossaifd checks. These fail check.py on purpose: a script, a copy of a book or a test."
-    KNOWN = ['WORKSHEET.md', 'docs/notes/schwabish-choices.md', 'examples/cache/plan.md', 'examples/cache/slides.qmd', 'tests/fixtures/deck.md']
+    "The pages that the gate of nossaifd checks, each through the map of checkers."
+    # These fail check.py on purpose: a copy of a book, the owner's notes and a test
+    KNOWN = ['WORKSHEET.md', 'docs/notes/schwabish-choices.md', 'tests/fixtures/deck.md']
+    TALK = ['examples/cache/plan.md', 'examples/cache/slides.qmd']
+    TALK_CHECKER = '.agents/skills/presentations/scripts/check_talk.py'
 
-    def test_only_the_known_pages_fail_the_gate(self):
+    def gate(self):
         sys.path.insert(0, str(REPO / ".agents/skills/nossaifd/scripts"))
         import prose_gate
         names = subprocess.run(["git", "ls-files"], cwd=REPO, capture_output=True, text=True, check=True).stdout.split()
         pages = [n for n in names if prose_gate.is_page(n)]
-        run = subprocess.run([sys.executable, "-I", str(REPO / ".agents/skills/nossaifd/scripts/check.py"), *pages],
+        run = subprocess.run([sys.executable, "-I", str(REPO / ".agents/skills/nossaifd/scripts/prose_gate.py"), "check", *pages],
                              cwd=REPO, capture_output=True, text=True)
-        failing = sorted(re.findall(r"(?m)^(\S+): [1-9]\d* hard", run.stdout))
+        found = dict((page, (checker, int(hard))) for page, checker, hard in
+                     re.findall(r"(?m)^(\S+): checked by (.+?), (\d+) hard", run.stdout))
+        self.assertEqual(sorted(found), sorted(pages), run.stdout + run.stderr)
+        return found
+
+    def test_only_the_known_pages_fail_the_gate(self):
+        failing = sorted(page for page, (_, hard) in self.gate().items() if hard)
         self.assertEqual(failing, sorted(self.KNOWN))
 
+    def test_the_gate_checks_the_deck_and_the_plan_with_the_talk_checker(self):
+        found = self.gate()
+        for page in self.TALK:
+            self.assertEqual(found[page][0], self.TALK_CHECKER, page)
+        others = [page for page, (checker, _) in found.items() if page not in self.TALK]
+        self.assertTrue(others)
+        for page in others:
+            self.assertNotEqual(found[page][0], self.TALK_CHECKER, page)
+
+    def test_the_map_gives_the_decks_and_the_plans_to_the_talk_checker(self):
+        mapping = json.loads((REPO / ".agents/nossaifd-checkers.json").read_text(encoding="utf-8"))
+        self.assertEqual(mapping, {"version": 1, "checkers": [
+            {"pages": ["**/slides.qmd", "examples/**/plan.md"], "checker": self.TALK_CHECKER}]})
+        self.assertTrue((REPO / self.TALK_CHECKER).is_file())
 
 if __name__ == '__main__':
     unittest.main()

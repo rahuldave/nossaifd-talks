@@ -93,10 +93,15 @@ The package installs neither skill. It installs only `presentations`.
 - The hooks in `.claude/settings.json` and `.codex/hooks.json` stop a turn once when a changed page has a
   hard problem or no record of its passes.
 - The workflow `nossaifd-prose.yml` checks each page that a pull request changes.
+- The map `.agents/nossaifd-checkers.json` names the talk checker `check_talk.py`, in place of `check.py`,
+  for each deck, and for each plan in `examples/`. The script of a talk uses contractions, as rule 34 of TALKS.md
+  says, and `check.py` marks each contraction as a hard problem. The plan template `templates/plan.md` keeps
+  `check.py`, because its answers are blank.
 
 After the passes, `just prose-record page.md` records a page, and `just prose-status` lists the pages that
-still need them. `just nossaifd-install` installs the two skills again from nossaifd. `just prose` and
-`just declaude` use the checker and the linter of these skills.
+still need them. `just prose-check page.md` checks a page with the checker that the map names for it.
+`just nossaifd-install` installs the two skills again from nossaifd. `just prose` and `just declaude` use the
+checker and the linter of these skills.
 
 ## Where the rules come from
 
