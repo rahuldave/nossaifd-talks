@@ -73,10 +73,11 @@ nossaifd-install:
 prose-status:
     {{python}} -I .agents/skills/nossaifd/scripts/prose_gate.py status
 
-# Check pages with the checker that .agents/nossaifd-checkers.json gives each one. A path is from the current folder
+# Check the pages that changed since HEAD, each with the checker that .agents/nossaifd-checkers.json gives it.
+# With names of pages, from the current folder, check those pages only. -v also shows the soft notes
 [no-cd]
-prose-check +pages:
-    {{python}} -I "{{justfile_directory()}}/.agents/skills/nossaifd/scripts/prose_gate.py" check -v "$@"
+prose-check *args:
+    {{python}} -I "{{justfile_directory()}}/.agents/skills/nossaifd/scripts/prose_gate.py" check-changed "$@"
 
 # Record each page after step 8 of the nossaifd skill: just prose-record page.md. A path is from the current folder
 [no-cd]
