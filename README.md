@@ -101,8 +101,8 @@ The package installs neither skill. It installs only `presentations`.
 After the passes, `just prose-record page.md` records a page, and `just prose-status` lists the pages that
 still need them. `just prose-check` checks each page with the checker that the map names for it. With no page
 name, it checks each page that changed since the last commit, and `just prose-check page.md` checks only that
-page. `just nossaifd-install` installs the two skills again from nossaifd. `just prose` and `just declaude` use
-the checker and the linter of these skills.
+page. Add `-v` to also see the soft notes. `just nossaifd-install` installs the two skills again from
+nossaifd. `just prose` and `just declaude` use the checker and the linter of these skills.
 
 ## Where the rules come from
 
